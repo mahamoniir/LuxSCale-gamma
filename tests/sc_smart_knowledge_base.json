@@ -1,0 +1,1636 @@
+{
+  "schema_version": 2,
+  "generated_at": "2026-04-24",
+  "description": "LuxScaleAI Smart Chat Knowledge Base — enriched from all project JSON data sources",
+  "company": {
+    "name": "Short Circuit Company",
+    "website": "https://shortcircuit.company",
+    "products_url": "https://shortcircuit.company/products",
+    "contact": "https://shortcircuit.company/contact.html",
+    "brand_guide": "https://shortcircuit.company/SCbrand"
+  },
+  "tool": {
+    "name": "LuxScaleAI",
+    "description": "Web assistant for early-stage photometric lighting design using EN 12464-1",
+    "standard": "EN 12464-1",
+    "maintenance_factor_default": 0.8,
+    "room_reflectance_presets": {
+      "high": {
+        "ceiling": 0.8,
+        "walls": 0.7,
+        "floor": 0.3
+      },
+      "medium": {
+        "ceiling": 0.7,
+        "walls": 0.5,
+        "floor": 0.2
+      },
+      "low": {
+        "ceiling": 0.5,
+        "walls": 0.3,
+        "floor": 0.1
+      }
+    },
+    "calc_limits": {
+      "interior_height_min_m": 2,
+      "interior_height_max_m": 5,
+      "exterior_height_min_m": 5,
+      "exterior_height_max_m": 20
+    }
+  },
+  "lux_targets_en12464": {
+    "office_workstation": {
+      "lux_min": 500,
+      "u0_min": 0.6,
+      "ugrl_max": 19,
+      "ra_min": 80
+    },
+    "office_filing": {
+      "lux_min": 300,
+      "u0_min": 0.5
+    },
+    "corridor_interior": {
+      "lux_min": 100,
+      "u0_min": 0.4
+    },
+    "staircase": {
+      "lux_min": 150,
+      "u0_min": 0.4
+    },
+    "classroom": {
+      "lux_min": 300,
+      "u0_min": 0.6,
+      "ugrl_max": 19
+    },
+    "lecture_hall": {
+      "lux_min": 500,
+      "u0_min": 0.6
+    },
+    "warehouse_gangway": {
+      "lux_min": 150,
+      "u0_min": 0.4
+    },
+    "warehouse_loading": {
+      "lux_min": 200,
+      "u0_min": 0.5
+    },
+    "factory_general": {
+      "lux_min": 200,
+      "u0_min": 0.5
+    },
+    "factory_precision": {
+      "lux_min": 1000,
+      "u0_min": 0.7
+    },
+    "retail_sales": {
+      "lux_min": 500,
+      "u0_min": 0.6
+    },
+    "retail_checkout": {
+      "lux_min": 500,
+      "u0_min": 0.6
+    },
+    "hospital_ward_general": {
+      "lux_min": 300,
+      "u0_min": 0.6,
+      "ugrl_max": 19
+    },
+    "hospital_examination": {
+      "lux_min": 1000,
+      "u0_min": 0.7
+    },
+    "cad_technical_drawing": {
+      "lux_min": 750,
+      "u0_min": 0.7
+    },
+    "car_park_indoor": {
+      "lux_min": 75,
+      "u0_min": 0.4
+    },
+    "street_residential": {
+      "lux_min": 15,
+      "u0_min": 0.35
+    },
+    "street_collector": {
+      "lux_min": 20,
+      "u0_min": 0.4
+    },
+    "street_arterial": {
+      "lux_min": 30,
+      "u0_min": 0.4
+    },
+    "sports_hall": {
+      "lux_min": 300,
+      "u0_min": 0.5
+    }
+  },
+  "products": [
+    {
+      "id": "sc-flood-100",
+      "name": "SC TM Flood 100",
+      "title": "SC Flood Light 100W / 150W",
+      "category": "High Power Products",
+      "category_id": "high-power",
+      "type": "Flood Light",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-flood-100.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-Flood-100W-transparent0001.webp",
+        "https://shortcircuit.company/assets/img/products/SC-Flood-100W-transparent0002.webp"
+      ],
+      "specs": {
+        "power": "100W / 150W",
+        "chip": "Philips 3030",
+        "driver": "SC driver™",
+        "input_voltage": "AC 85-300V",
+        "frequency": "50-60Hz",
+        "power_factor": ">0.95",
+        "luminous_efficacy": "160lm/W",
+        "protection": "IP65 IK08",
+        "beam_angle": "120°",
+        "cct": "2200K - 6500K",
+        "ov_protection": true,
+        "oc_protection": true,
+        "ot_protection": true,
+        "pcb": "Taiwan",
+        "lifetime": "50,000H / 100,000H",
+        "warranty": "5 Years / 7 Years"
+      }
+    },
+    {
+      "id": "sc-flood-200",
+      "name": "SC TM Flood 200",
+      "title": "SC Flood Light 200W / 250W",
+      "category": "High Power Products",
+      "category_id": "high-power",
+      "type": "Flood Light",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-flood-200.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-Flood-200W-transparent0001.webp",
+        "https://shortcircuit.company/assets/img/products/SC-Flood-200W-transparent0002.webp"
+      ],
+      "specs": {
+        "power": "200W / 250W",
+        "chip": "Philips 3030",
+        "driver": "SC driver™",
+        "input_voltage": "AC 85-300V",
+        "frequency": "50-60Hz",
+        "power_factor": ">0.95",
+        "luminous_efficacy": "160lm/W",
+        "protection": "IP65 IK08",
+        "beam_angle": "120°",
+        "cct": "2200K - 6500K",
+        "ov_protection": true,
+        "oc_protection": true,
+        "ot_protection": true,
+        "pcb": "Taiwan",
+        "lifetime": "50,000H / 100,000H",
+        "warranty": "5 Years / 7 Years"
+      }
+    },
+    {
+      "id": "sc-flood-400",
+      "name": "SC TM Flood 400",
+      "title": "SC Flood Light 300W / 350W / 400W",
+      "category": "High Power Products",
+      "category_id": "high-power",
+      "type": "Flood Light",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-flood-400.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-Flood-400W-transparent0001.webp",
+        "https://shortcircuit.company/assets/img/products/SC-Flood-400W-transparent0002.webp"
+      ],
+      "specs": {
+        "power": "300W / 350W / 400W",
+        "chip": "Philips 3030",
+        "driver": "SC driver™",
+        "input_voltage": "AC 85-300V",
+        "frequency": "50-60Hz",
+        "power_factor": ">0.95",
+        "luminous_efficacy": "160lm/W",
+        "protection": "IP65 IK08",
+        "beam_angle": "120°",
+        "cct": "2200K - 6500K",
+        "ov_protection": true,
+        "oc_protection": true,
+        "ot_protection": true,
+        "pcb": "Taiwan",
+        "lifetime": "50,000H / 100,000H",
+        "warranty": "5 Years / 7 Years"
+      }
+    },
+    {
+      "id": "sv-flood-100",
+      "name": "SV TM Flood 100",
+      "title": "SV Flood Light 100W",
+      "category": "High Power Products",
+      "category_id": "high-power",
+      "type": "Flood Light",
+      "series": "SV",
+      "url": "https://shortcircuit.company/products/sv-flood-100.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SV-Flood-100W-transparent0001.webp",
+        "https://shortcircuit.company/assets/img/products/SV-Flood-100W-transparent0002.webp"
+      ],
+      "specs": {
+        "power": "100W",
+        "chip": "Sanan COB",
+        "driver": "TLG",
+        "input_voltage": "AC 85-265V",
+        "frequency": "50-60Hz",
+        "power_factor": ">0.8",
+        "luminous_efficacy": "110lm/W",
+        "protection": "IP65 IK08",
+        "beam_angle": "120°",
+        "cct": "3000K - 6500K",
+        "ov_protection": true,
+        "oc_protection": false,
+        "ot_protection": false,
+        "pcb": "Taiwan",
+        "lifetime": "20,000H",
+        "warranty": "2 Years"
+      }
+    },
+    {
+      "id": "sv-flood-200",
+      "name": "SV TM Flood 200",
+      "title": "SV Flood Light 200W",
+      "category": "High Power Products",
+      "category_id": "high-power",
+      "type": "Flood Light",
+      "series": "SV",
+      "url": "https://shortcircuit.company/products/sv-flood-200.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SV-Flood-200W-transparent0001.webp",
+        "https://shortcircuit.company/assets/img/products/SV-Flood-200W-transparent0002.webp"
+      ],
+      "specs": {
+        "power": "200W",
+        "chip": "Sanan COB",
+        "driver": "TLG",
+        "input_voltage": "AC 85-265V",
+        "frequency": "50-60Hz",
+        "power_factor": ">0.8",
+        "luminous_efficacy": "110lm/W",
+        "protection": "IP65 IK08",
+        "beam_angle": "120°",
+        "cct": "3000K - 6500K",
+        "ov_protection": true,
+        "oc_protection": false,
+        "ot_protection": false,
+        "pcb": "Taiwan",
+        "lifetime": "20,000H",
+        "warranty": "2 Years"
+      }
+    },
+    {
+      "id": "sv-flood-300",
+      "name": "SV TM Flood 300",
+      "title": "SV Flood Light 300W",
+      "category": "High Power Products",
+      "category_id": "high-power",
+      "type": "Flood Light",
+      "series": "SV",
+      "url": "https://shortcircuit.company/products/sv-flood-300.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SV-Flood-300W-transparent0001.webp",
+        "https://shortcircuit.company/assets/img/products/SV-Flood-300W-transparent0002.webp"
+      ],
+      "specs": {
+        "power": "300W",
+        "chip": "Sanan COB",
+        "driver": "TLG",
+        "input_voltage": "AC 85-265V",
+        "frequency": "50-60Hz",
+        "power_factor": ">0.8",
+        "luminous_efficacy": "110lm/W",
+        "protection": "IP65 IK08",
+        "beam_angle": "120°",
+        "cct": "3000K - 6500K",
+        "ov_protection": true,
+        "oc_protection": false,
+        "ot_protection": false,
+        "pcb": "Taiwan",
+        "lifetime": "20,000H",
+        "warranty": "2 Years"
+      }
+    },
+    {
+      "id": "sv-flood-400",
+      "name": "SV TM Flood 400",
+      "title": "SV Flood Light 400W",
+      "category": "High Power Products",
+      "category_id": "high-power",
+      "type": "Flood Light",
+      "series": "SV",
+      "url": "https://shortcircuit.company/products/sv-flood-400.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SV-Flood-400W-transparent0001.webp",
+        "https://shortcircuit.company/assets/img/products/SV-Flood-400W-transparent0002.webp"
+      ],
+      "specs": {
+        "power": "400W",
+        "chip": "Sanan COB",
+        "driver": "TLG",
+        "input_voltage": "AC 85-265V",
+        "frequency": "50-60Hz",
+        "power_factor": ">0.8",
+        "luminous_efficacy": "110lm/W",
+        "protection": "IP65 IK08",
+        "beam_angle": "120°",
+        "cct": "3000K - 6500K",
+        "ov_protection": true,
+        "oc_protection": false,
+        "ot_protection": false,
+        "pcb": "Taiwan",
+        "lifetime": "20,000H",
+        "warranty": "2 Years"
+      }
+    },
+    {
+      "id": "sc-high-bay",
+      "name": "SC TM High Bay",
+      "title": "SC High-Bay Light 100W / 150W / 200W",
+      "category": "High Power Products",
+      "category_id": "high-power",
+      "type": "High Bay",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-high-bay.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-HighBay-100W-transparent0001.webp",
+        "https://shortcircuit.company/assets/img/products/SC-HighBay-100W-transparent0002.webp"
+      ],
+      "specs": {
+        "power": "100W / 150W / 200W",
+        "chip": "Philips 3030",
+        "driver": "SC driver™",
+        "input_voltage": "AC 85-300V",
+        "frequency": "50-60Hz",
+        "power_factor": ">0.95",
+        "luminous_efficacy": "160lm/W",
+        "protection": "IP65 IK08",
+        "beam_angle": "120°",
+        "cct": "2200K - 6500K",
+        "ov_protection": true,
+        "oc_protection": true,
+        "ot_protection": true,
+        "pcb": "Taiwan",
+        "lifetime": "50,000H / 100,000H",
+        "warranty": "5 Years / 7 Years"
+      }
+    },
+    {
+      "id": "eco-high-bay",
+      "name": "ECO TM High Bay",
+      "title": "ECO High-Bay 100W / 150W",
+      "category": "High Power Products",
+      "category_id": "high-power",
+      "type": "High Bay",
+      "series": "ECO",
+      "url": "https://shortcircuit.company/products/eco-high-bay.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/ECO-HighBay-100W-transparent0001.webp",
+        "https://shortcircuit.company/assets/img/products/ECO-HighBay-100W-transparent0002.webp"
+      ],
+      "specs": {
+        "power": "100W / 150W",
+        "chip": "Epistar",
+        "driver": "ECO driver™",
+        "input_voltage": "AC 85-300V",
+        "frequency": "50-60Hz",
+        "power_factor": ">0.95",
+        "luminous_efficacy": "130lm/W",
+        "protection": "IP65 IK08",
+        "beam_angle": "120°",
+        "cct": "3000K - 6500K",
+        "ov_protection": true,
+        "oc_protection": false,
+        "ot_protection": false,
+        "pcb": "Taiwan",
+        "lifetime": "30,000H",
+        "warranty": "3 Years"
+      }
+    },
+    {
+      "id": "sc-street-100",
+      "name": "SC TM Street Light 100W",
+      "title": "SC Street Light 50W / 100W",
+      "category": "High Power Products",
+      "category_id": "high-power",
+      "type": "Street Light",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-street.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-Street-100W-transparent0001.webp",
+        "https://shortcircuit.company/assets/img/products/SC-Street-100W-transparent0002.webp"
+      ],
+      "specs": {
+        "power": "50W / 100W",
+        "chip": "Philips 3030",
+        "driver": "SC driver™",
+        "input_voltage": "AC 85-300V",
+        "frequency": "50-60Hz",
+        "power_factor": ">0.95",
+        "luminous_efficacy": "160lm/W",
+        "protection": "IP65 IK08",
+        "beam_angle": "120°",
+        "cct": "2200K - 6500K",
+        "ov_protection": true,
+        "oc_protection": true,
+        "ot_protection": true,
+        "pcb": "Taiwan",
+        "lifetime": "50,000H / 100,000H",
+        "warranty": "5 Years / 7 Years"
+      }
+    },
+    {
+      "id": "sc-street-150",
+      "name": "SC TM Street Light 150W",
+      "title": "SC Street Light 150W / 200W",
+      "category": "High Power Products",
+      "category_id": "high-power",
+      "type": "Street Light",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-street-150.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-Street-150W-transparent0001.webp",
+        "https://shortcircuit.company/assets/img/products/SC-Street-150W-transparent0002.webp"
+      ],
+      "specs": {
+        "power": "150W / 200W",
+        "chip": "Philips 3030",
+        "driver": "SC driver™",
+        "input_voltage": "AC 85-300V",
+        "frequency": "50-60Hz",
+        "power_factor": ">0.95",
+        "luminous_efficacy": "160lm/W",
+        "protection": "IP65 IK08",
+        "beam_angle": "120°",
+        "cct": "2200K - 6500K",
+        "ov_protection": true,
+        "oc_protection": true,
+        "ot_protection": true,
+        "pcb": "Taiwan",
+        "lifetime": "50,000H / 100,000H",
+        "warranty": "5 Years / 7 Years"
+      }
+    },
+    {
+      "id": "eco-street-100",
+      "name": "ECO TM Street Light 100W",
+      "title": "ECO Street Light 100W / 150W",
+      "category": "High Power Products",
+      "category_id": "high-power",
+      "type": "Street Light",
+      "series": "ECO",
+      "url": "https://shortcircuit.company/products/eco-street.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/ECO-Street-100W-transparent0001.webp",
+        "https://shortcircuit.company/assets/img/products/ECO-Street-100W-transparent0002.webp"
+      ],
+      "specs": {
+        "power": "100W / 150W",
+        "chip": "Epistar 3030",
+        "driver": "ECO driver™",
+        "input_voltage": "AC 85-256V",
+        "frequency": "50-60Hz",
+        "power_factor": ">0.95",
+        "luminous_efficacy": "145lm/W",
+        "protection": "IP65 IK08",
+        "beam_angle": "120°",
+        "cct": "2200K - 6500K",
+        "ov_protection": true,
+        "oc_protection": null,
+        "ot_protection": null,
+        "pcb": "Taiwan",
+        "lifetime": "30,000H",
+        "warranty": "3 Years"
+      }
+    },
+    {
+      "id": "sc-triproof",
+      "name": "SC TM Triproof 120cm",
+      "title": "SC Triproof 120cm Light Fixture",
+      "category": "Indoor Lighting Products",
+      "category_id": "indoor",
+      "type": "Triproof",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-triproof.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-Triproof-36W-transparent0001.png",
+        "https://shortcircuit.company/assets/img/products/SC-Triproof-36W-transparent0002.png"
+      ],
+      "specs": {
+        "power": "36W",
+        "chip": "Philips 3030",
+        "driver": "On-board",
+        "input_voltage": "AC 85-265V",
+        "frequency": "50-60Hz",
+        "material": "Polycarbonate",
+        "luminous_efficacy": "110lm/W",
+        "total_lumen": "3,960lm",
+        "protection": "IP65",
+        "cct": "3000K - 6500K",
+        "lifetime": "30,000H",
+        "warranty": "3 Years"
+      }
+    },
+    {
+      "id": "sc-panel-36",
+      "name": "SC TM Panel 60x60 - 36W",
+      "title": "SC Panel 60x60 - 36W",
+      "category": "Indoor Lighting Products",
+      "category_id": "indoor",
+      "type": "Panel",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-panel-36.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-Backlight-36W-transparent0001.png",
+        "https://shortcircuit.company/assets/img/products/SC-Backlight-36W-transparent0002.png"
+      ],
+      "specs": {
+        "power": "36W",
+        "chip": "Philips 3030",
+        "driver": "SC driver™",
+        "input_voltage": "AC 85-265V",
+        "frequency": "50-60Hz",
+        "material": "Polycarbonate",
+        "luminous_efficacy": "110lm/W",
+        "total_lumen": "3,960lm",
+        "protection": "IP65",
+        "cct": "3000K - 6500K",
+        "lifetime": "30,000H",
+        "warranty": "3 Years"
+      }
+    },
+    {
+      "id": "sc-panel-48",
+      "name": "SC TM Panel 60x60 - 48W",
+      "title": "SC Panel 60x60 - 48W",
+      "category": "Indoor Lighting Products",
+      "category_id": "indoor",
+      "type": "Panel",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-panel-48.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-Backlight-48W-transparent0001.png",
+        "https://shortcircuit.company/assets/img/products/SC-Backlight-48W-transparent0002.png"
+      ],
+      "specs": {
+        "power": "48W",
+        "chip": "Philips 3030",
+        "driver": "SC driver™",
+        "input_voltage": "AC 85-265V",
+        "frequency": "50-60Hz",
+        "material": "Polycarbonate",
+        "luminous_efficacy": "110lm/W",
+        "total_lumen": "5,280lm",
+        "protection": "IP65",
+        "cct": "3000K - 6500K",
+        "lifetime": "30,000H",
+        "warranty": "3 Years"
+      }
+    },
+    {
+      "id": "sc-panel-18",
+      "name": "SC TM Panel 30x30 - 18W",
+      "title": "SC Panel 30x30 - 18W",
+      "category": "Indoor Lighting Products",
+      "category_id": "indoor",
+      "type": "Panel",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-panel-18.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-Backlight-18W-transparent0001.png",
+        "https://shortcircuit.company/assets/img/products/SC-Backlight-18W-transparent0002.png"
+      ],
+      "specs": {
+        "power": "18W",
+        "chip": "Philips 3030",
+        "driver": "SC driver™",
+        "input_voltage": "AC 85-265V",
+        "frequency": "50-60Hz",
+        "material": "Polycarbonate",
+        "luminous_efficacy": "110lm/W",
+        "total_lumen": "1,980lm",
+        "protection": "IP65",
+        "cct": "3000K - 6500K",
+        "lifetime": "30,000H",
+        "warranty": "3 Years"
+      }
+    },
+    {
+      "id": "sc-spot",
+      "name": "SC TM Spot - 10W",
+      "title": "SC Spot 10W",
+      "category": "Indoor Lighting Products",
+      "category_id": "indoor",
+      "type": "Spot",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-spot.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-Spot0001.png",
+        "https://shortcircuit.company/assets/img/products/SC-Spot0002.png"
+      ],
+      "specs": {
+        "power": "10W",
+        "chip": "COB",
+        "driver": "BAOS",
+        "input_voltage": "AC 85-265V",
+        "frequency": "50-60Hz",
+        "material": "Polycarbonate / Aluminium",
+        "luminous_efficacy": "110lm/W",
+        "total_lumen": "1,100lm",
+        "protection": "IP54",
+        "cct": "2700K - 6500K",
+        "lifetime": "30,000H",
+        "warranty": "3 Years"
+      }
+    },
+    {
+      "id": "sc-solar-aio-street-50",
+      "name": "SC TM Solar Street Light 50W",
+      "title": "SC Solar Street Light 50W",
+      "category": "All-In-One Solar Products",
+      "category_id": "solar-aio",
+      "type": "Solar Street Light",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-street-aio-50.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-Solar-AIO-Street-50W-transparent0001.png",
+        "https://shortcircuit.company/assets/img/products/SC-Solar-AIO-Street-50W-transparent0002.png"
+      ],
+      "specs": {
+        "led_chip": "Cree 3030 - 48 PCS",
+        "solar_panel": "Monocrystalline",
+        "solar_panel_power": "18V - 36W",
+        "battery_type": "Lithium (LiFePO4)",
+        "battery_power": "12.8V - 18Ah",
+        "charging_time": "4 - 8 Hours",
+        "discharging_time": "8 - 12 Hours",
+        "fixture_dimensions": "342mm x 532mm x 55mm",
+        "housing_material": "Aluminium Alloy",
+        "luminous_efficacy": "160lm/W",
+        "cct": "6500K",
+        "lifetime": "50,000H",
+        "warranty": "3 Years"
+      }
+    },
+    {
+      "id": "sc-solar-aio-street-100",
+      "name": "SC TM Solar Street Light 100W",
+      "title": "SC Solar Street Light 100W",
+      "category": "All-In-One Solar Products",
+      "category_id": "solar-aio",
+      "type": "Solar Street Light",
+      "series": "SC",
+      "url": "https://shortcircuit.company/products/sc-street-aio-100.html",
+      "images": [
+        "https://shortcircuit.company/assets/img/products/SC-Solar-AIO-Street-100W-transparent0001.png",
+        "https://shortcircuit.company/assets/img/products/SC-Solar-AIO-Street-100W-transparent0002.png"
+      ],
+      "specs": {
+        "led_chip": "Cree 3030 - 96 PCS",
+        "solar_panel": "Monocrystalline",
+        "solar_panel_power": "18V - 80W",
+        "battery_type": "Lithium (LiFePO4)",
+        "battery_power": "12.8V - 30Ah",
+        "charging_time": "4 - 8 Hours",
+        "discharging_time": "8 - 12 Hours",
+        "fixture_dimensions": "342mm x 630mm x 55mm",
+        "housing_material": "Aluminium Alloy",
+        "luminous_efficacy": "160lm/W",
+        "cct": "6500K",
+        "lifetime": "50,000H",
+        "warranty": "3 Years"
+      }
+    }
+  ],
+  "fixture_families": [
+    {
+      "api_name": "SC backlight",
+      "sample_power_w": 32,
+      "ies_path": "examples/SC_IES_Fixed_v3/SC_PANEL_36W.ies",
+      "has_photometry_json": true,
+      "has_images": true
+    },
+    {
+      "api_name": "SC downlight",
+      "sample_power_w": 9,
+      "ies_path": "examples/SC_IES_Fixed_v3/SC_SPOT_10W.ies",
+      "has_photometry_json": true,
+      "has_images": true
+    },
+    {
+      "api_name": "SC flood light exterior",
+      "sample_power_w": 100,
+      "ies_path": "examples/SC_IES_Fixed_v3/SC_FLOOD_100W.ies",
+      "has_photometry_json": true,
+      "has_images": true
+    },
+    {
+      "api_name": "SC highbay",
+      "sample_power_w": 100,
+      "ies_path": "examples/SC_IES_Fixed_v3/SC_HIGHBAY_100W.ies",
+      "has_photometry_json": true,
+      "has_images": true
+    },
+    {
+      "api_name": "SC street",
+      "sample_power_w": 30,
+      "ies_path": "examples/SC_IES_Fixed_v3/SC_STREET_50W/SL250SI5KN01_75x150deg_50W.IES",
+      "has_photometry_json": true,
+      "has_images": true
+    },
+    {
+      "api_name": "SC triproof",
+      "sample_power_w": 30,
+      "ies_path": "examples/SC_IES_Fixed_v3/SC_TRIPROOF_36W.ies",
+      "has_photometry_json": true,
+      "has_images": true
+    },
+    {
+      "api_name": "SV flood",
+      "sample_power_w": 100,
+      "ies_path": "examples/SC_IES_Fixed_v3/SV_FLOOD_100W.ies",
+      "has_photometry_json": true,
+      "has_images": true
+    }
+  ],
+  "ies_catalog": [
+    {
+      "luminaire": "SC backlight",
+      "power_w": 32,
+      "ies": "examples/SC_IES_Fixed_v3/SC_PANEL_36W.ies"
+    },
+    {
+      "luminaire": "SC backlight",
+      "power_w": 35,
+      "ies": "examples/SC_IES_Fixed_v3/SC_PANEL_36W.ies"
+    },
+    {
+      "luminaire": "SC downlight",
+      "power_w": 9,
+      "ies": "examples/SC_IES_Fixed_v3/SC_SPOT_10W.ies"
+    },
+    {
+      "luminaire": "SC downlight",
+      "power_w": 10,
+      "ies": "examples/SC_IES_Fixed_v3/SC_SPOT_10W.ies"
+    },
+    {
+      "luminaire": "SC flood light exterior",
+      "power_w": 100,
+      "ies": "examples/SC_IES_Fixed_v3/SC_FLOOD_100W.ies"
+    },
+    {
+      "luminaire": "SC flood light exterior",
+      "power_w": 150,
+      "ies": "examples/SC_IES_Fixed_v3/SC_FLOOD_150W.ies"
+    },
+    {
+      "luminaire": "SC flood light exterior",
+      "power_w": 200,
+      "ies": "examples/SC_IES_Fixed_v3/SC_FLOOD_200W.ies"
+    },
+    {
+      "luminaire": "SC highbay",
+      "power_w": 100,
+      "ies": "examples/SC_IES_Fixed_v3/SC_HIGHBAY_100W.ies"
+    },
+    {
+      "luminaire": "SC highbay",
+      "power_w": 150,
+      "ies": "examples/SC_IES_Fixed_v3/SC_HIGHBAY_150W.ies"
+    },
+    {
+      "luminaire": "SC highbay",
+      "power_w": 200,
+      "ies": "examples/SC_IES_Fixed_v3/SC_HIGHBAY_200W.ies"
+    },
+    {
+      "luminaire": "SC street",
+      "power_w": 30,
+      "ies": "examples/SC_IES_Fixed_v3/SC_STREET_50W/SL250SI5KN01_75x150deg_50W.IES"
+    },
+    {
+      "luminaire": "SC street",
+      "power_w": 60,
+      "ies": "examples/SC_IES_Fixed_v3/SC_STREET_90W/SL290SI5KN01_75x150deg_90W.IES"
+    },
+    {
+      "luminaire": "SC triproof",
+      "power_w": 30,
+      "ies": "examples/SC_IES_Fixed_v3/SC_TRIPROOF_36W.ies"
+    },
+    {
+      "luminaire": "SC triproof",
+      "power_w": 40,
+      "ies": "examples/SC_IES_Fixed_v3/SC_TRIPROOF_36W.ies"
+    },
+    {
+      "luminaire": "SV flood",
+      "power_w": 100,
+      "ies": "examples/SC_IES_Fixed_v3/SV_FLOOD_100W.ies"
+    },
+    {
+      "luminaire": "SV flood",
+      "power_w": 200,
+      "ies": "examples/SC_IES_Fixed_v3/SV_FLOOD_200W.ies"
+    },
+    {
+      "luminaire": "SV flood",
+      "power_w": 300,
+      "ies": "examples/SC_IES_Fixed_v3/SV_FLOOD_300W.ies"
+    }
+  ],
+  "fixed_qa": [
+    {
+      "id": "tool_usage_overview",
+      "canonical_key": "tool_usage_overview",
+      "label": "What LuxSCale Does and How to Use It",
+      "question": "What does LuxSCale do and how do I use the tool?",
+      "variants": [
+        "how do i use luxscale",
+        "what does this tool do",
+        "how to get a lux recommendation",
+        "ايه فايدة الاداة"
+      ],
+      "tags": [
+        "product",
+        "onboarding"
+      ],
+      "generated_answer": "LuxSCale is a web assistant for early-stage lighting design: you enter or draw room size and use context (space type) to obtain EN 12464-1 aligned target lux, uniformity (U0), and photometric checks using the Short Circuit fixture/IES library. Open the main LuxSCale app, set room dimensions, confirm height and place type, then read lux/U0 and suggested catalog fixtures with linked IES where available.",
+      "answer": "LuxSCale is a web assistant for early-stage lighting design: you enter or draw room size and use context (space type) to obtain EN 12464-1 aligned target lux, uniformity (U0), and photometric checks using the Short Circuit fixture/IES library. Open the main LuxSCale app, set room dimensions, confirm height and place type, then read lux/U0 and suggested catalog fixtures with linked IES where available.",
+      "answer_variants": [
+        "LuxSCale is a web assistant for early-stage lighting design: you enter or draw room size and use context (space type) to obtain EN 12464-1 aligned target lux, uniformity (U0), and photometric checks using the Short Circuit fixture/IES library. Open the main LuxSCale app, set room dimensions, confirm height and place type, then read lux/U0 and suggested catalog fixtures with linked IES where available."
+      ],
+      "source_refs": [
+        "product"
+      ],
+      "localized_answers": {
+        "en": "LuxSCale is a web assistant for early-stage lighting design: you enter or draw room size and use context (space type) to obtain EN 12464-1 aligned target lux, uniformity (U0), and photometric checks using the Short Circuit fixture/IES library. Open the main LuxSCale app, set room dimensions, confirm height and place type, then read lux/U0 and suggested catalog fixtures with linked IES where available.",
+        "ar": "LuxSCale أداة ويب للتصميم المبدئي للإضاءة: تدخل أبعاد الغرفة (أو ترسمها) وتبين نوع المكان لتحصل على أهداف lux وU0 متماشية مع EN 12464-1 وتحققات فوتومترية مبنية على مكتبة Short Circuit (تركيبات وIES). افتح تطبيق LuxSCale، حدد أبعاد الغرفة وارتفاع التركيب ونوع المكان، ثم اطّلع على lux وU0 وتركيبات الكتالوج المرتبطة بIES عند توفرها."
+      }
+    },
+    {
+      "id": "std_hospital_general",
+      "canonical_key": "std_hospital_general",
+      "label": "Hospital / healthcare general ward targets",
+      "question": "What are typical lux and U0 for hospital ward areas?",
+      "variants": [
+        "hospital ward lighting",
+        "health care premises lighting",
+        "examination room hospital lux"
+      ],
+      "tags": [
+        "standards",
+        "hospital",
+        "en12464"
+      ],
+      "generated_answer": "For general ward lighting in health care premises, EN 12464-1 table 6.39 (ref 6.39.1) gives maintained illuminance about 100 lx on the reference surface with U0 >= 0.4 and CRI (Ra) >= 80 for general lighting. More demanding tasks (reading, examination) use higher rows in the same table. Always confirm the exact task row in the standard.",
+      "answer": "For general ward lighting in health care premises, EN 12464-1 table 6.39 (ref 6.39.1) gives maintained illuminance about 100 lx on the reference surface with U0 >= 0.4 and CRI (Ra) >= 80 for general lighting. More demanding tasks (reading, examination) use higher rows in the same table. Always confirm the exact task row in the standard.",
+      "answer_variants": [
+        "For general ward lighting in health care premises, EN 12464-1 table 6.39 (ref 6.39.1) gives maintained illuminance about 100 lx on the reference surface with U0 >= 0.4 and CRI (Ra) >= 80 for general lighting. More demanding tasks (reading, examination) use higher rows in the same table. Always confirm the exact task row in the standard."
+      ],
+      "source_refs": [
+        "6.39.1"
+      ],
+      "localized_answers": {
+        "en": "For general ward lighting in health care premises, EN 12464-1 table 6.39 (ref 6.39.1) gives about 100 lx on the reference surface with U0 >= 0.4 and Ra >= 80. Higher tasks (reading, examination) use stricter rows in table 6.39.",
+        "ar": "للإنارة العامة في المستشفى (أجنحة المرضى) يشير EN 12464-1، جدول 6.39 (مرجع 6.39.1) إلى نحو 100 lux على سطح المرجع مع U0 >= 0.4 وRa >= 80. لمهمات أدق (قراءة، فحوص) تُستخدم صفوف أعلى داخل نفس الجدول."
+      }
+    },
+    {
+      "id": "std_office_target",
+      "canonical_key": "std_office_target",
+      "label": "Office Lux Target",
+      "question": "What lux and U0 do I use for office workstations?",
+      "variants": [
+        "office lighting target",
+        "required lux for office",
+        "office workstation standard",
+        "open office lux level"
+      ],
+      "tags": [
+        "standards",
+        "office",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.26.2"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "std_code_name",
+      "canonical_key": "std_code_name",
+      "label": "European Code Name",
+      "question": "What is the name of the European lighting code used by LuxSCale?",
+      "variants": [
+        "what is the european code used",
+        "name of european lighting standard",
+        "which code does luxscale use",
+        "en 12464 name",
+        "bs en 12464 1",
+        "what is en12464",
+        "ايه اسم الكود الاوروبي",
+        "ما اسم المعيار الاوروبي",
+        "اسم الكود الاوروبي",
+        "اسم معيار الانارة الاوروبي",
+        "اي الكود الاوروبي بتاعك",
+        "الكود الاوروبي بتاعك ايه",
+        "شغال ب كود ايه",
+        "شغال على كود ايه",
+        "بتستخدم كود اوروبي ايه",
+        "اي معيار شغال عليه",
+        "what standard do you follow",
+        "what code are you using",
+        "which lighting standard are you based on"
+      ],
+      "tags": [
+        "standards",
+        "code-name",
+        "en12464"
+      ],
+      "generated_answer": "The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1.",
+      "answer": "The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1.",
+      "answer_variants": [
+        "The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1.",
+        "Short answer: The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1.",
+        "From LuxSCale references: The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1.",
+        "Recommended baseline: The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1.",
+        "For quick implementation: The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1."
+      ],
+      "source_refs": [
+        "standards/standards_cleaned.json"
+      ],
+      "localized_answers": {
+        "en": "The European workplace indoor lighting standard used by LuxSCale is EN 12464-1.",
+        "ar": "المعيار الأوروبي المستخدم في LuxSCale هو EN 12464-1."
+      }
+    },
+    {
+      "id": "std_cad_target",
+      "canonical_key": "std_cad_target",
+      "label": "CAD / Technical Drawing",
+      "question": "What is the lighting target for CAD or technical drawing?",
+      "variants": [
+        "cad lux standard",
+        "technical drawing lux",
+        "drafting workstation lux"
+      ],
+      "tags": [
+        "standards",
+        "cad",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.26.3"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "std_classroom_target",
+      "canonical_key": "std_classroom_target",
+      "label": "Classroom Lighting",
+      "question": "What are classroom lux and uniformity targets?",
+      "variants": [
+        "classroom lux standard",
+        "school classroom lighting",
+        "education room lux"
+      ],
+      "tags": [
+        "standards",
+        "classroom",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.36.1"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "std_warehouse_target",
+      "canonical_key": "std_warehouse_target",
+      "label": "Warehouse Gangways",
+      "question": "What lighting level is used for warehouse gangways?",
+      "variants": [
+        "warehouse lux standard",
+        "storage gangway lighting",
+        "warehouse aisle lux",
+        "factory lighting target",
+        "industrial area lux level"
+      ],
+      "tags": [
+        "standards",
+        "warehouse",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.5.2"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "std_factory_target",
+      "canonical_key": "std_factory_target",
+      "label": "Factory / Industrial Area",
+      "question": "What lux and U0 targets are used for factories or industrial areas?",
+      "variants": [
+        "factory lux standard",
+        "factories lux target",
+        "industrial area lux target",
+        "manufacturing area lighting target",
+        "workshop lux standard"
+      ],
+      "tags": [
+        "standards",
+        "factory",
+        "industrial",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.22.5"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "std_retail_target",
+      "canonical_key": "std_retail_target",
+      "label": "Retail Sales Area",
+      "question": "What target lux/U0 is used for general retail sales area?",
+      "variants": [
+        "retail store lux",
+        "shop lighting target",
+        "sales area illuminance"
+      ],
+      "tags": [
+        "standards",
+        "retail",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.27.1"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "std_corridor_target",
+      "canonical_key": "std_corridor_target",
+      "label": "Corridors",
+      "question": "What lux/U0 targets are typical for corridors?",
+      "variants": [
+        "corridor lux level",
+        "circulation area illuminance",
+        "hallway lighting target"
+      ],
+      "tags": [
+        "standards",
+        "corridor",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.1.1"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "fixture_catalog_overview",
+      "canonical_key": "fixture_catalog_overview",
+      "label": "Available Fixture Families",
+      "question": "What fixtures are available in LuxSCale?",
+      "variants": [
+        "available luminaires",
+        "fixture families",
+        "what products can i use",
+        "catalog list",
+        "what fixtures does luxscale have",
+        "shortcircuit fixture families",
+        "full fixture list luxscale",
+        "all fixture types"
+      ],
+      "tags": [
+        "fixtures",
+        "catalog"
+      ],
+      "generated_answer": "LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options.",
+      "answer": "LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options.",
+      "answer_variants": [
+        "LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options.",
+        "Short answer: LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options.",
+        "From LuxSCale references: LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options.",
+        "Recommended baseline: LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options.",
+        "For quick implementation: LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options."
+      ],
+      "source_refs": [
+        "assets/fixture_map_SC_IES_Fixed_v3.json"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "fixture_catalog_indoor",
+      "canonical_key": "fixture_catalog_indoor",
+      "label": "Indoor / Low-Ceiling Fixture Families",
+      "question": "What indoor fixtures are in LuxSCale?",
+      "variants": [
+        "what fixtures do you use indoors",
+        "what fixtures do u use in indoors",
+        "what fixtures do you use indoor",
+        "which fixtures are available indoors",
+        "indoor luminaire types",
+        "types of indoor fixtures",
+        "internal fixtures luxscale",
+        "ceiling fixtures office luxscale"
+      ],
+      "tags": [
+        "fixtures",
+        "catalog",
+        "interior"
+      ],
+      "generated_answer": "Indoor / low-ceiling families in the mapped LuxSCale catalog match the planning rule for ceilings below the interior height threshold (see settings; typically under 5 m): SC downlight (9W, 10W), SC triproof (30W, 40W), SC backlight / panel (32W, 35W). For taller spaces or exterior mounting, outdoor/tall-space families apply instead — ask specifically about outdoor fixtures if needed.\nShare room type, dimensions, and target lux/U0 and I can narrow options.",
+      "answer": "Indoor / low-ceiling families in the mapped LuxSCale catalog match the planning rule for ceilings below the interior height threshold (see settings; typically under 5 m):\n- SC downlight: 9W, 10W\n- SC triproof: 30W, 40W\n- SC backlight (panel): 32W, 35W\n\nFor taller ceilings or exterior applications, LuxSCale uses different families — ask about outdoor fixtures if that is your case.\nShare room type, dimensions, and target lux/U0 and I can narrow options.",
+      "answer_variants": [],
+      "source_refs": [
+        "luxscale/lighting_calc/geometry.py",
+        "assets/fixture_map_SC_IES_Fixed_v3.json"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "fixture_catalog_outdoor",
+      "canonical_key": "fixture_catalog_outdoor",
+      "label": "Outdoor / Tall-Space Fixture Families",
+      "question": "What outdoor fixtures are in LuxSCale?",
+      "variants": [
+        "what fixtures do u use outdoor",
+        "what fixtures do you use outdoors",
+        "what fixtures outdoor",
+        "outdoor luminaire types",
+        "exterior fixtures luxscale",
+        "street lighting fixtures catalog",
+        "highbay fixtures available"
+      ],
+      "tags": [
+        "fixtures",
+        "catalog",
+        "exterior"
+      ],
+      "generated_answer": "Outdoor / tall-ceiling families in the mapped LuxSCale catalog match the planning rule for ceilings at or above the interior height threshold (see settings; typically 5 m and up) and typical exterior/flood/street/high-bay use: SC highbay (100W, 150W, 200W), SC flood light exterior (100W, 150W, 200W), SV flood (100W, 200W, 300W), SC street (30W, 60W). Low indoor rooms use downlight/triproof/panel families instead — ask about indoor fixtures if needed.\nShare application, mounting height, and target lux/U0 and I can narrow options.",
+      "answer": "Outdoor / tall-ceiling families in the mapped LuxSCale catalog match the planning rule for ceilings at or above the interior height threshold (see settings; typically 5 m and up) and typical exterior / flood / street / high-bay layouts:\n- SC highbay: 100W, 150W, 200W\n- SC flood light exterior: 100W, 150W, 200W\n- SV flood: 100W, 200W, 300W\n- SC street: 30W, 60W\n\nLow indoor ceilings use downlight, triproof, and panel families — ask about indoor fixtures if that is your case.\nShare application, mounting height, and target lux/U0 and I can narrow options.",
+      "answer_variants": [],
+      "source_refs": [
+        "luxscale/lighting_calc/geometry.py",
+        "assets/fixture_map_SC_IES_Fixed_v3.json"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "fixture_recommendation_baseline",
+      "canonical_key": "fixture_recommendation_baseline",
+      "label": "Fixture Recommendation Basics",
+      "question": "How does LuxSCale choose fixture recommendations?",
+      "variants": [
+        "how do you recommend fixtures",
+        "fixture recommendation logic",
+        "choose luminaire",
+        "best fixture selection"
+      ],
+      "tags": [
+        "fixtures",
+        "recommendation"
+      ],
+      "generated_answer": "Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power.",
+      "answer": "Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power.",
+      "answer_variants": [
+        "Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power.",
+        "Short answer: Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power.",
+        "From LuxSCale references: Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power.",
+        "Recommended baseline: Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power.",
+        "For quick implementation: Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power."
+      ],
+      "source_refs": [
+        "assets/fixture_map_SC_IES_Fixed_v3.json",
+        "ies-render/ies.json"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "ies_dataset_overview",
+      "canonical_key": "ies_dataset_overview",
+      "label": "IES Dataset Health",
+      "question": "How many IES files are in LuxSCale and are they parsed?",
+      "variants": [
+        "ies dataset status",
+        "ies files count",
+        "photometry database status",
+        "ies parsing health"
+      ],
+      "tags": [
+        "ies",
+        "dataset"
+      ],
+      "generated_answer": "The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows.",
+      "answer": "The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows.",
+      "answer_variants": [
+        "The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows.",
+        "Short answer: The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows.",
+        "From LuxSCale references: The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows.",
+        "Recommended baseline: The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows.",
+        "For quick implementation: The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows."
+      ],
+      "source_refs": [
+        "ies-render/ies.json"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "uniformity_reflection_behavior",
+      "canonical_key": "uniformity_reflection_behavior",
+      "label": "Uniformity and Reflection Note",
+      "question": "Do reflections change U0 in the current LuxSCale model?",
+      "variants": [
+        "does reflectance affect u0",
+        "reflection effect on uniformity",
+        "u0 with inter reflection",
+        "uniformity and reflected light"
+      ],
+      "tags": [
+        "uniformity",
+        "reflection",
+        "model-limit"
+      ],
+      "generated_answer": "In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios.",
+      "answer": "In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios.",
+      "answer_variants": [
+        "In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios.",
+        "Short answer: In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios.",
+        "From LuxSCale references: In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios.",
+        "Recommended baseline: In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios.",
+        "For quick implementation: In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios."
+      ],
+      "source_refs": [
+        "luxscale/uniformity_calculator.py",
+        "luxscale/app_settings.py"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "non_lighting_scope",
+      "canonical_key": "non_lighting_scope",
+      "label": "Out-of-Scope Guard",
+      "question": "Can you answer non-lighting questions?",
+      "variants": [
+        "tell me about cooking",
+        "write me a poem",
+        "general knowledge question",
+        "not about lighting"
+      ],
+      "tags": [
+        "policy",
+        "scope"
+      ],
+      "generated_answer": "This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question.",
+      "answer": "This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question.",
+      "answer_variants": [
+        "This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question.",
+        "Short answer: This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question.",
+        "From LuxSCale references: This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question.",
+        "Recommended baseline: This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question.",
+        "For quick implementation: This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question."
+      ],
+      "source_refs": [
+        "chat-topic-gate"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "company_designer_info",
+      "canonical_key": "company_designer_info",
+      "label": "LuxSCale Team and Official Website",
+      "question": "Who designed LuxSCale and what is the official company website?",
+      "variants": [
+        "who designed luxscale",
+        "who built luxscale",
+        "luxscale company website",
+        "official website of luxscale company",
+        "who made you luxscale",
+        "who developed this tool",
+        "who owns luxscale",
+        "who operates luxscale",
+        "what is your company website",
+        "main website of short circuit",
+        "who created this system",
+        "ايه موقع الشركة الرئيسي",
+        "ما هو الموقع الرسمي للشركة",
+        "الشركة اللي صممتك",
+        "مين صممك يا luxscale",
+        "من صمم luxscale",
+        "من طور هذه الاداة",
+        "مين عملك",
+        "مين عمل التول دي",
+        "مين اللي عمل السيستم ده",
+        "الشركة المطورة ليك",
+        "ايه موقع شورت سيركت"
+      ],
+      "tags": [
+        "company",
+        "about",
+        "shortcircuit"
+      ],
+      "generated_answer": "LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+      "answer": "LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+      "answer_variants": [
+        "LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+        "Short answer: LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+        "From LuxSCale references: LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+        "Recommended baseline: LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+        "For quick implementation: LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company"
+      ],
+      "source_refs": [
+        "company-profile"
+      ],
+      "localized_answers": {
+        "en": "LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+        "ar": "تم تصميم LuxSCale بواسطة فريق البحث والتطوير في شركة Short Circuit لحلول الإضاءة في مصر والإمارات. الموقع الرسمي: https://shortcircuit.company"
+      }
+    }
+  ],
+  "static_intents": [
+    {
+      "intent_key": "standard_name",
+      "response_id": "std_code_name",
+      "answers": {
+        "en": "The European workplace indoor lighting standard used by LuxSCale is EN 12464-1.",
+        "ar": "المعيار الأوروبي المستخدم في LuxSCale هو EN 12464-1."
+      },
+      "patterns_en": [
+        "\\b(what|which)\\s+(is\\s+)?(the\\s+)?(european|eu|en)\\s+(lighting\\s+)?(code|standard)\\b",
+        "\\b(name\\s+of\\s+the\\s+standard|code\\s+name)\\b",
+        "\\bname\\s+of\\s+the\\s+standard\\b",
+        "\\b(?:what|which|tell me|give me).*(?:code|standard).*(?:used|use|using)\\b",
+        "\\bwhat\\s+standard\\s+do\\s+you\\s+follow\\b",
+        "\\bwhat\\s+code\\s+are\\s+you\\s+using\\b"
+      ],
+      "patterns_ar": [
+        "اسم\\s+الكود\\s+الاوروبي",
+        "اسم\\s+المعيار\\s+الاوروبي",
+        "ايه\\s+اسم\\s+الكود\\s+الاوروبي",
+        "ما\\s+اسم\\s+المعيار",
+        "(?:ايه|اي|ما)\\s*(?:هو\\s*)?(?:الكود|المعيار)\\s+الاوروبي",
+        "الكود\\s+الاوروبي\\s+(?:بتاعك|المستخدم|اللي\\s+شغال\\s+بيه)",
+        "شغال\\s*(?:ب|على)\\s*كود\\s*(?:ايه|اي)",
+        "بتستخدم\\s+كود\\s+اوروبي\\s+ايه",
+        "(?:اي|ايه)\\s+(?:الكود|كود)\\s+الاوروبي",
+        "(?:الكود|كود)\\s+(?:اللي|الذي)\\s+(?:شغال|بتشتغل|تستخدم)",
+        "(?:بتستخدم|بتشتغل\\s+ب|تعتمد\\s+على)\\s+(?:كود|معيار)",
+        "ان\\s*12464",
+        "(?:اي|ايه)\\s*معيار\\s*(?:شغال|مستخدم)",
+        "المعيار\\s+اللي\\s+بتستخدمه"
+      ]
+    },
+    {
+      "intent_key": "tool_usage",
+      "response_id": "tool_usage_overview",
+      "answers": {
+        "en": "LuxSCale is a web assistant for early-stage lighting design: you enter or draw room size and use context (space type) to obtain EN 12464-1 aligned target lux, uniformity (U0), and photometric checks using the Short Circuit fixture/IES library. Open the main LuxSCale app, set room dimensions, confirm height and place type, then read lux/U0 and suggested catalog fixtures with linked IES where available.",
+        "ar": "LuxSCale أداة ويب للتصميم المبدئي للإضاءة: تدخل أبعاد الغرفة (أو ترسمها) وتبين نوع المكان لتحصل على أهداف lux وU0 متماشية مع EN 12464-1 وتحققات فوتومترية مبنية على مكتبة Short Circuit (تركيبات وIES). افتح تطبيق LuxSCale، حدد أبعاد الغرفة وارتفاع التركيب ونوع المكان، ثم اطّلع على lux وU0 وتركيبات الكتالوج المرتبطة بIES عند توفرها."
+      },
+      "patterns_en": [
+        "\\bwhat\\s+(?:is|does)\\s+luxscale\\b(?!\\s+.*\\b(?:code|standard|en\\s*12464|12464|lux\\s+target|u0)\\b)",
+        "\\bhow\\s+do\\s+i\\s+use\\s+(?:luxscale|this|the\\s+(?:tool|app|software|assistant|program))\\b",
+        "\\bhow\\s+to\\s+use\\s+luxscale\\b",
+        "\\bwhat\\s+does\\s+this\\s+(?:tool|app|software|program|assistant)\\s+do\\b",
+        "\\bwhat\\s+can\\s+luxscale\\s+do\\b",
+        "\\bhow\\s+does\\s+luxscale\\s+work\\b",
+        "\\b(?:describe|explain)\\s+luxscale\\b",
+        "\\bhow\\s+to\\s+get\\s+(?:a\\s+)?(?:lux|lighting|fixture)\\s*(?:recommendation|suggestion|count)?\\b"
+      ],
+      "patterns_ar": [
+        "ايه\\s+فايد[ةه]\\s+الادا[ةه]",
+        "ايه\\s+فايد[ةه]\\s+الاداه",
+        "ايه\\s+الادا[ةه]\\s+دي",
+        "ما\\s+ه[يى]\\s+الادا[ةه]",
+        "ايه\\s+بيعمل[هه]\\s+الادا[ةه]",
+        "ايه\\s+بيعمل[هه]\\s+البرنامج",
+        "ازا[يى]\\s+استخدم\\s+luxscale",
+        "كيف\\s+استخدم\\s+luxscale",
+        "ازا[يى]\\s+اعمل\\s+تصميم",
+        "ايه\\s+ميز[ةه]\\s+الادا[ةه]"
+      ],
+      "patterns_norm": [
+        "what is luxscale",
+        "how to use luxscale",
+        "ايه فايدة الاداة"
+      ]
+    },
+    {
+      "intent_key": "company_identity",
+      "response_id": "company_designer_info",
+      "patterns_en": [
+        "\\bwho\\s+(?:designed|built|made|developed)\\s+(?:you|luxscale)\\b",
+        "\\b(?:official|main)\\s+website\\b",
+        "\\bluxscale\\s+company\\s+website\\b",
+        "\\bwho\\s+(?:owns|operates|runs)\\s+luxscale\\b",
+        "\\bwhat\\s+is\\s+your\\s+company\\s+website\\b",
+        "\\bshort[\\s-]*circuit\\s+(?:company|co\\.?|ltd|inc)?\\b",
+        "\\babout\\s+(?:the\\s+)?(?:short[\\s-]*circuit|shortcircuit|company)\\b",
+        "\\b(tell|talk)\\s+me\\s+about\\s+.*\\bshort[\\s-]*circuit\\b",
+        "\\bshortcircuit\\.company\\b",
+        "\\bwhat\\s+is\\s+short[\\s-]*circuit\\b",
+        "\\bwho\\s+(is|are)\\s+short[\\s-]*circuit\\b"
+      ],
+      "patterns_ar": [
+        "ايه\\s+موقع\\s+الشركة\\s+الرئيسي",
+        "ما\\s+هو\\s+الموقع\\s+الرسمي\\s+للشركة",
+        "الشركة\\s+اللي\\s+صممتك",
+        "مين\\s+صممك",
+        "من\\s+صمم\\s+luxscale",
+        "من\\s+طور\\s+هذه\\s+الاداة",
+        "مين\\s+عملك",
+        "مين\\s+عمل\\s+التول\\s+دي",
+        "الشركة\\s+المطوره\\s+ليك",
+        "ايه\\s+موقع\\s+شورت\\s+سيركت"
+      ]
+    }
+  ],
+  "match_hints": {
+    "lighting_positive": [
+      "lux",
+      "illuminance",
+      "luxscale",
+      "luxSCale",
+      "luxscale ai",
+      "luxscale AI",
+      "luxSCale AI",
+      "luxSCale AI assistant",
+      "luxSCale AI assistant tool",
+      "luxSCale AI assistant software",
+      "luxSCale AI assistant app",
+      "luxSCale AI assistant app software",
+      "luxSCale AI assistant app tool",
+      "luxSCale AI assistant app software",
+      "luxscale ai assistant",
+      "luxscale ai assistant tool",
+      "luxscale ai assistant software",
+      "luxscale ai assistant app",
+      "luxscale ai assistant app software",
+      "luxscale ai assistant app tool",
+      "luxscale ai assistant app software",
+      "luxscale ai assistant app tool",
+      "luxscale ai assistant app software",
+      "luxscale ai assistant app tool",
+      "shortcircuit",
+      "short circuit",
+      "luminaire",
+      "fixture",
+      "fixtures",
+      "catalog",
+      "beam",
+      "uniformity",
+      "u0",
+      "u1",
+      "ies",
+      "lighting",
+      "en 12464",
+      "office lighting",
+      "highbay",
+      "flood light",
+      "street light",
+      "downlight",
+      "triproof",
+      "reflectance",
+      "en12464",
+      "bs en",
+      "cct",
+      "cri",
+      "ra"
+    ],
+    "lighting_positive_ar": [
+      "اضاءة",
+      "إضاءة",
+      "انارة",
+      "إنارة",
+      "لوكس",
+      "تجانس",
+      "معيار",
+      "كود",
+      "مصباح",
+      "تركيبة",
+      "ies",
+      "يو او"
+    ],
+    "recommendation_intent": [
+      "recommend",
+      "best fixture",
+      "best luminaire",
+      "which fixture",
+      "choose fixture",
+      "compare fixtures",
+      "suggest fixture"
+    ],
+    "recommendation_intent_ar": [
+      "اقترح",
+      "ترشيح",
+      "انسب تركيبه",
+      "افضل تركيبه",
+      "افضل مصباح",
+      "اي تركيبه",
+      "اختار تركيبه"
+    ],
+    "negative_scope": [
+      "weather",
+      "football",
+      "movie",
+      "music",
+      "recipe",
+      "politics",
+      "stock market",
+      "travel",
+      "poem",
+      "joke"
+    ],
+    "negative_scope_ar": [
+      "طقس",
+      "كرة قدم",
+      "فيلم",
+      "اغنية",
+      "وصفة",
+      "سياسة",
+      "بورصة",
+      "سفر",
+      "نكتة"
+    ]
+  },
+  "technical_docs": {
+    "ai_pipeline": "# AI Pipeline - GemDocs\n\nThe LuxScaleAI AI pipeline provides post-calculation analysis to score lighting designs and suggest optimizations. It is designed for high availability and cost-efficiency through a multi-tiered waterfall system.\n\n## 📁 Key Components\n\n- **`luxscale/gemini_manager.py`**: The core orchestrator managing multiple Gemini API accounts and failover logic.\n- **`luxscale/ollama_manager.py`**: Local LLM integration (e.g., Llama 3) for free, unlimited analysis.\n- **`luxscale/ai_prompt.py`**: Standardizes inputs into a consistent prompt format for all models.\n- **`luxscale/ai_routes.py`**: Exposes endpoints like `/api/ai/analyze` and `/api/ai/approve-fix`.\n\n## 🔄 The Waterfall Workflow\n\n1.  **Request**: Frontend sends a token or calculation payload to `/api/ai/analyze`.\n2.  **Ollama (Primary/Secondary)**: If enabled and prioritized, Ollama attempts the analysis first.\n3.  **Gemini Pool**: If Ollama fails or is de-prioritized, the system iterates through a pool of Gemini API keys.\n4.  **Snapshot Fallback**: If all AI sources fail, the system returns a pre-computed \"snapshot\" for similar results if available.\n5.  **Heuristic Default**: As a last resort, a rule-based heuristic analysis is returned.\n\n---\n*See [Waterfall Orchestrator](./waterfall-orchestrator.md) for technical implementation details.*\n",
+    "photometric": "# Photometric Verification with IES Files\n\nThe \"Lumen Method\" provides a fast estimate, but IES files provide the **truth**.\n\n## 📄 What is an IES File?\nAn IES (.ies) file is a standard photometric data format (LM-63) that describes the 3D distribution of light from a luminaire.\n\n## 📊 Photometric Processing Steps\n\n1.  **Parsing**: The `ies-render` module extracts the **Candela Multiplier** and the **Luminous Intensity** values at various vertical and horizontal angles.\n2.  **Point-by-Point Grid**: The room is divided into a grid (e.g., 20x20).\n3.  **Inverse Square Law Application**:\n    `E = (I * cos(θ)) / d²`\n    Where `I` is the intensity at angle `θ` toward the point, and `d` is the distance.\n4.  **Inter-reflection (The \"Gemini\" Enhancement)**:\n    Since simple IES analysis only accounts for direct light, LuxScaleAI adds a reflective component based on room surface reflectance (Ceiling/Wall/Floor) to provide a more realistic \"Average Lux\" and \"U₀\".\n\n## 🖼️ Thumbnail Generation\nThe `ies-render` module can also generate a 2D \"render\" of the light pattern against a wall, which is used in the UI to help designers visualize the beam spread.\n\n---\n*See [IES Catalog](./ies-catalog.md) for how files are mapped to real luminaires.*\n",
+    "calc_engine": "# Lighting Calculation Engine\n\nThe LuxScaleAI engine uses the **Lumen Method** enhanced with real-world photometric data.\n\n## 📐 Geometry Model\n\nThe engine handles non-rectangular rooms by approximating them as cyclic quadrilaterals.\n- **Formula**: `s = (a+b+c+d)/2`; `Area = sqrt((s-a)(s-b)(s-c)(s-d))`\n- **Refinement**: For true rectangles, this simplifies to standard `L * W`.\n\n## 💡 Lumen Method Implementation\n\nThe fundamental equation used is:\n`Average Lux (E) = (N * Φ * CU * LLF) / Area`\n\nWhere:\n- `N`: Number of fixtures.\n- `Φ`: Initial lumens per fixture (Power * Efficacy).\n- `CU`: Coefficient of Utilization (derived from room cavity ratio and reflectance).\n- `LLF`: Light Loss Factor (Maintenance Factor, default 0.8).\n\n## 🔳 Spacing & Layout Heuristics\n\nThe engine doesn't just return a count; it calculates a physical grid.\n- **Search Space**: Factors of the total count `N` are tested (e.g., 12 fixtures could be 3x4 or 2x6).\n- **Optimization Target**: Minimize the difference between `Spacing_X` and `Spacing_Y` to ensure a balanced layout.\n- **Constraints**: Spacing must not exceed the Luminaire Spacing Criterion (S/MH).\n\n## 📉 Photometric Uniformity (U₀)\n\nWhile the Lumen Method provides average lux, LuxScaleAI uses IES files for point-by-point analysis:\n1.  **Grid Generation**: A 10x10 to 20x20 grid of points is generated on the workplane.\n2.  **Inverse Square Law**: For every point, the illuminance contribution from every fixture is summed.\n3.  **Uniformity**: `U₀ = Minimum Lux / Average Lux`.\n\nThis dual-layer approach (Heuristic + Photometric) ensures both speed and accuracy.\n",
+    "waterfall": "# Waterfall Orchestrator Implementation\n\nThe `GeminiManager` class in `luxscale/gemini_manager.py` implements a robust waterfall logic to ensure the AI analysis remains functional despite API quotas or network issues.\n\n## 🛠️ Multi-Account Management\n\nThe system uses `gemini_config.json` to load multiple API keys. It tracks:\n- **Usage Counts**: Number of requests per key.\n- **Cooldowns**: Temporary suspension of keys that hit rate limits.\n- **Health Checks**: Periodic validation of key status.\n\n## 💻 Local Model (Ollama) Integration\n\nThe `OllamaManager` provides a bridge to locally hosted models.\n- **Endpoint**: Defaults to `http://localhost:11434`.\n- **Model**: Configurable (e.g., `llama3.2`).\n- **Benefit**: Zero latency (local), zero cost, and privacy-preserving.\n\n## 📉 Failover Strategy\n\n```python\n# Simplified Waterfall Logic\ndef analyze(payload):\n    if config.ollama_priority:\n        res = ollama.try_analyze(payload)\n        if res: return res\n    \n    for key in gemini_pool.get_available_keys():\n        res = gemini.try_analyze(payload, key)\n        if res: return res\n        \n    return snapshot_system.get_best_match(payload)\n```\n\n## 📸 Snapshot System\n\nThe snapshot system (`luxscale/gemini_manager.py`) stores successful AI responses indexed by their calculation parameters. This ensures that even in offline scenarios, the system can provide \"intelligent-feeling\" feedback for common room types.\n"
+  }
+}
