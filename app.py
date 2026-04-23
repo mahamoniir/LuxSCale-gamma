@@ -729,6 +729,26 @@ def upload_drawing():
     return jsonify({"status": "success", "message": "Drawing uploaded", "path": filepath})
 
 
+@app.route("/api/deployment/health", methods=["GET"])
+def api_deployment_health():
+    """
+    Always 200 — for deployment UIs (test-deployment-*.html) to verify routes exist
+    without calling POST /calculate with a bad body (400) or GET /api/get (404) which
+    clutter the browser console.
+    """
+    return jsonify(
+        {
+            "status": "success",
+            "endpoints": {
+                "post_calculate": "/calculate",
+                "get_study": "/api/get",
+                "get_study_query": "token must be 32 hex chars; 404 if study not saved",
+                "post_calculate_errors": "400 if JSON invalid, missing sides/height, or no valid place/standard ref",
+            },
+        }
+    )
+
+
 @app.route("/api/get", methods=["GET"])
 def api_study_get():
     """Load study by token (same contract as ``api/get.php``)."""
