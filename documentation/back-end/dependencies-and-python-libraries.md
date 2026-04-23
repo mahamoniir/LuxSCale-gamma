@@ -1,75 +1,78 @@
-# Python dependencies and libraries
+# Dependencies and Python Libraries
 
-## 1. `requirements.txt` (declared)
+> **File:** `requirements.txt`  
+> **Last updated:** April 2026
+
+---
+
+## Current `requirements.txt`
 
 ```
-Flask>=2.0
+flask
 flask-cors
-python-dotenv>=1.0
 fpdf
-matplotlib
 numpy
+matplotlib
+reportlab
+Pillow
+scipy
+python-dotenv
 openai
+gunicorn
 ```
 
-| Package | Usage in project |
-|---------|------------------|
-| **Flask** | HTTP API (`app.py`) |
-| **flask-cors** | CORS for cross-origin browser clients |
-| **python-dotenv** | Load **`.env`** at Flask startup |
-| **fpdf** | **`/pdf`** route and legacy PDF generation |
-| **matplotlib** | **`draw_heatmap`** and plotting helpers in `luxscale.lighting_calc` |
-| **numpy** | Area/geometry (`cyclic_quadrilateral_area`), uniformity arrays, candela math |
-| **openai** | Listed for optional/future features — **not required** for core `/calculate` |
+---
 
-**Python version:** Comment in `requirements.txt` suggests **3.10–3.14** for listed packages.
+## Package Reference
+
+| Package | Purpose |
+|---------|---------|
+| `flask` | HTTP framework, routing, session, Blueprint |
+| `flask-cors` | CORS headers for cross-origin dashboard and admin UI |
+| `fpdf` | Legacy simple PDF route (`POST /pdf`) — not branded |
+| `numpy` | Photometric grid calculations, uniformity arrays |
+| `matplotlib` | Heatmaps and IES plots (server-side Agg backend) |
+| `reportlab` | **Primary PDF engine** — branded A4 reports in `generate_report.py` |
+| `Pillow` | PNG logo loading for ReportLab (`ImageReader`) |
+| `scipy` | Advanced IES analysis in `ies_analyzer.py` |
+| `python-dotenv` | Loads `.env` secrets at startup |
+| `openai` | **Optional / legacy** — `ai_lux.py` only; not used in production AI path |
+| `gunicorn` | Production WSGI server (Railway / Linux deployment) |
 
 ---
 
-## 2. Standard library (heavy use)
+## AI Pipeline — No Extra Dependencies
 
-| Module | Use |
-|--------|-----|
-| **`json`** | Standards, settings, API bodies, log detail serialization |
-| **`os`, `pathlib`-style paths** | All file I/O |
-| **`importlib.util`** | Dynamic load **`ies_parser.py`** |
-| **`functools.lru_cache`** | IES data, settings, fixture map |
-| **`datetime`, `time`** | Trace timestamps, perf_counter |
-| **`threading`** | Admin token lock |
-| **`secrets`** | Study tokens, admin tokens |
-| **`re`** | `sc_ies_scan`, ref validation |
-| **`tempfile`, `io`** | PDF buffer |
+The Gemini and Ollama integrations use **Python's built-in `urllib`** only. No Gemini SDK, `requests`, or `httpx` required. This was intentional:
+
+- Smaller dependency surface
+- Works in any Python 3.x environment
+- No version conflicts
 
 ---
 
-## 3. Internal “libraries” (project modules)
+## OpenAI Note
 
-Not pip packages — **`luxscale.*`** as documented in [architecture-and-runtime.md](./architecture-and-runtime.md).
+`openai` is listed in `requirements.txt` but is only used by the **legacy** `luxscale/lighting_calc/ai_lux.py` (`ask_ai_lux()`). This module is not called in the active pipeline. It can be removed if you want a smaller install.
 
----
-
-## 4. `ies-render` coupling
-
-- **`ies-render/module/ies_parser.py`**: LM-63 **without** importing the full Qt viewer stack.
-- Optional **NumPy** in other `ies-render` modules not imported by default calc path.
+The active AI pipeline uses Gemini (via `urllib`) and Ollama (via `urllib`).
 
 ---
 
-## 5. Installing
+## matplotlib Backend
+
+All matplotlib usage sets `matplotlib.use("Agg")` before any other import — required for server-side rendering without a display. Set in `generate_report.py` and `luxscale/ies_routes.py`.
+
+---
+
+## Production Install
 
 ```bash
-cd /path/to/LuxScaleAI
 python -m venv .venv
-.venv\Scripts\activate   # Windows
+source .venv/bin/activate   # Linux/Mac
 pip install -r requirements.txt
+gunicorn app:app --bind 0.0.0.0:$PORT
 ```
-
----
-
-## 6. Optional dev dependencies (not in repo)
-
-- **pytest** — unit tests for `geometry`, compliance helpers
-- **ruff** / **black** — lint/format
 
 ---
 

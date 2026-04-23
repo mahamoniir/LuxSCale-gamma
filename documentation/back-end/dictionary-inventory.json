@@ -1,0 +1,83 @@
+{
+  "inventory": {
+    "files": {
+      "fixed_responses": "assets/fixed_responses.json",
+      "aliases": "standards/aliases_upgraded.json",
+      "keywords": "standards/standards_keywords_upgraded.json",
+      "standards_cleaned": "standards/standards_cleaned.json"
+    },
+    "fixed_responses": {
+      "menu_items_count": 16,
+      "responses_count": 16,
+      "static_intents_count": 2,
+      "match_hints_keys": [
+        "lighting_positive",
+        "lighting_positive_ar",
+        "negative_scope",
+        "negative_scope_ar",
+        "recommendation_intent",
+        "recommendation_intent_ar"
+      ],
+      "qa_pair_count": 16,
+      "variant_phrase_count": 176,
+      "localized_answer_entries": 2,
+      "pattern_count": 35,
+      "sample_questions": [
+        "What lux and U0 do I use for office workstations?",
+        "What is the name of the European lighting code used by LuxSCale?",
+        "What is the lighting target for CAD or technical drawing?",
+        "What are classroom lux and uniformity targets?",
+        "What lighting level is used for warehouse gangways?",
+        "What lux and U0 targets are used for factories or industrial areas?",
+        "What target lux/U0 is used for general retail sales area?",
+        "What lux/U0 targets are typical for corridors?"
+      ]
+    },
+    "aliases_upgraded": {
+      "places_canonical_count": 15,
+      "places_alias_total": 222,
+      "parameters_canonical_count": 19,
+      "parameters_alias_total": 156
+    },
+    "standards_keywords_upgraded": {
+      "common_mappings_count": 210,
+      "category_keywords_count": 28,
+      "keyword_to_refs_count": 123,
+      "usage_examples_count": 3,
+      "lookup_flow_steps": 4,
+      "sample_keywords": [
+        "office",
+        "workspace",
+        "workplace",
+        "open office",
+        "open-plan office",
+        "workstation",
+        "dse",
+        "vdu",
+        "computer",
+        "pc",
+        "monitor",
+        "screen",
+        "cad",
+        "drafting",
+        "technical drawing"
+      ]
+    },
+    "standards_cleaned": {
+      "rows_count": 331,
+      "sample_ref_nos": [
+        "6.1.1",
+        "6.1.2",
+        "6.1.3",
+        "6.1.3.1",
+        "6.1.4",
+        "6.1.5",
+        "6.2.1",
+        "6.2.2",
+        "6.2.3",
+        "6.2.4"
+      ]
+    }
+  },
+  "issues": []
+}

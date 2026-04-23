@@ -1,308 +1,2680 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="assets/favicon.svg">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
-    <script type="text/javascript">
-        document.oncontextmenu =new Function("return false;")
-        document.onselectstart =new Function("return false;")
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LuxSCale AI - Specialized Lighting AI Platform</title>
 
-    <style>
-        .inputs-dark input {
-            color: #111 !important;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .popupInput {
-            /* padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            margin-bottom: 10px; */
-            color: #111;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-    </style>
-        
-    <title>LuxSCale | Design your lighting with AI</title>
+  <!-- External Resources -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <!-- Standards Picker Script -->
+  <script src="assets/standards-picker.js"></script>
+  <script src="assets/js/core-integration.js"></script>
+
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    /* ─── MATERIAL SYMBOLS ─────────────────────────────── */
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      font-size: inherit;
+      line-height: 1;
+    }
+
+    /* ─── FIXED NAVBAR ─────────────────────────────────── */
+    .navbar.header {
+      position: fixed !important;
+      top: 0; left: 0; right: 0;
+      z-index: 1040;
+    }
+    /* Push body content below fixed nav */
+    body { padding-top: 72px; }
+
+    /* ─── POWERED BY → removed from hero ──────────────── */
+    .credits { display: none !important; }
+
+    /* ─── STUDY STEP LAYOUT — side by side on ≥992px ────── */
+    .study-sidebyside {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .study-form-col {
+      flex: 0 0 340px;
+      max-width: 340px;
+      padding: 0 20px 0 0;
+    }
+
+    .study-canvas-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (max-width: 991px) {
+      .study-sidebyside { flex-direction: column; }
+      .study-form-col   { flex: none; max-width: 100%; padding: 0; }
+      .study-canvas-col { flex: none; }
+    }
+
+    /* ─── DRAWING CONTAINER (canvas col) ───────────────── */
+    .drawing-container {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 420px;
+    }
+
+    /* Canvas toolbar */
+    .canvas-mini-toolbar {
+      height: 40px;
+      flex-shrink: 0;
+      background: rgba(0,0,0,0.4);
+      border-bottom: 1px solid rgba(235,27,38,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+    }
+
+    .canvas-mini-toolbar-left { display: flex; align-items: center; gap: 8px; }
+
+    .status-dot-mini {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 5px rgba(34,197,94,0.7);
+      flex-shrink: 0;
+    }
+
+    .canvas-mini-label {
+      font-family: 'Anton', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .canvas-mini-toolbar-right { display: flex; align-items: center; gap: 4px; }
+
+    .mini-icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 4px;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer; font-size: 15px; padding: 0;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .mini-icon-btn:hover { color: #eb1b26; border-color: #eb1b26; background: rgba(235,27,38,0.08); }
+
+    /* Texture toggle button */
+    #studioTexToggle {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #eb1b26;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 8px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 2px 7px; border-radius: 4px;
+      cursor: pointer; display: flex; align-items: center; gap: 4px;
+      transition: all 0.2s;
+    }
+    #studioTexToggle:hover { background: rgba(235,27,38,0.1); }
+
+    .mini-zoom-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      color: rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      padding: 1px 6px; margin-left: 2px;
+    }
+
+    /* Canvas scroll area */
+    .canvas-scroll-mini {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .canvas-scroll-mini::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.4) 100%);
+      pointer-events: none;
+    }
+
+    /* ─── UNFOLDED CROSS (all draw.html v4 styles) ─────── */
+    #projection-wrap-mini {
+      transform-origin: center center;
+      transition: transform 0.22s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+      padding: 60px;
+    }
+
+    .unfold-cross {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wall-panel {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+      overflow: hidden;
+      transition: box-shadow 0.2s, filter 0.2s, background 0.3s;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .wall-panel:hover {
+      box-shadow: 0 0 0 2px #eb1b26, 0 8px 32px rgba(235,27,38,0.15);
+      z-index: 10;
+    }
+
+    .wall-panel .wall-name {
+      font-family: 'Anton', sans-serif;
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+      pointer-events: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
+      max-width: 90%;
+      line-height: 1;
+    }
+
+    .wall-panel .wall-dims {
+      position: absolute;
+      bottom: 3px; right: 4px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: rgba(255,255,255,0.55);
+      pointer-events: none;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      overflow: hidden;
+      line-height: 1;
+    }
+
+    .wall-panel .wall-mat-label {
+      position: absolute;
+      top: 3px; left: 4px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: rgba(255,255,255,0.4);
+      pointer-events: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 88%;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      z-index: 2;
+    }
+
+    .wall-panel.vert .wall-mat-label {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      top: auto; bottom: 4px; left: 3px;
+      max-width: none; max-height: 80%;
+    }
+    .wall-panel.vert .wall-dims {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      bottom: auto; top: 3px; right: auto; left: 3px;
+    }
+    .wall-panel.vert .wall-name { writing-mode: vertical-rl; }
+
+    .wall-panel .wall-hatch {
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(255,255,255,0.03) 0px,
+        rgba(255,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 8px
+      );
+      pointer-events: none;
+    }
+
+    /* Material texture overlay */
+    .mat-tex {
+      position: absolute; inset: 0;
+      pointer-events: none; z-index: 0;
+      transition: background 0.3s;
+    }
+
+    /* Wood */
+    .mat-light_wood   .mat-tex { background: repeating-linear-gradient(90deg,rgba(180,130,60,.18) 0,rgba(180,130,60,.18) 2px,transparent 2px,transparent 14px),repeating-linear-gradient(180deg,rgba(255,255,255,.04) 0,rgba(255,255,255,.04) 1px,transparent 1px,transparent 22px); }
+    .mat-medium_wood  .mat-tex { background: repeating-linear-gradient(90deg,rgba(100,60,10,.22) 0,rgba(100,60,10,.22) 2px,transparent 2px,transparent 12px),repeating-linear-gradient(180deg,rgba(0,0,0,.06) 0,rgba(0,0,0,.06) 1px,transparent 1px,transparent 18px); }
+    .mat-dark_wood    .mat-tex { background: repeating-linear-gradient(90deg,rgba(0,0,0,.28) 0,rgba(0,0,0,.28) 2px,transparent 2px,transparent 10px),repeating-linear-gradient(180deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 16px); }
+    /* Marble */
+    .mat-white_marble .mat-tex { background: repeating-linear-gradient(125deg,rgba(180,180,180,.15) 0,rgba(180,180,180,.15) 1px,transparent 1px,transparent 30px),repeating-linear-gradient(55deg,rgba(150,150,150,.08) 0,rgba(150,150,150,.08) 1px,transparent 1px,transparent 20px); }
+    /* Concrete */
+    .mat-light_concrete .mat-tex { background: repeating-linear-gradient(0deg,rgba(0,0,0,.04) 0,rgba(0,0,0,.04) 1px,transparent 1px,transparent 8px),repeating-linear-gradient(90deg,rgba(0,0,0,.03) 0,rgba(0,0,0,.03) 1px,transparent 1px,transparent 8px); }
+    .mat-raw_concrete   .mat-tex { background: repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0,rgba(0,0,0,.07) 1px,transparent 1px,transparent 7px),repeating-linear-gradient(90deg,rgba(0,0,0,.05) 0,rgba(0,0,0,.05) 1px,transparent 1px,transparent 7px); }
+    /* Stone */
+    .mat-dark_stone .mat-tex { background: repeating-linear-gradient(45deg,rgba(0,0,0,.12) 0,rgba(0,0,0,.12) 1px,transparent 1px,transparent 11px),repeating-linear-gradient(-45deg,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 1px,transparent 11px); }
+    /* Tile */
+    .mat-white_tile .mat-tex { background: repeating-linear-gradient(0deg,rgba(180,180,180,.2) 0,rgba(180,180,180,.2) 1px,transparent 1px,transparent 18px),repeating-linear-gradient(90deg,rgba(180,180,180,.2) 0,rgba(180,180,180,.2) 1px,transparent 1px,transparent 18px); }
+    .mat-terracotta .mat-tex { background: repeating-linear-gradient(0deg,rgba(0,0,0,.15) 0,rgba(0,0,0,.15) 1px,transparent 1px,transparent 16px),repeating-linear-gradient(90deg,rgba(0,0,0,.12) 0,rgba(0,0,0,.12) 1px,transparent 1px,transparent 16px); }
+    /* Fabric */
+    .mat-white_fabric .mat-tex { background: repeating-linear-gradient(0deg,rgba(200,200,200,.08) 0,rgba(200,200,200,.08) 1px,transparent 1px,transparent 4px),repeating-linear-gradient(90deg,rgba(200,200,200,.05) 0,rgba(200,200,200,.05) 1px,transparent 1px,transparent 4px); }
+    .mat-linen        .mat-tex { background: repeating-linear-gradient(0deg,rgba(150,120,70,.12) 0,rgba(150,120,70,.12) 1px,transparent 1px,transparent 4px),repeating-linear-gradient(90deg,rgba(150,120,70,.08) 0,rgba(150,120,70,.08) 1px,transparent 1px,transparent 4px); }
+    .mat-dark_curtain .mat-tex { background: repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0,rgba(255,255,255,.04) 1px,transparent 1px,transparent 5px); }
+    /* Metal */
+    .mat-brushed_steel  .mat-tex { background: repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0,rgba(255,255,255,.06) 1px,transparent 1px,transparent 3px); }
+    .mat-polished_metal .mat-tex { background: linear-gradient(135deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,.04) 40%,rgba(255,255,255,.14) 100%); }
+    .mat-mirror         .mat-tex { background: linear-gradient(135deg,rgba(255,255,255,.35) 0%,rgba(255,255,255,.05) 50%,rgba(200,220,255,.25) 100%); }
+    /* Glass */
+    .mat-clear_glass   .mat-tex { background: linear-gradient(135deg,rgba(150,200,255,.18) 0%,rgba(255,255,255,.04) 60%,rgba(150,200,255,.1) 100%); opacity:.7; }
+    .mat-frosted_glass .mat-tex { background: repeating-linear-gradient(45deg,rgba(200,220,255,.08) 0,rgba(200,220,255,.08) 1px,transparent 1px,transparent 6px); }
+    .mat-tinted_glass  .mat-tex { background: linear-gradient(135deg,rgba(50,80,50,.25) 0%,rgba(30,60,30,.1) 100%); opacity:.8; }
+    /* Carpet */
+    .mat-light_carpet .mat-tex { background: repeating-linear-gradient(30deg,rgba(200,190,170,.07) 0,rgba(200,190,170,.07) 1px,transparent 1px,transparent 5px),repeating-linear-gradient(-30deg,rgba(200,190,170,.05) 0,rgba(200,190,170,.05) 1px,transparent 1px,transparent 5px); }
+    .mat-dark_carpet  .mat-tex { background: repeating-linear-gradient(30deg,rgba(0,0,0,.14) 0,rgba(0,0,0,.14) 1px,transparent 1px,transparent 5px),repeating-linear-gradient(-30deg,rgba(0,0,0,.1) 0,rgba(0,0,0,.1) 1px,transparent 1px,transparent 5px); }
+    /* Plaster/Paint */
+    .mat-white_paint   .mat-tex { background: repeating-linear-gradient(45deg,rgba(200,200,200,.04) 0,rgba(200,200,200,.04) 1px,transparent 1px,transparent 12px); }
+    .mat-light_plaster .mat-tex { background: repeating-linear-gradient(45deg,rgba(180,160,130,.06) 0,rgba(180,160,130,.06) 1px,transparent 1px,transparent 10px); }
+    .mat-beige_plaster .mat-tex { background: repeating-linear-gradient(45deg,rgba(160,140,100,.07) 0,rgba(160,140,100,.07) 1px,transparent 1px,transparent 10px); }
+    .mat-grey_plaster  .mat-tex { background: repeating-linear-gradient(45deg,rgba(120,120,120,.08) 0,rgba(120,120,120,.08) 1px,transparent 1px,transparent 10px); }
+    .mat-dark_paint    .mat-tex { background: repeating-linear-gradient(45deg,rgba(0,0,0,.1) 0,rgba(0,0,0,.1) 1px,transparent 1px,transparent 12px); }
+
+    /* Dim tick lines */
+    #widthLineMini span, #lengthLineMini span { position: static !important; }
+    #widthLineMini .dim-line, #lengthLineMini .dim-line { position: static !important; }
+    .dim-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 8px; font-weight: 600;
+      color: #eb1b26;
+      white-space: nowrap;
+    }
+    .dim-line { background: rgba(235,27,38,0.3); pointer-events: none; }
+
+    /* SC Watermark */
+    .sc-watermark-mini {
+      position: absolute; bottom: 8px; right: 10px;
+      display: flex; align-items: center; gap: 5px;
+      opacity: 0.15; pointer-events: none; user-select: none;
+    }
+    .sc-watermark-mini img { height: 10px; width: auto; }
+    .sc-watermark-mini span {
+      font-family: 'Anton', sans-serif;
+      font-size: 8px; letter-spacing: 0.18em;
+      color: #cccccc; text-transform: uppercase;
+    }
+
+    /* ─── STATS BAR ─────────────────────────────────────── */
+    .mini-stats-bar {
+      display: flex; margin-top: 10px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px; overflow: hidden;
+    }
+    .mini-stat-item {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; padding: 8px 6px; gap: 2px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+    .mini-stat-item:last-child { border-right: none; }
+    .mini-stat-key {
+      font-family: 'Poppins', sans-serif;
+      font-size: 8px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.35); white-space: nowrap;
+    }
+    .mini-stat-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; font-weight: 600;
+      color: #eb1b26; white-space: nowrap;
+    }
+
+    /* ─── COLOR SWATCH ──────────────────────────────────── */
+    .color-swatch-mini {
+      width: 22px; height: 22px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.12);
+      flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+    .color-swatch-mini:hover { transform: scale(1.1); }
+    .color-input-mini {
+      width: 26px !important; height: 26px !important;
+      padding: 0 !important; border: none !important;
+      border-radius: 4px !important; background: none !important;
+      cursor: pointer !important; flex-shrink: 0 !important;
+    }
+    .color-picker-item { gap: 6px !important; }
+    .color-picker-item label { min-width: 0; flex: 1; }
+
+    /* ── PHASE 2: Material Picker triggers ─────────────────── */
+    .mat-trigger-row {
+      display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
+    }
+    .mat-picker-trigger {
+      flex: 1; min-width: 120px;
+      display: flex; align-items: center; gap: 8px;
+      background: var(--bg-card, #1a1a1a); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px; color: rgba(255,255,255,0.55);
+      font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 7px 10px; cursor: pointer; transition: all 0.2s; text-align: left;
+    }
+    .mat-picker-trigger:hover { border-color: #eb1b26; color: #eb1b26; }
+    .mpt-swatch {
+      width: 22px; height: 22px; border-radius: 4px; flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.1); background-size: cover;
+    }
+    .mpt-name { flex: 1; }
+    .mpt-rho { margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #eb1b26; }
+
+    /* physics readout strip */
+    .phys-strip {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(235,27,38,0.06); border: 1px solid rgba(235,27,38,0.18);
+      border-radius: 6px; padding: 6px 12px; margin-bottom: 10px;
+      font-size: 10px; color: rgba(255,255,255,0.5);
+    }
+    .phys-strip-val { font-family: 'IBM Plex Mono', monospace; color: #eb1b26; font-size: 13px; font-weight: 600; }
+    .phys-strip-track { flex: 1; height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; }
+    .phys-strip-fill  { height: 3px; background: #eb1b26; border-radius: 2px; transition: width 0.4s; }
+
+    /* ── Mat Picker Panel ──────────────────────────────────── */
+    #matPickerPanel {
+      position: fixed; top: 70px; right: 0; bottom: 0; width: 320px;
+      background: #111; border-left: 1px solid rgba(255,255,255,0.1);
+      z-index: 1050; display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: -8px 0 32px rgba(0,0,0,0.6);
+    }
+    #matPickerPanel.open { transform: translateX(0); }
+    .mpp-header {
+      height: 50px; background: #000; border-bottom: 2px solid #eb1b26;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 14px; flex-shrink: 0;
+    }
+    .mpp-title {
+      font-family: 'Anton', sans-serif; font-size: 13px; letter-spacing: 0.18em;
+      color: #fff; text-transform: uppercase;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .mpp-surface-tag {
+      font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      background: rgba(235,27,38,0.15); color: #eb1b26;
+      border: 1px solid rgba(235,27,38,0.3); padding: 2px 8px; border-radius: 20px;
+    }
+    .mpp-close {
+      background: transparent; border: 1px solid rgba(255,255,255,0.15); border-radius: 5px;
+      color: rgba(255,255,255,0.5); cursor: pointer; width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.2s;
+    }
+    .mpp-close:hover { border-color: #eb1b26; color: #eb1b26; }
+    .mpp-surface-selector {
+      display: flex; gap: 5px; padding: 8px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
+    }
+    .mpp-surf-btn {
+      flex: 1; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 5px;
+      color: rgba(255,255,255,0.4); font-family: 'Poppins', sans-serif; font-size: 9px;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 5px 4px; cursor: pointer; transition: all 0.15s; text-align: center;
+    }
+    .mpp-surf-btn.active { border-color: #eb1b26; color: #eb1b26; background: rgba(235,27,38,0.08); }
+    .mpp-tabs { display: flex; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; }
+    .mpp-tab {
+      flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent;
+      color: rgba(255,255,255,0.35); font-family: 'Poppins', sans-serif; font-size: 9px;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;
+      padding: 10px 6px; cursor: pointer; transition: all 0.2s;
+    }
+    .mpp-tab.active { color: #eb1b26; border-bottom-color: #eb1b26; }
+    .mpp-search-wrap {
+      padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; position: relative;
+    }
+    .mpp-search {
+      width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 5px; color: #fff; font-family: 'Poppins', sans-serif; font-size: 11px;
+      padding: 7px 10px 7px 30px; outline: none; transition: border-color 0.2s; box-sizing: border-box;
+    }
+    .mpp-search:focus { border-color: #eb1b26; }
+    .mpp-search-icon {
+      position: absolute; left: 22px; top: 50%; transform: translateY(-50%);
+      font-size: 14px; color: rgba(255,255,255,0.3); pointer-events: none;
+    }
+    .mpp-body { flex: 1; overflow-y: auto; padding: 10px 12px; }
+    .mpp-tab-panel { display: none; }
+    .mpp-tab-panel.active { display: block; }
+    .mpp-cat-label {
+      font-family: 'Anton', sans-serif; font-size: 9px; letter-spacing: 0.2em;
+      color: #eb1b26; text-transform: uppercase; margin: 12px 0 7px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .mpp-cat-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+    .mpp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .mpp-mat-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.18s; position: relative;
+    }
+    .mpp-mat-card:hover { border-color: #eb1b26; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(235,27,38,0.15); }
+    .mpp-mat-card.selected { border-color: #eb1b26; box-shadow: 0 0 0 2px rgba(235,27,38,0.3); }
+    .mpp-mat-card.selected::after { content:'✓'; position:absolute; top:3px; right:4px; font-size:9px; color:#eb1b26; font-weight:700; }
+    .mpp-mat-preview { height: 56px; background-size: 120px; background-repeat: repeat; position: relative; overflow: hidden; }
+    .mpp-mat-preview-color { position: absolute; inset: 0; }
+    .mpp-mat-info { padding: 5px 6px; }
+    .mpp-mat-name { font-size: 8px; font-weight: 500; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mpp-mat-rho { font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+    .mpp-mat-rho span { color: #eb1b26; }
+    .mpp-rho-bar { padding: 10px 12px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.3); flex-shrink: 0; }
+    .mpp-rho-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 5px; }
+    .mpp-rho-value { font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 600; color: #eb1b26; }
+    .mpp-rho-name { font-size: 11px; color: rgba(255,255,255,0.5); flex: 1; }
+    .mpp-rho-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,0.3); margin-bottom: 5px; }
+    .rho-track { height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; }
+    .rho-fill { height: 3px; background: #eb1b26; border-radius: 2px; transition: width 0.4s; }
+    .mpp-footer { padding: 12px; flex-shrink: 0; }
+    .mpp-apply-btn {
+      width: 100%; background: linear-gradient(90deg, #a40e16, #eb1b26); color: #fff; border: none;
+      border-radius: 7px; font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.12em; padding: 12px 0;
+      cursor: pointer; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .mpp-apply-btn:hover { opacity: 0.88; }
+    .mpp-apply-btn:active { transform: scale(0.97); }
+    .mpp-upload-zone {
+      border: 2px dashed rgba(255,255,255,0.15); border-radius: 8px;
+      padding: 22px 14px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 12px;
+    }
+    .mpp-upload-zone:hover, .mpp-upload-zone.dragover { border-color: #eb1b26; background: rgba(235,27,38,0.04); }
+    .mpp-upload-zone .uz-text { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+    .mpp-upload-zone .uz-hint { font-size: 10px; color: rgba(255,255,255,0.25); }
+    .mpp-url-row { display: flex; gap: 7px; margin-bottom: 10px; }
+    .mpp-url-input {
+      flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 5px; color: #fff; font-family: 'Poppins', sans-serif; font-size: 11px;
+      padding: 7px 9px; outline: none; transition: border-color 0.2s;
+    }
+    .mpp-url-input:focus { border-color: #eb1b26; }
+    .mpp-url-input::placeholder { color: rgba(255,255,255,0.25); }
+    .mpp-url-btn {
+      background: #eb1b26; color: #fff; border: none; border-radius: 5px;
+      font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.1em; padding: 0 12px;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .mpp-url-btn:hover { background: #a40e16; }
+    .mpp-upload-preview {
+      background: rgba(255,255,255,0.04); border: 1px solid #eb1b26;
+      border-radius: 8px; overflow: hidden; display: none; margin-bottom: 10px;
+    }
+    .mpp-upload-preview.visible { display: block; }
+    .mpp-up-img { width: 100%; height: 100px; object-fit: cover; background: rgba(255,255,255,0.05); display: block; }
+    .mpp-up-meta { padding: 7px 10px; display: flex; justify-content: space-between; align-items: center; }
+    .mpp-up-name { font-size: 10px; font-weight: 500; color: #fff; }
+    .mpp-up-rho-wrap { text-align: right; }
+    .mpp-up-rho { font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600; color: #eb1b26; }
+    .mpp-up-rho-label { font-size: 9px; color: rgba(255,255,255,0.3); }
+    .mpp-computing { display: none; align-items: center; gap: 8px; font-size: 11px; color: rgba(255,255,255,0.4); padding: 8px 0; }
+    .mpp-computing.visible { display: flex; }
+    @keyframes mpp-spin { to { transform: rotate(360deg); } }
+    .mpp-spinner { width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.15); border-top-color: #eb1b26; border-radius: 50%; animation: mpp-spin 0.7s linear infinite; }
+    .acg-chip {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+      color: rgba(255,255,255,0.4); font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em; padding: 3px 9px; cursor: pointer; transition: all 0.15s;
+    }
+    .acg-chip:hover { border-color: #eb1b26; color: #eb1b26; }
+    .acg-chip-active { border-color: #eb1b26 !important; color: #eb1b26 !important; background: rgba(235,27,38,0.08) !important; }
+    .acg-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; overflow: hidden; cursor: pointer; transition: all 0.18s; position: relative;
+    }
+    .acg-card:hover { border-color: #eb1b26; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(235,27,38,0.15); }
+    .acg-card.selected { border-color: #eb1b26; box-shadow: 0 0 0 2px rgba(235,27,38,0.3); }
+    .acg-card.selected::after { content:'✓'; position:absolute; top:3px; right:4px; font-size:9px; color:#eb1b26; font-weight:700; }
+    .acg-card-thumb { height: 56px; background-size: cover; background-position: center; background-color: rgba(255,255,255,0.05); }
+    .acg-card-info { padding: 4px 5px; }
+    .acg-card-name { font-size: 8px; font-weight: 500; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing:.05em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .acg-card-rho { font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: rgba(255,255,255,0.3); margin-top: 1px; }
+    .acg-card-rho span { color: #eb1b26; }
+    .acg-skeleton { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden; }
+    .acg-skeleton-thumb { height: 56px; background: linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: mpp-shimmer 1.2s infinite; }
+    .acg-skeleton-line, .acg-skeleton-line2 { height: 7px; margin: 5px 6px 3px; border-radius: 3px; background: rgba(255,255,255,0.06); }
+    .acg-skeleton-line2 { width: 50%; }
+    @keyframes mpp-shimmer { to { background-position: -200% 0; } }
+    .mpp-toast {
+      position: fixed; bottom: 24px; right: 16px;
+      background: #1a1a1a; border: 1px solid #eb1b26; color: #fff;
+      font-family: 'Poppins', sans-serif; font-size: 11px; padding: 8px 14px;
+      border-radius: 8px; z-index: 2000;
+      opacity: 0; transform: translateY(8px); transition: all 0.25s;
+      pointer-events: none; display: flex; align-items: center; gap: 8px;
+    }
+    .mpp-toast.show { opacity: 1; transform: translateY(0); }
+    .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: #eb1b26; flex-shrink: 0; }
+
+    /* ─── MATERIAL SELECT (draw.html v4 style) ──────────── */
+    .mat-select-wrap-mini { margin-bottom: 8px; }
+    .mat-select-mini {
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--border-radius, 12px);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 11px; font-weight: 500;
+      padding: 7px 10px;
+      outline: none; -webkit-appearance: none; appearance: none;
+      cursor: pointer; transition: border-color 0.2s;
+    }
+    .mat-select-mini:focus { border-color: #eb1b26; }
+    .mat-select-mini option, .mat-select-mini optgroup { background: #181818; }
+    .mat-field-label {
+      font-size: 9px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 4px; display: block;
+    }
+
+    /* ─── SC-BRANDED BUTTONS ────────────────────────────── */
+    .btn-sc-circle {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px;
+      background: #eb1b26; border: none; border-radius: 50%;
+      cursor: pointer; flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(235,27,38,0.35);
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-sc-circle:hover { background: #c71a21; transform: scale(1.06); box-shadow: 0 6px 18px rgba(235,27,38,0.45); }
+    .btn-sc-circle:active { transform: scale(0.95); }
+
+    .btn-sc-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2); border-radius: 50px;
+      color: rgba(255,255,255,0.7);
+      font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500;
+      letter-spacing: 0.04em; padding: 8px 20px; cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .btn-sc-back:hover { border-color: #eb1b26; color: #eb1b26; background: rgba(235,27,38,0.06); }
+
+    /* ─── NUMBER SPINNER HIDE ───────────────────────────── */
+    .dimension-field[type="number"] { -moz-appearance: textfield; }
+    .dimension-field[type="number"]::-webkit-inner-spin-button,
+    .dimension-field[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+    /* ─── STUDY STEP ANIMATION ──────────────────────────── */
+    @media (prefers-reduced-motion: no-preference) {
+      .study-step.active { animation: stepFadeIn 0.28s ease both; }
+      @keyframes stepFadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+    }
+
+    /* ─── PULSE ON CREATE STUDY BTN ─────────────────────── */
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes pulse-glow-red {
+        0%,100% { box-shadow: 0 4px 12px rgba(235,27,38,0.3); }
+        50%      { box-shadow: 0 4px 24px rgba(235,27,38,0.55); }
+      }
+      #createStudyBtn { animation: pulse-glow-red 2.5s ease infinite; }
+    }
+
+    /* ─── STUDY TITLE FONT ──────────────────────────────── */
+    .study-title { font-family: 'Anton', sans-serif !important; letter-spacing: 0.04em; }
+
+    /* ─── POWERED BY IN FOOTER ──────────────────────────── */
+    .footer-powered-by {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 12px;
+    }
+    .footer-powered-by span {
+      font-size: 10px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--text-footer, #5D5D5D);
+      white-space: nowrap;
+    }
+    .footer-powered-by img { height: 18px; width: auto; opacity: 0.6; }
+
+    /* ─── MODAL CANCEL BUTTON ───────────────────────────── */
+    .btn-sc-modal-cancel {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.18); border-radius: 8px;
+      color: rgba(255,255,255,0.6);
+      font-family: 'Poppins', sans-serif; font-size: 12px;
+      padding: 8px 20px; cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-sc-modal-cancel:hover { border-color: #eb1b26; color: #eb1b26; }
+
+    /* ─── MOBILE DRAWING ────────────────────────────────── */
+    @media (max-width: 480px) {
+      .drawing-container { min-height: 260px; }
+      .canvas-mini-label { display: none; }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       RESPONSIVE UX FIX v2 — Tight spacing, no dead zones
+       Brand ref: shortcircuit.company/SCbrand
+    ═══════════════════════════════════════════════════════ */
+
+    :root {
+      --sc-red:    #eb1b26;
+      --sc-border: rgba(255,255,255,0.10);
+      --sc-card:   rgba(255,255,255,0.04);
+    }
+
+    /* ── Global box-sizing ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    /* ═══ NAVBAR ═══════════════════════════════════════════ */
+    .navbar.header {
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      background: rgba(13,13,13,0.90) !important;
+      border-bottom: 1px solid rgba(235,27,38,0.20);
+      padding: 0 !important;
+    }
+    .navbar.header .container-fluid {
+      padding: 12px clamp(16px, 4vw, 56px) !important;
+    }
+    .navbar-nav { gap: 2px; }
+    .navbar-nav .nav-link { padding: 8px 12px !important; }
+
+    /* ═══ HERO ═══════════════════════════════════════════════
+       Keep min-height so video fills screen but don't let
+       the section push down other sections with huge padding.
+    ═══════════════════════════════════════════════════════ */
+    .hero-section {
+      min-height: 100svh !important;
+      display: flex !important;
+      align-items: flex-start !important;
+      padding-top: clamp(36px, 5vw, 64px) !important;
+      padding-bottom: 0 !important;       /* ← kill bottom gap */
+    }
+    .hero-section .container { width: 100%; }
+
+    .hero-title {
+      font-size: clamp(1.8rem, 4.5vw, 3.2rem) !important;
+      line-height: 1.08 !important;
+      letter-spacing: 0.03em;
+      margin-bottom: 24px !important;
+    }
+
+    /* Action toggle buttons */
+    .action-buttons {
+      gap: 12px !important;
+      flex-wrap: wrap;
+      margin-bottom: 20px !important;
+    }
+    .action-buttons .btn {
+      padding: 11px 28px !important;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    /* Chat / study interface area */
+    .interface-container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .typewriter-container { margin: 0 0 10px 0 !important; }
+    .typewriter-wrapper {
+      padding: 8px 8px 8px 20px !important;
+      border-radius: 50px !important;
+    }
+    .typewriter-input { font-size: 14px !important; }
+
+    .upload-buttons {
+      justify-content: center !important;
+      flex-wrap: wrap;
+      gap: 8px !important;
+      margin-bottom: 0 !important;
+    }
+    .upload-buttons .btn { font-size: 13px; padding: 7px 18px !important; }
+
+    /* Study inner */
+    .study-container { padding: 0 !important; }
+    .study-wrapper   { padding: 0 !important; }
+    .study-title     { font-size: 1.2rem !important; margin-bottom: 18px !important; }
+
+    /* ═══ FEATURES SECTION ══════════════════════════════════
+       Hard-coded padding — no CSS variable, no external bleed.
+    ═══════════════════════════════════════════════════════ */
+    section#about.features-section {
+      padding-top:    56px !important;
+      padding-bottom: 40px !important;
+      margin-top: 0   !important;
+      margin-bottom: 0 !important;
+    }
+    .features-section .row { row-gap: 20px !important; }
+    .feature-card { margin-bottom: 16px !important; }
+    .feature-card:last-child { margin-bottom: 0 !important; }
+    .feature-title { font-size: 1rem !important; margin-bottom: 6px !important; }
+
+    .section-description {
+      margin-top: 36px !important;
+      padding-top: 28px !important;
+      border-top: 1px solid var(--sc-border);
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+    }
+    .section-title {
+      font-size: clamp(1.3rem, 2.8vw, 2rem) !important;
+      margin-bottom: 8px !important;
+    }
+    .section-subtitle {
+      font-size: clamp(0.9rem, 1.5vw, 1.05rem) !important;
+      color: rgba(255,255,255,0.50);
+      margin-bottom: 0 !important;
+    }
+
+    /* ═══ GET STARTED ════════════════════════════════════════ */
+    section#get-started.get-started-section {
+      padding-top:    52px !important;
+      padding-bottom: 52px !important;
+      margin-top: 0   !important;
+      margin-bottom: 0 !important;
+    }
+    .section-dark {
+      background: var(--sc-card);
+      border: 1px solid var(--sc-border);
+      border-radius: 18px;
+      padding: 40px 48px !important;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .get-started-section .section-title { margin-bottom: 24px !important; }
+
+    .auth-buttons {
+      gap: 10px !important;
+      margin-bottom: 24px !important;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .auth-buttons .btn { padding: 10px 32px !important; font-size: 14px; }
+
+    .forms-container { max-width: 100%; margin: 0 auto; }
+    .auth-form-inner { padding: 0 !important; }
+    .form-dark { border-radius: 10px !important; }
+    .form-group { margin-bottom: 14px !important; }
+    .form-input {
+      padding: 13px 16px !important;
+      font-size: 14px !important;
+      border-radius: 8px !important;
+    }
+    .form-check { margin-bottom: 16px !important; }
+    .btn-red.w-100 {
+      padding: 13px !important;
+      font-size: 14px !important;
+      border-radius: 10px !important;
+      margin-top: 4px;
+    }
+
+    /* ═══ CONTACT SECTION ════════════════════════════════════ */
+    section#contact.contact-section {
+      padding-top:    52px !important;
+      padding-bottom: 52px !important;
+      margin-top: 0   !important;
+      margin-bottom: 0 !important;
+    }
+    .contact-section .section-title { margin-bottom: 32px !important; }
+
+    .contact-form-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .contact-form .row.g-4 {
+      --bs-gutter-y: 14px !important;
+      margin-bottom: 14px !important;
+    }
+    .contact-form .form-dark.mb-4 { margin-bottom: 14px !important; }
+    .query-type {
+      gap: 12px !important;
+      margin-bottom: 14px !important;
+      flex-wrap: wrap;
+    }
+    .query-type .form-dark {
+      padding: 11px 16px !important;
+      min-width: 130px;
+      border-radius: 10px !important;
+    }
+    .contact-form textarea.form-input { min-height: 110px; }
+    .contact-form .form-check { margin-bottom: 20px !important; }
+
+    /* ═══ FOOTER ═════════════════════════════════════════════ */
+    .footer {
+      padding-top:    56px !important;
+      padding-bottom: 32px !important;
+      margin-top: 0   !important;
+    }
+    .footer-content {
+      display: grid !important;
+      grid-template-columns: 240px 1fr !important;
+      gap: 48px !important;
+      align-items: start;
+      margin-bottom: 40px !important;
+    }
+    .footer-navigation .nav-row {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      gap: 24px !important;
+      margin-bottom: 28px !important;
+    }
+    .footer-navigation .nav-row:last-child { margin-bottom: 0 !important; }
+    .footer-title  { font-size: 11px !important; letter-spacing: 0.12em; margin-bottom: 10px !important; text-transform: uppercase; }
+    .footer-links  { margin: 0; padding: 0; list-style: none; }
+    .footer-link   { font-size: 12px !important; line-height: 2 !important; display: block; opacity: 0.65; transition: opacity 0.2s; }
+    .footer-link:hover { opacity: 1; color: var(--sc-red) !important; }
+    .footer-text   { font-size: 12px !important; line-height: 1.7 !important; opacity: 0.55; }
+    .footer-logo   { height: 28px !important; width: auto; }
+    .footer-powered-by { margin-top: 16px !important; }
+
+    .footer-bottom {
+      border-top: 1px solid var(--sc-border);
+      padding-top: 20px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .copyright { font-size: 12px !important; color: rgba(255,255,255,0.30) !important; margin: 0 !important; }
+    .social-icons { display: flex !important; align-items: center; gap: 16px !important; }
+    .social-icon  { width: 18px !important; height: 18px !important; opacity: 0.6; transition: opacity 0.2s; }
+    .social-icon:hover { opacity: 1; }
+
+    /* ═══ SCROLL ANCHORS ════════════════════════════════════ */
+    .content-section { scroll-margin-top: 68px; }
+
+    /* ═══════════════════════════════════════════════════════
+       RESPONSIVE BREAKPOINTS
+    ═══════════════════════════════════════════════════════ */
+
+    /* Tablet ≤992px */
+    @media (max-width: 992px) {
+      .footer-content {
+        grid-template-columns: 1fr !important;
+        gap: 36px !important;
+      }
+      .footer-navigation .nav-row {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 20px !important;
+      }
+      .features-section .col-lg-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        padding-left: 0 !important;
+        margin-top: 20px;
+      }
+      .features-section .col-lg-3 .feature-card { margin-bottom: 0 !important; }
+      .section-dark { padding: 36px 36px !important; }
+    }
+
+    /* Mobile ≤768px */
+    @media (max-width: 768px) {
+      section#about.features-section    { padding-top: 44px !important; padding-bottom: 32px !important; }
+      section#get-started.get-started-section { padding-top: 40px !important; padding-bottom: 40px !important; }
+      section#contact.contact-section   { padding-top: 40px !important; padding-bottom: 40px !important; }
+      .footer { padding-top: 44px !important; padding-bottom: 24px !important; }
+
+      .hero-title { font-size: clamp(1.5rem, 7vw, 2.2rem) !important; }
+      .action-buttons { flex-direction: column; align-items: center; }
+      .action-buttons .btn { width: 100%; max-width: 280px; }
+      .interface-container { max-width: 100%; }
+
+      .section-dark { padding: 28px 24px !important; max-width: 100%; }
+
+      .auth-buttons .btn { padding: 10px 24px !important; }
+
+      .contact-form .row { flex-direction: column; }
+      .contact-form .col-md-6 { width: 100%; }
+      .query-type { flex-direction: column; }
+      .query-type .form-dark { width: 100%; }
+
+      .footer-navigation .nav-row { grid-template-columns: repeat(2, 1fr) !important; gap: 18px 12px !important; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+
+      .study-sidebyside { flex-direction: column; gap: 20px; }
+      .study-form-col   { max-width: 100%; flex: none; padding: 0; }
+      .features-section .col-lg-3 { grid-template-columns: 1fr; }
+    }
+
+    /* Small mobile ≤480px */
+    @media (max-width: 480px) {
+      .navbar.header .container-fluid { padding: 10px 16px !important; }
+      .hero-title { font-size: clamp(1.3rem, 8vw, 1.9rem) !important; }
+      .typewriter-wrapper { padding: 7px 7px 7px 14px !important; }
+      .upload-buttons .btn { font-size: 12px; padding: 7px 14px !important; }
+      .btn-sc-circle { width: 36px !important; height: 36px !important; }
+      .section-dark { padding: 22px 16px !important; border-radius: 12px; }
+      .footer-navigation .nav-row { grid-template-columns: 1fr 1fr !important; gap: 14px 10px !important; }
+      .drawing-container { min-height: 240px; }
+    }
+
+  </style>
 </head>
-
-<video autoplay muted loop id="myVideo">
-    <source src="assets/myvideo.mp4" type="video/mp4">
-</video>
-
 <body>
-    <div class="overlay"></div>
 
-    <div class="cridits">
-        <div class="title">
-            <p>Powered by</p>
+  <!-- Video Background -->
+  <video autoplay muted loop id="myVideo">
+    <source src="assets/myvideo.mp4" type="video/mp4">
+  </video>
+  <div class="video-overlay"></div>
+
+  <!-- Header Section — FIXED -->
+  <nav class="navbar navbar-expand-lg header sticky-top">
+    <div class="container-fluid px-0 py-0" style="padding-left:clamp(16px,4vw,60px)!important;padding-right:clamp(16px,4vw,60px)!important;padding-top:14px!important;padding-bottom:14px!important;">
+      <!-- Logo -->
+      <div class="logo">
+        <div class="logo-images d-flex align-items-center">
+          <span class="logo-text">Lux</span>
+          <span class="logo-text text-red">SC</span>
+          <span class="logo-text">ale</span>
+          <span class="logo-text">AI</span>
         </div>
-        <a href="https://shortcircuitcompany.com" target="_blank"><img src="assets/SClogo.svg" alt="this application is powered by Short Circuit Company"></a>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navigation -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About LuxSCale</a></li>
+          <li class="nav-item"><a class="nav-link" href="#docs">Documentations</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact us</a></li>
+        </ul>
+        <div class="d-flex">
+          <button class="btn btn-red ms-3">Login</button>
+        </div>
+      </div>
     </div>
-    
-    <header>
-        <div class="header-wrap">
-            <a href="index.html"><img src="assets/logo.svg" aria-label="false" alt="Logo"></a>
-            <div class="contact">
-                <ul>
-                    <li><a href="mailto:contact@shortcircuitcompany.com" target="_blank">Contact us</a></li>
-                    <li><a href="https://facebook.com/shortcircuiteg" target="_blank"><img src="assets/facebook-logo.svg" aria-label="false" alt="facebook"></a></li>
-                    <li><a href="https://instagram.com/shortcircuiteg" target="_blank"><img src="assets/instagram-logo.svg" aria-label="false" alt="instagram"></a></li>
-                    <li><a href="https://www.linkedin.com/company/short-circuit-company" target="_blank"><img src="assets/linkedin-logo.svg" aria-label="false" alt="linkedin"></a></li>
-                </ul>
-            </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero-section" style="padding-bottom:0!important;margin-bottom:0!important;">
+    <div class="container">
+      <div class="text-center">
+        <h1 class="hero-title anton text-uppercase fs-1 mb-3">What can i help with?</h1>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons d-flex justify-content-center gap-4 mb-0">
+          <button class="btn btn-outline-dark text-white rounded-pill px-5 py-3 active" id="chatBtn" data-interface="chat">Chat with LuxSCale</button>
+          <button class="btn btn-outline-dark text-white rounded-pill px-5 py-3" id="studyBtn" data-interface="study">Make lighting study</button>
         </div>
-    </header>
 
-    <main>
-        <div class="wrap">
-            <div class="hero">
-                <h1>DESIGN YOUR LIGHTING WITH AI</h1>
-                <p class="subheading">In few seconds, make the perfect design of your lighting with the Egyptian Lighting Code and even get an estimated BOQ</p>
-            </div>
+        <!-- Interface Container -->
+        <div class="interface-container">
 
-            <div class="form">
-                <div class="area">
-                    <h3>Define the surface area</h3>
-                    <p>Take a side measurement, then move clockwise. <span>(Measurements are in Meters)</span></p>
-
-                    <form action="">
-                        <div class="inputs">
-                            <div class="sides">
-                                <div class="side">
-                                    <label for="side-1">wdith 1</label>
-                                    <input type="number" id="a">
-                                </div>
-    
-                                <div class="side">
-                                    <label for="side-2">length 1</label>
-                                    <input type="number" id="b">
-                                </div>
-    
-                                <div class="side">
-                                    <label for="side-3">width 2</label>
-                                    <input type="number" id="c">
-                                </div>
-    
-                                <div class="side">
-                                    <label for="side-4">length 2</label>
-                                    <input type="number" id="d">
-                                </div>
-                            </div>
-    
-                            <div class="side">
-                                <label for="height">Height</label>
-                                <input type="number" id="height">
-                            </div>
-                        </div>
-                    </form>
+          <!-- Chat Interface -->
+          <div class="interface-content d-flex flex-column active" id="chatInterface">
+            <div class="typewriter-container d-flex justify-content-center">
+              <div class="typewriter-wrapper bg-dark rounded-pill p-4 d-flex align-items-center w-100">
+                <div class="typewriter-input-wrapper flex-grow-1 me-3 d-flex align-items-center">
+                  <input type="text" id="typewriterInput" class="typewriter-input bg-transparent border-0 text-white fs-5 flex-grow-1" placeholder="" autocomplete="off">
+                  <span class="typewriter-cursor" id="typewriterCursor"></span>
                 </div>
-
-                <div class="area">
-                    <h3>Define the function</h3>
-                    <p>Choose the environment of the room from the following menu</p>
-
-                    <select id="place">
-                        <option value="Room">Room</option>
-                        <option value="Office">Office</option>
-                        <option value="Cafe">Cafe</option>
-                        <option value="Factory production line">Production line</option>
-                        <option value="Factory warehouse">Warehouse</option>
-                    </select>
-                </div>
-
-                <!-- <button popovertarget="popup">
-                    make lighting study with ai
-                </button> -->
-                <button onclick="calculate()">
-                    make lighting study with ai
+                <button class="btn-sc-circle" type="button" id="chatGoUpBtn" aria-label="Send">
+                  <span class="material-symbols-outlined" style="font-size:20px;color:#fff;">arrow_upward</span>
                 </button>
-
+              </div>
             </div>
+            <div class="upload-buttons d-flex justify-content-start gap-2 mb-2">
+              <button class="btn btn-light rounded-pill text-dark px-4 py-2" data-bs-toggle="modal" data-bs-target="#dialuxModal">Upload Dialux report</button>
+              <button class="btn btn-light rounded-pill text-dark px-4 py-2" data-bs-toggle="modal" data-bs-target="#imageModal">Upload image</button>
+            </div>
+          </div>
+
+          <!-- Lighting Study Interface -->
+          <div class="interface-content" id="studyInterface">
+
+            <!-- Step 1: Define The Area — SIDE BY SIDE on laptop -->
+            <div class="study-step active" id="defineAreaStep">
+              <div class="study-container d-flex justify-content-center mb-0">
+                <div class="study-wrapper" style="max-width:1100px;width:100%;">
+                  <h3 class="study-title text-white mb-4">Define The Area</h3>
+
+                  <div class="study-sidebyside">
+                    <!-- LEFT: Form inputs -->
+                    <div class="study-form-col">
+
+                      <!-- Dimensions -->
+                      <div class="dimensions-grid mb-3">
+                        <div class="row g-3">
+                          <div class="col-6">
+                            <div class="dimension-input">
+                              <label class="dimension-label">Side 1 (Width)</label>
+                              <div class="input-with-unit">
+                                <input type="number" id="dimA" class="dimension-field" placeholder="0" step="0.1" required>
+                                <span class="unit">m</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="dimension-input">
+                              <label class="dimension-label">Side 2 (Length)</label>
+                              <div class="input-with-unit">
+                                <input type="number" id="dimB" class="dimension-field" placeholder="0" step="0.1" required>
+                                <span class="unit">m</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="dimension-input">
+                              <label class="dimension-label">Side 3</label>
+                              <div class="input-with-unit">
+                                <input type="number" id="dimC" class="dimension-field" placeholder="0" step="0.1" required>
+                                <span class="unit">m</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="dimension-input">
+                              <label class="dimension-label">Side 4</label>
+                              <div class="input-with-unit">
+                                <input type="number" id="dimD" class="dimension-field" placeholder="0" step="0.1" required>
+                                <span class="unit">m</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-12">
+                            <div class="dimension-input">
+                              <label class="dimension-label">Height</label>
+                              <div class="input-with-unit">
+                                <input type="number" id="dimHeight" class="dimension-field" placeholder="0" step="0.1" required>
+                                <span class="unit">m</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Wall Material (draw v4) -->
+                      <div class="mb-2">
+                        <span class="mat-field-label">Wall Material</span>
+                        <!-- Phase 2: Material Picker triggers -->
+                        <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,0.35);margin-bottom:6px;">Wall Material</div>
+                        <div class="mat-trigger-row">
+                          <button class="mat-picker-trigger" id="wallMatTrigger" onclick="openMatPicker('walls')">
+                            <span class="mpt-swatch" id="wallMatSwatch" style="background:#c2a86a;"></span>
+                            <span class="mpt-name" id="wallMatTriggerLabel">Beige Plaster</span>
+                            <span class="mpt-rho" id="wallMatRhoLabel">ρ 0.60</span>
+                            <span class="material-symbols-outlined" style="font-size:13px;opacity:.4;">open_in_new</span>
+                          </button>
+                          <button class="mat-picker-trigger" id="ceilingMatTrigger" onclick="openMatPicker('ceiling')" style="flex:0 0 auto;min-width:90px;">
+                            <span class="mpt-swatch" id="ceilingMatSwatch" style="background:#e8e4dc;"></span>
+                            <span class="mpt-name" id="ceilingMatTriggerLabel">Ceiling</span>
+                            <span class="mpt-rho" id="ceilingMatRhoLabel">ρ 0.80</span>
+                          </button>
+                        </div>
+                        <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,0.35);margin-bottom:6px;margin-top:4px;">Floor Material</div>
+                        <div class="mat-trigger-row" style="margin-bottom:8px;">
+                          <button class="mat-picker-trigger" id="floorMatTrigger" onclick="openMatPicker('floor')">
+                            <span class="mpt-swatch" id="floorMatSwatch" style="background:#8b5e2a;"></span>
+                            <span class="mpt-name" id="floorMatTriggerLabel">Medium Wood</span>
+                            <span class="mpt-rho" id="floorMatRhoLabel">ρ 0.35</span>
+                            <span class="material-symbols-outlined" style="font-size:13px;opacity:.4;">open_in_new</span>
+                          </button>
+                        </div>
+                        <!-- Physics strip -->
+                        <div class="phys-strip">
+                          <span>ρ avg</span>
+                          <span class="phys-strip-val" id="rhoAvgDisplay">0.53</span>
+                          <div class="phys-strip-track"><div class="phys-strip-fill" id="rhoAvgBar" style="width:53%"></div></div>
+                          <span>IRF</span>
+                          <span class="phys-strip-val" id="irfDisplay" style="font-size:11px;">12%</span>
+                        </div>
+                        <!-- hidden selects kept for canvas engine compatibility -->
+                        <select id="studioWallMat" style="display:none">
+                          <option value="beige_plaster" selected>Beige Plaster</option>
+                        </select>
+                        <select id="studioFloorMat" style="display:none">
+                          <option value="medium_wood" selected>Medium Wood</option>
+                        </select>
+                      </div>
+
+                      <!-- Surface Color pickers with swatches -->
+                      <div class="color-pickers-grid mb-3">
+                        <div class="color-picker-item">
+                          <div class="color-swatch-mini" id="swatchWallA" style="background:#eb1b26;"></div>
+                          <label>Wall A</label>
+                          <input type="color" id="colorWallA" class="color-input-mini" value="#eb1b26">
+                        </div>
+                        <div class="color-picker-item">
+                          <div class="color-swatch-mini" id="swatchWallB" style="background:#a40e16;"></div>
+                          <label>Wall B</label>
+                          <input type="color" id="colorWallB" class="color-input-mini" value="#a40e16">
+                        </div>
+                        <div class="color-picker-item">
+                          <div class="color-swatch-mini" id="swatchWallC" style="background:#333333;"></div>
+                          <label>Wall C</label>
+                          <input type="color" id="colorWallC" class="color-input-mini" value="#333333">
+                        </div>
+                        <div class="color-picker-item">
+                          <div class="color-swatch-mini" id="swatchWallD" style="background:#222222;"></div>
+                          <label>Wall D</label>
+                          <input type="color" id="colorWallD" class="color-input-mini" value="#222222">
+                        </div>
+                        <div class="color-picker-item">
+                          <div class="color-swatch-mini" id="swatchFloor" style="background:#1a1a1a;"></div>
+                          <label>Floor</label>
+                          <input type="color" id="colorFloor" class="color-input-mini" value="#1a1a1a">
+                        </div>
+                      </div>
+
+                    </div><!-- /study-form-col -->
+
+                    <!-- RIGHT: Canvas visualization -->
+                    <div class="study-canvas-col">
+                      <div class="drawing-container">
+
+                        <!-- Toolbar -->
+                        <div class="canvas-mini-toolbar">
+                          <div class="canvas-mini-toolbar-left">
+                            <div class="status-dot-mini"></div>
+                            <span class="canvas-mini-label">Unfolded Projection</span>
+                          </div>
+                          <div class="canvas-mini-toolbar-right">
+                            <button id="studioTexToggle" title="Toggle textures">
+                              <span class="material-symbols-outlined" style="font-size:12px;">texture</span>
+                              <span id="studioTexLabel">TEX ON</span>
+                            </button>
+                            <button class="mini-icon-btn" id="miniZoomIn" title="Zoom In"><span class="material-symbols-outlined">zoom_in</span></button>
+                            <button class="mini-icon-btn" id="miniZoomOut" title="Zoom Out"><span class="material-symbols-outlined">zoom_out</span></button>
+                            <button class="mini-icon-btn" id="miniZoomReset" title="Reset Zoom"><span class="material-symbols-outlined">center_focus_weak</span></button>
+                            <span class="mini-zoom-badge" id="miniZoomBadge">100%</span>
+                          </div>
+                        </div>
+
+                        <!-- Canvas scroll -->
+                        <div class="canvas-scroll-mini" id="canvasScrollMini">
+                          <div id="projection-wrap-mini" style="padding:60px;transform-origin:center center;transition:transform 0.22s cubic-bezier(0.4,0,0.2,1);position:relative;">
+                            <div class="unfold-cross" id="unfoldCrossMini" style="position:relative;">
+
+                              <!-- Floor -->
+                              <div id="floorMini" class="wall-panel mat-medium_wood" style="width:100px;height:80px;background:#8b5e2a;border-radius:3px;position:relative;">
+                                <div class="wall-hatch"></div>
+                                <div class="mat-tex"></div>
+                                <span class="wall-mat-label" id="floorMatLabelMini">Med.Wood</span>
+                                <span class="wall-name">Floor</span>
+                                <span class="wall-dims"></span>
+                              </div>
+                              <!-- Wall A -->
+                              <div id="wallAMini" class="wall-panel mat-beige_plaster" style="width:100px;height:40px;background:#c2a86a;bottom:100%;margin-bottom:2px;left:50%;transform:translateX(-50%);border-radius:3px 3px 0 0;">
+                                <div class="wall-hatch"></div>
+                                <div class="mat-tex"></div>
+                                <span class="wall-mat-label" id="wallAMatLabelMini">Bg.Plstr</span>
+                                <span class="wall-name">A</span>
+                                <span class="wall-dims"></span>
+                              </div>
+                              <!-- Wall B -->
+                              <div id="wallBMini" class="wall-panel mat-beige_plaster" style="width:100px;height:40px;background:#c2a86a;top:100%;margin-top:2px;left:50%;transform:translateX(-50%);border-radius:0 0 3px 3px;">
+                                <div class="wall-hatch"></div>
+                                <div class="mat-tex"></div>
+                                <span class="wall-mat-label" id="wallBMatLabelMini">Bg.Plstr</span>
+                                <span class="wall-name">B</span>
+                                <span class="wall-dims"></span>
+                              </div>
+                              <!-- Wall C -->
+                              <div id="wallCMini" class="wall-panel vert mat-beige_plaster" style="width:40px;height:80px;background:#c2a86a;right:100%;margin-right:2px;top:50%;transform:translateY(-50%);border-radius:3px 0 0 3px;">
+                                <div class="wall-hatch"></div>
+                                <div class="mat-tex"></div>
+                                <span class="wall-mat-label" id="wallCMatLabelMini">BP</span>
+                                <span class="wall-name">C</span>
+                                <span class="wall-dims"></span>
+                              </div>
+                              <!-- Wall D -->
+                              <div id="wallDMini" class="wall-panel vert mat-beige_plaster" style="width:40px;height:80px;background:#c2a86a;left:100%;margin-left:2px;top:50%;transform:translateY(-50%);border-radius:0 3px 3px 0;">
+                                <div class="wall-hatch"></div>
+                                <div class="mat-tex"></div>
+                                <span class="wall-mat-label" id="wallDMatLabelMini">BP</span>
+                                <span class="wall-name">D</span>
+                                <span class="wall-dims"></span>
+                              </div>
+
+                              <!-- Dim W line -->
+                              <div id="widthLineMini" style="position:absolute;top:-28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;">
+                                <span class="dim-label" style="position:static;">W: 0m</span>
+                                <div class="dim-line" style="position:static;height:1px;width:100px;"></div>
+                              </div>
+                              <!-- Dim L line -->
+                              <div id="lengthLineMini" style="position:absolute;left:-44px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:2px;pointer-events:none;">
+                                <span class="dim-label" style="position:static;writing-mode:vertical-rl;transform:rotate(180deg);">L: 0m</span>
+                                <div class="dim-line" style="position:static;width:1px;height:80px;"></div>
+                              </div>
+
+                            </div>
+                          </div>
+                          <!-- SC Watermark -->
+                          <div class="sc-watermark-mini">
+                            <img src="https://shortcircuit.company/assets/img/logo-dark.svg" alt="">
+                            <span>LuxSCale</span>
+                          </div>
+                        </div><!-- /canvas-scroll-mini -->
+
+                      </div><!-- /drawing-container -->
+
+                      <!-- Stats bar -->
+                      <div class="mini-stats-bar" id="miniStatsBar">
+                        <div class="mini-stat-item">
+                          <span class="mini-stat-key">Floor Area</span>
+                          <span class="mini-stat-val" id="miniStatArea">—</span>
+                        </div>
+                        <div class="mini-stat-item">
+                          <span class="mini-stat-key">Surface Area</span>
+                          <span class="mini-stat-val" id="miniStatSurface">—</span>
+                        </div>
+                        <div class="mini-stat-item">
+                          <span class="mini-stat-key">Volume</span>
+                          <span class="mini-stat-val" id="miniStatVol">—</span>
+                        </div>
+                      </div>
+
+                    </div><!-- /study-canvas-col -->
+                  </div><!-- /study-sidebyside -->
+
+                  <!-- Continue button -->
+                  <div class="text-end mt-4">
+                    <button class="btn-sc-circle" type="button" id="continueToApplication" aria-label="Continue">
+                      <span class="material-symbols-outlined" style="font-size:20px;color:#fff;">arrow_forward</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div><!-- /defineAreaStep -->
+
+            <!-- Step 2: Choose Application -->
+            <div class="study-step" id="chooseApplicationStep">
+              <div class="study-container d-flex justify-content-center mb-0">
+                <div class="study-wrapper">
+                  <h3 class="study-title text-white mb-4">Choose your application</h3>
+                  <div class="application-selection mb-4">
+                    <div class="row g-3">
+                      <div class="col-12">
+                        <div class="dimension-input">
+                          <label class="dimension-label" for="stdCategory">Standard category</label>
+                          <div class="input-with-unit">
+                            <input id="stdCategory" name="standard_category" type="text" class="dimension-field" list="dl-std-categories" autocomplete="off" placeholder="Type to search category...">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="dimension-input">
+                          <label class="dimension-label" for="stdTask">Task or activity</label>
+                          <div class="input-with-unit">
+                            <input id="stdTask" name="standard_task_or_activity" type="text" class="dimension-field" list="dl-std-tasks" autocomplete="off" placeholder="Select category first">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <button class="btn-sc-back" type="button" id="backToArea">
+                      <span class="material-symbols-outlined" style="font-size:14px;">arrow_back</span> Back
+                    </button>
+                    <button class="btn btn-red rounded-pill px-5" type="button" id="createStudyBtn" onclick="handleCreateStudy()">
+                      Create Study
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /studyInterface -->
+        </div><!-- /interface-container -->
+      </div>
+    </div>
+    <datalist id="dl-std-categories"></datalist>
+    <datalist id="dl-std-tasks"></datalist>
+  </section>
+
+  <!-- Features Section -->
+  <section id="about" class="features-section content-section" style="padding-top:56px!important;padding-bottom:40px!important;margin:0!important;">
+    <div class="container">
+      <div class="row align-items-start">
+        <div class="col-lg-9">
+          <div class="main-image">
+            <img src="images/rectangle-3-48.png" alt="LuxSCale AI in action" class="img-fluid rounded-4">
+          </div>
+        </div>
+        <div class="col-lg-3 ps-4">
+          <div class="feature-card">
+            <img src="images/rectangle-4-49.png" alt="What's New" class="img-fluid rounded-3 mb-3">
+            <h3 class="feature-title fw-bold mb-2">What's New?</h3>
+            <p class="feature-description small mb-0">Know more about the upcoming features</p>
+          </div>
+          <div class="feature-card">
+            <img src="images/rectangle-5-50.png" alt="Documentation" class="img-fluid rounded-3 mb-3">
+            <h3 class="feature-title fw-bold mb-2">Documentations</h3>
+            <p class="feature-description small mb-0">How it works?</p>
+          </div>
+        </div>
+      </div>
+      <div class="section-description">
+        <h2 class="section-title text-uppercase fs-2 mb-3">Luxscale, is it even possible?</h2>
+        <p class="section-subtitle fs-5">The first AI too specialized in lighting</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Get Started Section -->
+  <section id="get-started" class="get-started-section content-section" style="padding-top:52px!important;padding-bottom:52px!important;margin:0!important;">
+    <div class="container">
+      <div class="section-dark text-center">
+        <h2 class="section-title text-uppercase fs-2 mb-4">Get Started</h2>
+        <div class="auth-buttons d-flex justify-content-center gap-4 mb-4">
+          <button class="btn btn-dark rounded-pill px-5 py-3 active" id="loginBtn" data-form="login">Login</button>
+          <button class="btn btn-dark rounded-pill px-5 py-3" id="signupBtn" data-form="signup">Sign Up</button>
+        </div>
+        <div class="forms-container">
+          <div class="auth-form" id="loginForm">
+            <div class="auth-form-inner"><div class="form-dark">
+              <div class="form-group mb-4"><input type="text" class="form-input" placeholder="Email or Username" required></div>
+              <div class="form-group mb-4"><input type="password" class="form-input" placeholder="Password" required></div>
+              <div class="form-check text-start mb-4">
+                <input type="checkbox" class="form-check-input" id="remember">
+                <label for="remember" class="form-check-label">Remember me?</label>
+              </div>
+              <button class="btn btn-red w-100">Login</button>
+            </div></div>
+          </div>
+          <div class="auth-form" id="signupForm">
+            <div class="auth-form-inner"><div class="form-dark">
+              <div class="form-group mb-4"><input type="text" class="form-input" placeholder="Full Name" required></div>
+              <div class="form-group mb-4"><input type="email" class="form-input" placeholder="Email Address" required></div>
+              <div class="form-group mb-4"><input type="password" class="form-input" placeholder="Password" required></div>
+              <div class="form-group mb-4"><input type="password" class="form-input" placeholder="Confirm Password" required></div>
+              <div class="form-check text-start mb-4">
+                <input type="checkbox" class="form-check-input" id="terms">
+                <label for="terms" class="form-check-label">I agree to the Terms and Conditions</label>
+              </div>
+              <button class="btn btn-red w-100">Sign Up</button>
+            </div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact-section content-section" style="padding-top:52px!important;padding-bottom:52px!important;margin:0!important;">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="section-title text-uppercase fs-2 mb-4">Contact Us</h2>
+        <div class="contact-form-wrapper"><form class="contact-form">
+          <div class="row g-4 mb-4">
+            <div class="col-md-6"><div class="form-dark"><input type="text" class="form-input" placeholder="Name" required></div></div>
+            <div class="col-md-6"><div class="form-dark"><input type="tel" class="form-input" placeholder="Phone Number" required></div></div>
+          </div>
+          <div class="form-dark mb-4"><input type="email" class="form-input" placeholder="Email Address" required></div>
+          <div class="query-type d-flex gap-4 mb-4">
+            <div class="form-dark flex-fill d-flex align-items-center">
+              <input type="radio" class="radio-input me-2" id="general" name="query-type">
+              <label for="general"> General Enquiry</label>
+            </div>
+            <div class="form-dark flex-fill d-flex align-items-center">
+              <input type="radio" class="radio-input me-2" id="support" name="query-type">
+              <label for="support"> Support Request</label>
+            </div>
+          </div>
+          <div class="form-dark mb-4"><textarea rows="4" class="form-input" placeholder="Message" required></textarea></div>
+          <div class="form-check text-start mb-4">
+            <input type="checkbox" class="form-check-input" id="subscribe">
+            <label for="subscribe" class="form-check-label small">I accept to receive emails from LuxSCale team</label>
+          </div>
+          <button class="btn btn-red w-100">Send</button>
+        </form></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dialux Upload Modal -->
+  <div class="modal fade" id="dialuxModal" tabindex="-1" aria-labelledby="dialuxModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content custom-modal">
+        <div class="modal-header">
+          <h5 class="modal-title" id="dialuxModalLabel">Upload Dialux Report</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="upload-area" id="dialuxUploadArea">
+            <div class="upload-content">
+              <div class="upload-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14,2 14,8 20,8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10,9 9,9 8,9"></polyline>
+                </svg>
+              </div>
+              <h6 class="upload-title">Drop your Dialux report here</h6>
+              <p class="upload-subtitle">or click to browse files</p>
+              <p class="upload-formats">Supported formats: PDF, DIALux (.ldt), Excel (.xlsx)</p>
+            </div>
+            <input type="file" id="dialuxFileInput" accept=".pdf,.ldt,.xlsx" style="display:none;">
+          </div>
+          <div class="file-info" id="dialuxFileInfo" style="display:none;">
+            <div class="file-info-header">
+              <h6 class="file-info-title">File Information</h6>
+              <div class="file-status"><span class="status-badge success">✓ Ready</span></div>
+            </div>
+            <div class="file-info-content">
+              <div class="file-info-item"><span class="file-info-label">File Name:</span><span class="file-info-value" id="dialuxFileName">-</span></div>
+              <div class="file-info-item"><span class="file-info-label">File Size:</span><span class="file-info-value" id="dialuxFileSize">-</span></div>
+              <div class="file-info-item"><span class="file-info-label">File Type:</span><span class="file-info-value" id="dialuxFileType">-</span></div>
+              <div class="file-info-item"><span class="file-info-label">Upload Date:</span><span class="file-info-value" id="dialuxUploadDate">-</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-sc-modal-cancel" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-red" id="dialuxSubmitBtn" disabled>Process Report</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Upload Modal -->
+  <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content custom-modal">
+        <div class="modal-header">
+          <h5 class="modal-title" id="imageModalLabel">Upload Image</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="upload-area" id="imageUploadArea">
+            <div class="upload-content">
+              <div class="upload-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21,15 16,10 5,21"></polyline>
+                </svg>
+              </div>
+              <h6 class="upload-title">Drop your image here</h6>
+              <p class="upload-subtitle">or click to browse files</p>
+              <p class="upload-formats">Supported formats: JPG, PNG, GIF, WebP</p>
+            </div>
+            <input type="file" id="imageFileInput" accept="image/*" style="display:none;">
+          </div>
+          <div class="image-preview" id="imagePreview" style="display:none;">
+            <div class="preview-container"><img id="previewImage" src="" alt="Preview" class="preview-img"></div>
+          </div>
+          <div class="file-info" id="imageFileInfo" style="display:none;">
+            <div class="file-info-header">
+              <h6 class="file-info-title">File Information</h6>
+              <div class="file-status"><span class="status-badge success">✓ Ready</span></div>
+            </div>
+            <div class="file-info-content">
+              <div class="file-info-item"><span class="file-info-label">File Name:</span><span class="file-info-value" id="imageFileName">-</span></div>
+              <div class="file-info-item"><span class="file-info-label">File Size:</span><span class="file-info-value" id="imageFileSize">-</span></div>
+              <div class="file-info-item"><span class="file-info-label">File Type:</span><span class="file-info-value" id="imageFileType">-</span></div>
+              <div class="file-info-item"><span class="file-info-label">Upload Date:</span><span class="file-info-value" id="imageUploadDate">-</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-sc-modal-cancel" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-red" id="imageSubmitBtn" disabled>Process Image</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" style="padding-top:56px!important;padding-bottom:32px!important;margin:0!important;">
+    <div class="container">
+      <div class="footer-content">
+        <div class="company-info-block">
+          <div class="company-logo-section">
+            <div class="company-logo mb-3">
+              <img src="https://shortcircuit.company/assets/img/logo-dark.svg" class="footer-logo" alt="Short Circuit Company Logo" />
+            </div>
+          </div>
+          <div class="company-description">
+            <p class="footer-text small-text">
+              LuxSCale AI is an official project owned by Short Circuit Company. All rights to the concept, design, development, and implementation of this project are exclusively reserved by Short Circuit Company.
+            </p>
+            <p class="footer-text small-text">
+              The platform has been fully designed and developed by the Technical Office team within the company. Any unauthorized use, reproduction, or distribution of this project, in whole or in part, without prior written consent from Short Circuit Company, is strictly prohibited.
+            </p>
+            <!-- POWERED BY — moved here from hero -->
+            <div class="footer-powered-by">
+              <span>Powered by</span>
+              <a href="https://shortcircuit.company" target="_blank">
+                <img src="https://shortcircuit.company/assets/img/logo-dark.svg" alt="Short Circuit Company">
+              </a>
+            </div>
+          </div>
         </div>
 
-    </main>
-
-    <footer>
-        <div class="header-wrap">
-            <div class="copyrights">
-                <p>© 2025 <a href="index.html">LuxSCale</a>. All rights reserved.</p>
-                <p>This is a project of <a href="https://shortcircuitcompany.com" target="_blank">Short Circuit Company</a></p>
+        <div class="footer-navigation">
+          <div class="nav-row">
+            <div class="nav-column">
+              <h5 class="footer-title">Our Projects</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">LuxSCale</a></li>
+                <li><a href="#" class="footer-link">SChools</a></li>
+                <li><a href="#" class="footer-link">eSC-AI</a></li>
+              </ul>
             </div>
-
+            <div class="nav-column">
+              <h5 class="footer-title">AI Platform</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">Platform Overview</a></li>
+                <li><a href="#" class="footer-link">Documentation</a></li>
+                <li><a href="#" class="footer-link">Developer Forum</a></li>
+              </ul>
+            </div>
+            <div class="nav-column">
+              <h5 class="footer-title">Company</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">About Us</a></li>
+                <li><a href="#" class="footer-link">News</a></li>
+                <li><a href="#" class="footer-link">Career</a></li>
+                <li><a href="#" class="footer-link">Downloads</a></li>
+                <li><a href="#" class="footer-link">Brand</a></li>
+              </ul>
+            </div>
+            <div class="nav-column">
+              <h5 class="footer-title">Terms & Policy</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">Terms of Use</a></li>
+                <li><a href="#" class="footer-link">Privacy Policy</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="nav-row">
+            <div class="nav-column">
+              <h5 class="footer-title">Safety</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">Safety Approach</a></li>
+                <li><a href="#" class="footer-link">Security & Privacy</a></li>
+                <li><a href="#" class="footer-link">Trust & Transparency</a></li>
+              </ul>
+            </div>
+            <div class="nav-column">
+              <h5 class="footer-title">Support</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">Help Center</a></li>
+              </ul>
+            </div>
+            <div class="nav-column"></div>
+            <div class="nav-column"></div>
+          </div>
         </div>
-    </footer>
+      </div>
 
-    <script>
+      <div class="footer-bottom">
+        <div class="copyright-section">
+          <p class="copyright mb-0">Short Circuit Company © 2025</p>
+        </div>
+        <div class="social-media-section">
+          <div class="social-icons">
+            <a href="#" class="social-link"><img src="images/facebook-109.svg" class="social-icon" alt="Facebook" /></a>
+            <a href="#" class="social-link"><img src="images/instagram-111.svg" class="social-icon" alt="Instagram" /></a>
+            <a href="#" class="social-link"><img src="images/linkedin-113.svg" class="social-icon" alt="LinkedIn" /></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
 
-    /** Local Flask API vs public PythonAnywhere — same-origin public sites use hosted API */
-    function getCalculateApiUrl() {
-        var h = window.location.hostname;
-        if (h === "localhost" || h === "127.0.0.1") {
-            return "http://127.0.0.1:5000/calculate";
-        }
-        return "https://mahamonir.pythonanywhere.com/calculate";
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/script.js"></script>
+
+  <!-- ═══ BOX STUDIO MINI — Full draw.html v4 engine ═══════════════ -->
+  <script>
+  (function() {
+    'use strict';
+
+    // ── Element refs ─────────────────────────────────────────────
+    const wallA    = document.getElementById('wallAMini');
+    const wallB    = document.getElementById('wallBMini');
+    const wallC    = document.getElementById('wallCMini');
+    const wallD    = document.getElementById('wallDMini');
+    const floorEl  = document.getElementById('floorMini');
+    const projWrap = document.getElementById('projection-wrap-mini');
+    const zoomBadge= document.getElementById('miniZoomBadge');
+
+    const dimA  = () => parseFloat(document.getElementById('dimA').value)  || 0;
+    const dimB  = () => parseFloat(document.getElementById('dimB').value)  || 0;
+    const dimC  = () => parseFloat(document.getElementById('dimC').value)  || dimA();
+    const dimD  = () => parseFloat(document.getElementById('dimD').value)  || dimB();
+    const dimH  = () => parseFloat(document.getElementById('dimHeight').value) || 0;
+
+    // ── Material system (draw.html v4) ────────────────────────────
+    const MAT_COLOR = {
+      white_paint:'#e8e4dc', light_plaster:'#d4c9b0', beige_plaster:'#c2a86a',
+      grey_plaster:'#8a8880', dark_paint:'#2a2622',
+      light_wood:'#c8a05a', medium_wood:'#8b5e2a', dark_wood:'#3a2210',
+      white_marble:'#ece8e0', light_concrete:'#9a9890', raw_concrete:'#706e6a', dark_stone:'#2c2a28',
+      white_fabric:'#dedad2', linen:'#b8a880', dark_curtain:'#1e1c1a',
+      brushed_steel:'#9098a0', polished_metal:'#b8c0c8', mirror:'#c8d4e0',
+      clear_glass:'#aab8c8', frosted_glass:'#b8c4cc', tinted_glass:'#4a6040',
+      white_tile:'#dcdad4', terracotta:'#a05838', light_carpet:'#c0b498', dark_carpet:'#2e2820'
+    };
+
+    const MAT_SHORT = {
+      white_paint:'W.Paint', light_plaster:'Lt.Plstr', beige_plaster:'Bg.Plstr',
+      grey_plaster:'Gy.Plstr', dark_paint:'Dk.Paint',
+      light_wood:'Lt.Wood', medium_wood:'Med.Wood', dark_wood:'Dk.Wood',
+      white_marble:'W.Mrbl', light_concrete:'Lt.Conc', raw_concrete:'Raw.Con', dark_stone:'Dk.Stone',
+      white_fabric:'W.Fabrc', linen:'Linen', dark_curtain:'Dk.Curt',
+      brushed_steel:'Br.Stl', polished_metal:'Pl.Mtl', mirror:'Mirror',
+      clear_glass:'Clr.Gls', frosted_glass:'Fr.Gls', tinted_glass:'Tnt.Gls',
+      white_tile:'W.Tile', terracotta:'Terrctta', light_carpet:'Lt.Crpt', dark_carpet:'Dk.Crpt'
+    };
+
+    // Wall color variants (draw.html v4 wallVariants)
+    function wallVariants(hex) {
+      const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+      const c = (r,g,b) => '#'+[r,g,b].map(v=>Math.min(255,Math.max(0,Math.round(v))).toString(16).padStart(2,'0')).join('');
+      return [c(r*.94,g*.94,b*.92), c(r*1.06,g*1.05,b*1.04), c(r*.96,g*.96,b*.98), c(r*1.04,g*1.03,b*.97)];
     }
 
-    async function calculate() {
+    function setMatClass(el, key) {
+      el.className = el.className.replace(/\bmat-\S+/g,'').trim() + ' mat-' + key;
+    }
 
-        // const form = document.getElementById('popupForm');
+    // ── Real texture loader (AmbientCG — draw.html v4 TEX_URLS) ───
+    const TEX_URLS = {
+      white_paint:    null,
+      light_plaster:  null,
+      beige_plaster:  null,
+      grey_plaster:   null,
+      dark_paint:     null,
+      light_wood:     null,
+      medium_wood:    null,
+      dark_wood:      null,
+      white_marble:   null,
+      light_concrete: null,
+      raw_concrete:   null,
+      dark_stone:     null,
+      white_fabric:   null,
+      linen:          null,
+      dark_curtain:   null,
+      brushed_steel:  null,
+      polished_metal: null,
+      mirror:         null,
+      white_tile:     null,
+      terracotta:     null,
+      light_carpet:   null,
+      dark_carpet:    null,
+      clear_glass: null, frosted_glass: null, tinted_glass: null
+    };
 
-        // Run HTML5 validation first
-        // if (!form.checkValidity()) {
-        //     form.reportValidity();
-        //     return;
-        // }
+    const _texCache = {};
 
-        let all_results = await getResults();
-        // document.cookie = `results=${JSON.stringify(all_results)}`;
-        results = all_results.map((result) => ({
-            ...result,
-            luminaire: result["Luminaire"],
-            power: result["Power (W)"],
-            efficacy: result["Efficacy (lm/W)"],
-            fixtures: result["Fixtures"],
-            spacing_x: result["Spacing X (m)"],
-            spacing_y: result["Spacing Y (m)"],
-            avg_lux: result["Average Lux"],
-            uniformity: result["Uniformity"],
-            total_power: result["Total Power (W/H)"]
-        }));
+    function loadTex(key, cb) {
+      const url = TEX_URLS[key];
+      if (!url) { cb(null); return; }
+      if (_texCache[key] !== undefined) { cb(_texCache[key]); return; }
+      // No crossOrigin — display-only, no canvas pixel sampling needed
+      const img = new Image();
+      img.onload  = () => { _texCache[key] = url;  cb(url);  };
+      img.onerror = () => { _texCache[key] = null; cb(null); };
+      img.src = url;
+    }
 
-        // const data = {
-        //     project_name: document.querySelector('[for="project-name"] + input').value,
-        //     name: document.querySelector('[for="client-name"] + input').value,
-        //     company: document.querySelector('[for="company"] + input').value,
-        //     phone: document.querySelector('[for="phone"] + input').value,
-        //     email: document.getElementById("email").value,
-        //     place: document.getElementById("place").value,
-        //     sides: [
-        //         parseFloat(document.getElementById("a").value),
-        //         parseFloat(document.getElementById("b").value),
-        //         parseFloat(document.getElementById("c").value),
-        //         parseFloat(document.getElementById("d").value),
-        //     ],
-        //     height: parseFloat(document.getElementById("height").value),
-        //     results: results // Include the results from the calculation
-        // };
+    let texEnabled = true;
 
-        const data = {
-            project_name: "SC-LUXSCALE LedEXPO",
-            name: "SC-LUXSCALE developer at" + new Date().toISOString() + "",
-            company: "SC-LUXSCALE Short-Circuit Company at Middle-east LedEXPO",
-            phone: "01711223344",
-            email: "shortcircuitcompany@gmail.com",
-            place: document.getElementById("place").value,
-            sides: [
-                parseFloat(document.getElementById("a").value),
-                parseFloat(document.getElementById("b").value),
-                parseFloat(document.getElementById("c").value),
-                parseFloat(document.getElementById("d").value),
-            ],
-            height: parseFloat(document.getElementById("height").value),
-            results: results // Include the results from the calculation
-        };
-
-        // Check for equality
-        if (document.getElementById("a").value != document.getElementById("c").value || document.getElementById("b").value != document.getElementById("d").value) {
-            alert("Width 1 must equal Width 2 and Length 1 must equal Length 2 before proceeding.");
-            return; // stop execution
-        }
-
-        console.log("Submitting data:", data);
-        // Send the data to the server
-
-        const res = await fetch("http://localhost/sc-luxscaleai/api/submit.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
+    function applyRealTexture(elements, key) {
+      if (!texEnabled) return;
+      loadTex(key, url => {
+        if (!texEnabled) return;
+        elements.forEach(el => {
+          const td = el.querySelector('.mat-tex');
+          if (!td) return;
+          if (url) {
+            td.style.backgroundImage   = `url('${url}')`;
+            td.style.backgroundSize    = '200px 200px';
+            td.style.backgroundRepeat  = 'repeat';
+            td.style.backgroundPosition= '0 0';
+            td.style.opacity           = '0.55';
+            td.style.mixBlendMode      = 'multiply';
+          } else {
+            td.style.backgroundImage = td.style.backgroundSize = td.style.backgroundRepeat =
+            td.style.opacity = td.style.mixBlendMode = '';
+          }
         });
-
-        const json = await res.json();
-
-        console.log("Response from server:", json);
-
-        if (json.token) {
-            localStorage.setItem("user_token", json.token);
-            window.location.href = `results.html?token=${json.token}`;
-        } else {
-            alert("Error: " + json.error);
-        }
+      });
     }
 
-    async function getResults() {
-        // const data = {
-        //     place: document.getElementById("place").value,
-        //     sides: [
-        //         parseFloat(document.getElementById("a").value),
-        //         parseFloat(document.getElementById("b").value),
-        //         parseFloat(document.getElementById("c").value),
-        //         parseFloat(document.getElementById("d").value),
-        //     ],
-        //     height: parseFloat(document.getElementById("height").value),
-        //     project_info: {
-        //         project_name: document.querySelector('[for="project-name"] + input').value,
-        //         name: document.querySelector('[for="client-name"] + input').value,
-        //         company: document.querySelector('[for="company"] + input').value,
-        //         phone: document.querySelector('[for="phone"] + input').value,
-        //         email: document.getElementById("email").value
-        //     }
-        // };
+    function clearTextures() {
+      [wallA, wallB, wallC, wallD, floorEl].forEach(el => {
+        const td = el.querySelector('.mat-tex');
+        if (td) td.style.backgroundImage = td.style.backgroundSize = td.style.backgroundRepeat =
+          td.style.opacity = td.style.mixBlendMode = '';
+      });
+    }
 
-        const data = {
-            place: document.getElementById("place").value,
-            sides: [
-                parseFloat(document.getElementById("a").value),
-                parseFloat(document.getElementById("b").value),
-                parseFloat(document.getElementById("c").value),
-                parseFloat(document.getElementById("d").value),
-            ],
-            height: parseFloat(document.getElementById("height").value),
-            project_info: {
-                project_name: "SC-LUXSCALE",
-                name: "SC-LUXSCALE developer at" + new Date().toISOString() + "",
-                company: "SC-LUXSCALE Short-Circuit Company at Middle-east LedEXPO",
-                phone: "01711223344",
-                email: "shortcircuitcompany@gmail.com"
+    // ── Texture toggle ────────────────────────────────────────────
+    const texBtn   = document.getElementById('studioTexToggle');
+    const texLabel = document.getElementById('studioTexLabel');
+    texBtn.addEventListener('click', () => {
+      texEnabled = !texEnabled;
+      if (texEnabled) {
+        texBtn.style.color = '#eb1b26'; texBtn.style.borderColor = 'rgba(235,27,38,0.5)';
+        texLabel.textContent = 'TEX ON';
+        applyMaterials();
+      } else {
+        texBtn.style.color = 'rgba(255,255,255,0.4)'; texBtn.style.borderColor = 'rgba(255,255,255,0.15)';
+        texLabel.textContent = 'TEX OFF';
+        clearTextures();
+      }
+    });
+
+    // ── Apply materials (draw.html v4 applyMaterials) ─────────────
+    function applyMaterials() {
+      const wKey = document.getElementById('studioWallMat').value;
+      const fKey = document.getElementById('studioFloorMat').value;
+      const wBase = MAT_COLOR[wKey] || '#888';
+      const fBase = MAT_COLOR[fKey] || '#555';
+      const [cA, cB, cC, cD] = wallVariants(wBase);
+
+      // Color inputs + swatches
+      const set = (inputId, swatchId, el, col) => {
+        const inp = document.getElementById(inputId);
+        const sw  = document.getElementById(swatchId);
+        if (inp) inp.value = col;
+        if (sw)  sw.style.background = col;
+        if (el)  el.style.background = col;
+      };
+      set('colorWallA','swatchWallA', wallA,   cA);
+      set('colorWallB','swatchWallB', wallB,   cB);
+      set('colorWallC','swatchWallC', wallC,   cC);
+      set('colorWallD','swatchWallD', wallD,   cD);
+      set('colorFloor','swatchFloor', floorEl, fBase);
+
+      // Mat classes
+      setMatClass(wallA, wKey); setMatClass(wallB, wKey);
+      setMatClass(wallC, wKey); setMatClass(wallD, wKey);
+      setMatClass(floorEl, fKey);
+
+      // Reset CSS-pattern textures
+      [wallA, wallB, wallC, wallD, floorEl].forEach(el => {
+        const td = el.querySelector('.mat-tex');
+        if (td) td.style.backgroundImage = td.style.opacity = td.style.mixBlendMode = '';
+      });
+
+      // Real textures
+      applyRealTexture([wallA, wallB, wallC, wallD], wKey);
+      applyRealTexture([floorEl], fKey);
+
+      // Mat labels
+      const ws = MAT_SHORT[wKey] || wKey;
+      const fs = MAT_SHORT[fKey] || fKey;
+      ['wallAMatLabelMini','wallBMatLabelMini','wallCMatLabelMini','wallDMatLabelMini'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.textContent = ws;
+      });
+      const fml = document.getElementById('floorMatLabelMini');
+      if (fml) fml.textContent = fs;
+    }
+
+    document.getElementById('studioWallMat').addEventListener('change', applyMaterials);
+    document.getElementById('studioFloorMat').addEventListener('change', applyMaterials);
+
+    // ── Live color swatch sync ────────────────────────────────────
+    [['colorWallA','swatchWallA',wallA],['colorWallB','swatchWallB',wallB],
+     ['colorWallC','swatchWallC',wallC],['colorWallD','swatchWallD',wallD],
+     ['colorFloor','swatchFloor',floorEl]].forEach(([inpId,swId,el]) => {
+      const inp = document.getElementById(inpId);
+      const sw  = document.getElementById(swId);
+      if (!inp) return;
+      inp.addEventListener('input', () => {
+        if (sw) sw.style.background = inp.value;
+        if (el) el.style.background = inp.value;
+      });
+    });
+
+    // ── Scale & font sizing (draw.html v4) ────────────────────────
+    const CANVAS_TARGET = 340;
+
+    function computeScale(w, l, h) {
+      const longest = Math.max(w + 2*h, l + 2*h);
+      return Math.max(8, Math.min(160, CANVAS_TARGET / longest));
+    }
+
+    function scaledFont(shortSide, ratio, min, max) {
+      return Math.min(max, Math.max(min, shortSide * ratio));
+    }
+
+    function updatePanelFonts(wPx, lPx, hPx) {
+      const fShort = Math.min(wPx, lPx);
+      const fName = scaledFont(fShort, 0.13, 6, 18);
+      const fDims = scaledFont(fShort, 0.06, 4, 10);
+      const fMat  = scaledFont(fShort, 0.05, 4, 8);
+      floorEl.querySelector('.wall-name').style.fontSize = fName + 'px';
+      floorEl.querySelector('.wall-dims').style.fontSize = fDims + 'px';
+      const fml = floorEl.querySelector('.wall-mat-label');
+      if (fml) fml.style.fontSize = fMat + 'px';
+
+      const wShort = Math.min(wPx, hPx);
+      const wName = scaledFont(wShort, 0.18, 6, 20);
+      const wDims = scaledFont(wShort, 0.07, 4, 10);
+      const wMat  = scaledFont(wShort, 0.055, 4, 8);
+      [wallA, wallB].forEach(el => {
+        el.querySelector('.wall-name').style.fontSize = wName + 'px';
+        el.querySelector('.wall-dims').style.fontSize = wDims + 'px';
+        const m = el.querySelector('.wall-mat-label'); if (m) m.style.fontSize = wMat + 'px';
+      });
+
+      const cShort = Math.min(hPx, lPx);
+      const cName = scaledFont(cShort, 0.18, 6, 20);
+      const cDims = scaledFont(cShort, 0.07, 4, 10);
+      const cMat  = scaledFont(cShort, 0.055, 4, 8);
+      [wallC, wallD].forEach(el => {
+        el.querySelector('.wall-name').style.fontSize = cName + 'px';
+        el.querySelector('.wall-dims').style.fontSize = cDims + 'px';
+        const m = el.querySelector('.wall-mat-label'); if (m) m.style.fontSize = cMat + 'px';
+      });
+    }
+
+    // ── Zoom ─────────────────────────────────────────────────────
+    let userZoom = 1.0;
+    let autoFit  = 1.0;
+    let busy = false;
+
+    function applyZoom() {
+      if (!projWrap) return;
+      const combined = autoFit * userZoom;
+      projWrap.style.transform = 'scale(' + combined + ')';
+      if (zoomBadge) zoomBadge.textContent = Math.round(userZoom * 100) + '%';
+    }
+
+    // Intercept auto-fit writes from script.js
+    if (projWrap && window.MutationObserver) {
+      new MutationObserver(mutations => {
+        if (busy) return;
+        mutations.forEach(m => {
+          if (m.attributeName === 'style') {
+            const raw = projWrap.style.transform;
+            const match = raw.match(/^scale\(([\d.]+)\)$/);
+            if (match) {
+              const newFit = parseFloat(match[1]);
+              if (Math.abs(newFit - autoFit * userZoom) > 0.001) {
+                autoFit = newFit;
+                busy = true; applyZoom(); busy = false;
+              }
             }
-        };
-
-        console.log("Sending to API:", getCalculateApiUrl(), data);
-
-        const res = await fetch(getCalculateApiUrl(), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
+          }
         });
-
-        if (!res.ok) {
-            const errText = await res.text();
-            console.error("API error:", errText);
-            throw new Error(`API returned ${res.status}`);
-            alert("Widthes and heights are not same");
-            return;
-        }
-
-        const json = await res.json();
-        if (!Array.isArray(json.results)) {
-            throw new Error("No results array in API response");
-        }
-
-        document.cookie = `results=${JSON.stringify(json.results)}`;
-        return json.results;
+      }).observe(projWrap, { attributes: true, attributeFilter: ['style'] });
     }
 
-    </script>
+    function autoFitZoom(wPx, lPx, hPx) {
+      const crossW = wPx + 2*hPx + 20;
+      const crossH = lPx + 2*hPx + 20;
+      const canvasEl = document.getElementById('canvasScrollMini');
+      if (!canvasEl) return;
+      const vw = canvasEl.clientWidth  - 120;
+      const vh = canvasEl.clientHeight - 120;
+      if (vw <= 0 || vh <= 0) return;
+      autoFit = Math.max(0.2, Math.min(parseFloat((Math.min(vw/crossW, vh/crossH)).toFixed(2)), 2.5));
+      userZoom = 1.0;
+      busy = true; applyZoom(); busy = false;
+    }
+
+    document.getElementById('miniZoomIn').addEventListener('click', () => { userZoom = Math.min(userZoom + 0.15, 3); applyZoom(); });
+    document.getElementById('miniZoomOut').addEventListener('click', () => { userZoom = Math.max(userZoom - 0.15, 0.2); applyZoom(); });
+    document.getElementById('miniZoomReset').addEventListener('click', () => { userZoom = 1.0; applyZoom(); });
+    document.getElementById('canvasScrollMini').addEventListener('wheel', e => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        userZoom = Math.min(Math.max(userZoom - e.deltaY * 0.001, 0.2), 3);
+        applyZoom();
+      }
+    }, { passive: false });
+
+    // ── Main draw update (draw.html v4 updateDraw) ────────────────
+    function updateDraw() {
+      const w = dimA(), l = dimB(), w2 = dimC(), l2 = dimD(), h = dimH();
+      if (!w || !l || !h) return;
+
+      const fmt = v => v % 1 === 0 ? v.toFixed(0) : v.toFixed(1);
+      const scale = computeScale(Math.max(w,w2), Math.max(l,l2), h);
+
+      const wPx  = Math.round(w  * scale);
+      const lPx  = Math.round(l  * scale);
+      const w2Px = Math.round(w2 * scale);
+      const l2Px = Math.round(l2 * scale);
+      const hPx  = Math.round(h  * scale);
+
+      const colorA = document.getElementById('colorWallA').value;
+      const colorB = document.getElementById('colorWallB').value;
+      const colorC = document.getElementById('colorWallC').value;
+      const colorD = document.getElementById('colorWallD').value;
+      const colorF = document.getElementById('colorFloor').value;
+
+      // Floor
+      floorEl.style.width  = wPx + 'px';
+      floorEl.style.height = lPx + 'px';
+      floorEl.style.background = colorF;
+      floorEl.querySelector('.wall-dims').textContent = `${fmt(w)}×${fmt(l)}m`;
+
+      // Wall A (top)
+      wallA.style.width  = wPx + 'px';
+      wallA.style.height = hPx + 'px';
+      wallA.style.background = colorA;
+      wallA.querySelector('.wall-dims').textContent = `${fmt(w)}×${fmt(h)}m`;
+
+      // Wall B (bottom) — side 3 width
+      wallB.style.width  = w2Px + 'px';
+      wallB.style.height = hPx + 'px';
+      wallB.style.background = colorB;
+      wallB.querySelector('.wall-dims').textContent = `${fmt(w2)}×${fmt(h)}m`;
+
+      // Wall C (left) — side 2 height
+      wallC.style.width  = hPx + 'px';
+      wallC.style.height = lPx + 'px';
+      wallC.style.background = colorC;
+      wallC.querySelector('.wall-dims').textContent = `${fmt(h)}×${fmt(l)}`;
+
+      // Wall D (right) — side 4 height
+      wallD.style.width  = hPx + 'px';
+      wallD.style.height = l2Px + 'px';
+      wallD.style.background = colorD;
+      wallD.querySelector('.wall-dims').textContent = `${fmt(h)}×${fmt(l2)}`;
+
+      // Dim labels
+      const wLine = document.getElementById('widthLineMini');
+      const lLine = document.getElementById('lengthLineMini');
+      if (wLine) {
+        wLine.querySelector('.dim-label').textContent = `W: ${fmt(w)}m`;
+        wLine.querySelector('.dim-line').style.width = wPx + 'px';
+      }
+      if (lLine) {
+        lLine.querySelector('.dim-label').textContent = `L: ${fmt(l)}m`;
+        lLine.querySelector('.dim-line').style.height = lPx + 'px';
+      }
+
+      updatePanelFonts(wPx, lPx, hPx);
+      requestAnimationFrame(() => autoFitZoom(wPx, lPx, hPx));
+
+      // Stats
+      const floorArea    = (w * l).toFixed(2);
+      const surfaceTotal = (2*(w*l) + 2*(w*h) + 2*(l*h)).toFixed(2);
+      const volume       = (w * l * h).toFixed(2);
+      const sa = document.getElementById('miniStatArea');
+      const ss = document.getElementById('miniStatSurface');
+      const sv = document.getElementById('miniStatVol');
+      if (sa) sa.textContent = floorArea    + ' m²';
+      if (ss) ss.textContent = surfaceTotal + ' m²';
+      if (sv) sv.textContent = volume       + ' m³';
+    }
+
+    // Hook dimension inputs
+    ['dimA','dimB','dimC','dimD','dimHeight'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', updateDraw);
+    });
+
+    // Init
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => { applyMaterials(); updateDraw(); });
+    } else {
+      applyMaterials(); updateDraw();
+    }
+
+  })();
+  </script>
+
+  <!-- ═══ PHASE 2: MATERIAL PICKER PANEL ══════════════════════════════ -->
+  <div id="matPickerPanel">
+    <div class="mpp-header">
+      <div class="mpp-title">MATERIALS <span class="mpp-surface-tag" id="mppSurfaceTag">WALLS</span></div>
+      <button class="mpp-close" onclick="closeMatPicker()"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="mpp-surface-selector">
+      <button class="mpp-surf-btn active" data-surf="walls"   onclick="switchSurface('walls')">Walls</button>
+      <button class="mpp-surf-btn"        data-surf="ceiling" onclick="switchSurface('ceiling')">Ceiling</button>
+      <button class="mpp-surf-btn"        data-surf="floor"   onclick="switchSurface('floor')">Floor</button>
+    </div>
+    <div class="mpp-tabs">
+      <button class="mpp-tab active" onclick="switchMppTab('library',this)">Library</button>
+      <button class="mpp-tab"        onclick="switchMppTab('upload',this)">Upload</button>
+      <button class="mpp-tab"        onclick="switchMppTab('ambientcg',this)">AmbientCG</button>
+    </div>
+    <div class="mpp-search-wrap" id="mppSearchWrap">
+      <span class="mpp-search-icon material-symbols-outlined">search</span>
+      <input class="mpp-search" id="mppSearch" type="text" placeholder="Search materials…" oninput="filterMppGrid(this.value)"/>
+    </div>
+    <div class="mpp-body">
+      <!-- LIBRARY TAB -->
+      <div class="mpp-tab-panel active" id="mppPanelLibrary">
+        <div class="mpp-cat-label">Painted / Plaster</div><div class="mpp-grid" id="mppGridPlaster"></div>
+        <div class="mpp-cat-label">Brick &amp; Stone</div><div class="mpp-grid" id="mppGridBrick"></div>
+        <div class="mpp-cat-label">Wood &amp; Panelling</div><div class="mpp-grid" id="mppGridWood"></div>
+        <div class="mpp-cat-label">Marble &amp; Luxury</div><div class="mpp-grid" id="mppGridMarble"></div>
+        <div class="mpp-cat-label">Concrete &amp; Stone</div><div class="mpp-grid" id="mppGridConcrete"></div>
+        <div class="mpp-cat-label">Tile &amp; Decorative</div><div class="mpp-grid" id="mppGridTile"></div>
+        <div class="mpp-cat-label">Fabric / Soft</div><div class="mpp-grid" id="mppGridFabric"></div>
+        <div class="mpp-cat-label">Metal / Reflective</div><div class="mpp-grid" id="mppGridMetal"></div>
+        <div class="mpp-cat-label">Glass</div><div class="mpp-grid" id="mppGridGlass"></div>
+        <div class="mpp-cat-label">Carpet</div><div class="mpp-grid" id="mppGridCarpet"></div>
+      </div>
+      <!-- UPLOAD TAB -->
+      <div class="mpp-tab-panel" id="mppPanelUpload">
+        <div class="mpp-upload-zone" id="mppDropZone">
+          <div class="uz-icon"><span class="material-symbols-outlined" style="font-size:32px;color:rgba(255,255,255,0.2)">upload_file</span></div>
+          <div class="uz-text">Drag &amp; drop texture image</div>
+          <div class="uz-hint">JPG · PNG · WEBP — any diffuse/color map</div>
+          <input type="file" id="mppFileInput" accept="image/*" style="display:none"/>
+        </div>
+        <div class="mpp-computing" id="mppComputing"><div class="mpp-spinner"></div><span>Computing ρ from texture…</span></div>
+        <div class="mpp-upload-preview" id="mppUploadPreview">
+          <img class="mpp-up-img" id="mppUploadImg" src="" alt="texture"/>
+          <div class="mpp-up-meta">
+            <span class="mpp-up-name" id="mppUploadName">custom.jpg</span>
+            <div class="mpp-up-rho-wrap"><div class="mpp-up-rho" id="mppUploadRho">—</div><div class="mpp-up-rho-label">ρ computed</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- AMBIENTCG TAB -->
+      <div class="mpp-tab-panel" id="mppPanelAmbientcg">
+        <div class="mpp-url-row" style="margin-bottom:7px;">
+          <input class="mpp-url-input" id="mppAcgSearchInput" type="text" placeholder="wood, concrete, tiles…" onkeydown="if(event.key==='Enter') acgSearch()"/>
+          <button class="mpp-url-btn" onclick="acgSearch()"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;">search</span></button>
+        </div>
+        <div id="acgCategoryChips" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;">
+          <button class="acg-chip acg-chip-active" data-q="">All</button>
+          <button class="acg-chip" data-q="wood">Wood</button>
+          <button class="acg-chip" data-q="concrete">Concrete</button>
+          <button class="acg-chip" data-q="tiles">Tiles</button>
+          <button class="acg-chip" data-q="marble">Marble</button>
+          <button class="acg-chip" data-q="plaster">Plaster</button>
+          <button class="acg-chip" data-q="fabric">Fabric</button>
+          <button class="acg-chip" data-q="metal">Metal</button>
+          <button class="acg-chip" data-q="brick">Brick</button>
+          <button class="acg-chip" data-q="carpet">Carpet</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
+          <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,0.3);" id="acgResultCount"></span>
+          <select id="acgSortSel" onchange="acgSearch()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:5px;color:rgba(255,255,255,0.5);font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:3px 6px;outline:none;cursor:pointer;">
+            <option value="popular">Popular</option><option value="latest">Latest</option><option value="downloads">Downloads</option>
+          </select>
+        </div>
+        <div class="mpp-computing" id="mppAcgComputing"><div class="mpp-spinner"></div><span id="mppAcgStatus">Searching…</span></div>
+        <div id="acgResultsGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px;"></div>
+        <button id="acgLoadMoreBtn" onclick="acgLoadMore()" style="display:none;width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:5px;color:rgba(255,255,255,0.4);font-family:'Poppins',sans-serif;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:8px;cursor:pointer;margin-bottom:8px;">Load More ↓</button>
+        <div id="mppAcgPreview" class="mpp-upload-preview">
+          <img class="mpp-up-img" id="mppAcgImg" src="" alt="acg texture"/>
+          <div class="mpp-up-meta">
+            <div><span class="mpp-up-name" id="mppAcgName">—</span><div style="font-size:9px;color:rgba(255,255,255,0.25);margin-top:2px;" id="mppAcgTags"></div></div>
+            <div class="mpp-up-rho-wrap"><div class="mpp-up-rho" id="mppAcgRho">—</div><div class="mpp-up-rho-label">ρ computed</div></div>
+          </div>
+        </div>
+        <p style="font-size:9px;color:rgba(255,255,255,0.2);line-height:1.5;margin-top:6px;">CC0 Public Domain — ambientcg.com</p>
+      </div>
+    </div>
+    <div class="mpp-rho-bar">
+      <div class="mpp-rho-label">Selected Material Reflectance</div>
+      <div class="mpp-rho-row">
+        <span class="mpp-rho-value" id="mppRhoValue">0.60</span>
+        <span class="mpp-rho-name" id="mppRhoName">Beige Plaster</span>
+      </div>
+      <div class="rho-track"><div class="rho-fill" id="mppRhoFill" style="width:60%"></div></div>
+    </div>
+    <div class="mpp-footer">
+      <button class="mpp-apply-btn" onclick="applyPickedMaterial()">
+        <span class="material-symbols-outlined" style="font-size:17px">check_circle</span>APPLY TO SURFACE
+      </button>
+    </div>
+  </div>
+  <div class="mpp-toast" id="mppToast"><div class="toast-dot"></div><span id="mppToastText">Applied</span></div>
+
+  <script>
+  // ═══════════════════════════════════════════════════════════════════
+  // LUXSCALEAI INDEX — MATERIAL PICKER + REFLECTANCE ENGINE (Phase 2)
+  // ═══════════════════════════════════════════════════════════════════
+
+  // ── TEX_URLS (AmbientCG color maps for library presets) ─────────────
+  const _IDX_TEX_URLS = {
+    white_paint:    null,
+    light_plaster:  null,
+    beige_plaster:  null,
+    grey_plaster:   null,
+    dark_paint:     null,
+    light_wood:     null,
+    medium_wood:    null,
+    dark_wood:      null,
+    white_marble:   null,
+    light_concrete: null,
+    raw_concrete:   null,
+    dark_stone:     null,
+    white_fabric:   null,
+    linen:          null,
+    dark_curtain:   null,
+    brushed_steel:  null,
+    polished_metal: null,
+    mirror:         null,
+    white_tile:     null,
+    terracotta:     null,
+    light_carpet:   null,
+    dark_carpet:    null,
+  };
+
+  // ── Material Library ────────────────────────────────────────────────
+  const _IDX_MAT_LIB = {
+    plaster:  [{key:'white_paint',name:'White Paint',rho:0.80,color:'#e8e4dc'},{key:'light_plaster',name:'Light Plaster',rho:0.70,color:'#d4c9b0'},{key:'beige_plaster',name:'Beige Plaster',rho:0.60,color:'#c2a86a'},{key:'grey_plaster',name:'Grey Plaster',rho:0.45,color:'#8a8880'},{key:'dark_paint',name:'Dark Paint',rho:0.20,color:'#2a2622'}],
+    brick:    [{key:'red_brick',name:'Red Brick',rho:0.30,color:'#a0442a'},{key:'old_brick',name:'Old Brick',rho:0.22,color:'#7a3820'},{key:'white_brick',name:'White Brick',rho:0.65,color:'#dcd8ce'},{key:'stone_wall',name:'Natural Stone',rho:0.28,color:'#7a7060'}],
+    wood:     [{key:'light_wood',name:'Light Wood',rho:0.50,color:'#c8a05a'},{key:'medium_wood',name:'Medium Wood',rho:0.35,color:'#8b5e2a'},{key:'dark_wood',name:'Dark Wood',rho:0.15,color:'#3a2210'},{key:'shiplap_white',name:'Shiplap',rho:0.78,color:'#e0dcd4'},{key:'herringbone_wood',name:'Herringbone',rho:0.38,color:'#9a7240'}],
+    marble:   [{key:'white_marble',name:'White Marble',rho:0.72,color:'#ece8e0'},{key:'grey_marble',name:'Grey Marble',rho:0.55,color:'#a8a4a0'},{key:'gold_marble',name:'Travertine',rho:0.48,color:'#c8a858'}],
+    concrete: [{key:'light_concrete',name:'Light Concrete',rho:0.40,color:'#9a9890'},{key:'raw_concrete',name:'Raw Concrete',rho:0.25,color:'#706e6a'},{key:'dark_stone',name:'Dark Slate',rho:0.12,color:'#2c2a28'}],
+    tile:     [{key:'white_tile',name:'White Tile',rho:0.78,color:'#dcdad4'},{key:'subway_tile',name:'Subway Tile',rho:0.72,color:'#d8d6d0'},{key:'zellige',name:'Zellige',rho:0.42,color:'#5878a0'},{key:'terracotta',name:'Terracotta',rho:0.28,color:'#a05838'},{key:'checkered',name:'Checker',rho:0.60,color:'#c8c4bc'}],
+    fabric:   [{key:'white_fabric',name:'White Fabric',rho:0.75,color:'#dedad2'},{key:'linen',name:'Linen',rho:0.55,color:'#b8a880'},{key:'dark_curtain',name:'Dark Curtain',rho:0.10,color:'#1e1c1a'}],
+    metal:    [{key:'brushed_steel',name:'Brushed Steel',rho:0.65,color:'#9098a0'},{key:'polished_metal',name:'Polished Metal',rho:0.85,color:'#b8c0c8'},{key:'mirror',name:'Mirror',rho:0.92,color:'#c8d4e0'}],
+    glass:    [{key:'clear_glass',name:'Clear Glass',rho:0.08,color:'#aab8c8'},{key:'frosted_glass',name:'Frosted Glass',rho:0.30,color:'#b8c4cc'},{key:'tinted_glass',name:'Tinted Glass',rho:0.18,color:'#4a6040'}],
+    carpet:   [{key:'light_carpet',name:'Light Carpet',rho:0.45,color:'#c0b498'},{key:'dark_carpet',name:'Dark Carpet',rho:0.12,color:'#2e2820'}],
+  };
+  const _IDX_GRID_IDS = {plaster:'mppGridPlaster',brick:'mppGridBrick',wood:'mppGridWood',marble:'mppGridMarble',concrete:'mppGridConcrete',tile:'mppGridTile',fabric:'mppGridFabric',metal:'mppGridMetal',glass:'mppGridGlass',carpet:'mppGridCarpet'};
+  const _IDX_MAT_BY_KEY = {};
+  Object.values(_IDX_MAT_LIB).flat().forEach(m => _IDX_MAT_BY_KEY[m.key] = m);
+
+  // ── Per-surface state (exposed globally for core-integration.js) ────
+  window._surfState = {
+    walls:   {key:'beige_plaster', name:'Beige Plaster', rho:0.60, color:'#c2a86a', texUrl:null},
+    ceiling: {key:'white_paint',   name:'White Paint',   rho:0.80, color:'#e8e4dc', texUrl:null},
+    floor:   {key:'medium_wood',   name:'Medium Wood',   rho:0.35, color:'#8b5e2a', texUrl:null},
+  };
+
+  let _mppSurface  = 'walls';
+  let _mppSelected = null;
+  let _mppTab      = 'library';
+  let _acgQuery='', _acgOffset=0, _acgPending=false;
+  const ACG_PAGE=12;
+
+  // ── Build library grids ─────────────────────────────────────────────
+  function _buildMppGrids() {
+    Object.entries(_IDX_MAT_LIB).forEach(([cat, mats]) => {
+      const grid = document.getElementById(_IDX_GRID_IDS[cat]);
+      if (!grid) return;
+      grid.innerHTML = '';
+      mats.forEach(mat => {
+        const texUrl = _IDX_TEX_URLS[mat.key] || null;
+        const card = document.createElement('div');
+        card.className = 'mpp-mat-card';
+        card.dataset.key = mat.key;
+        card.innerHTML = `
+          <div class="mpp-mat-preview">
+            <div class="mpp-mat-preview-color" style="background:${mat.color}"></div>
+            ${texUrl ? `<div style="position:absolute;inset:0;background-image:url('${texUrl}');background-size:120px;background-repeat:repeat;opacity:0.65;mix-blend-mode:multiply;"></div>` : ''}
+          </div>
+          <div class="mpp-mat-info">
+            <div class="mpp-mat-name">${mat.name}</div>
+            <div class="mpp-mat-rho">ρ <span>${mat.rho.toFixed(2)}</span></div>
+          </div>`;
+        card.addEventListener('click', () => _selectLibMat(mat));
+        grid.appendChild(card);
+      });
+    });
+  }
+
+  // ── Open / Close ────────────────────────────────────────────────────
+  function openMatPicker(surface) {
+    _mppSurface = surface;
+    _updateSurfBtns();
+    _syncSelFromState();
+    document.getElementById('matPickerPanel').classList.add('open');
+    document.getElementById('mppSearch').value = '';
+    filterMppGrid('');
+  }
+  function closeMatPicker() {
+    document.getElementById('matPickerPanel').classList.remove('open');
+  }
+  function switchSurface(surf) {
+    _mppSurface = surf;
+    _updateSurfBtns();
+    _syncSelFromState();
+  }
+  function _updateSurfBtns() {
+    document.querySelectorAll('.mpp-surf-btn').forEach(b => b.classList.toggle('active', b.dataset.surf === _mppSurface));
+    document.getElementById('mppSurfaceTag').textContent = _mppSurface.toUpperCase();
+  }
+  function _syncSelFromState() {
+    const s = window._surfState[_mppSurface];
+    _mppSelected = s ? {...s} : null;
+    _updateRhoReadout(_mppSelected);
+    document.querySelectorAll('.mpp-mat-card').forEach(c => c.classList.toggle('selected', s && c.dataset.key === s.key));
+  }
+
+  // ── Tab switching ───────────────────────────────────────────────────
+  function switchMppTab(tab, btn) {
+    _mppTab = tab;
+    document.querySelectorAll('.mpp-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.mpp-tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('mppPanel' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+    document.getElementById('mppSearchWrap').style.display = tab === 'library' ? '' : 'none';
+    if (tab === 'ambientcg' && !document.getElementById('acgResultsGrid').children.length) {
+      _acgRunSearch(true);
+    }
+  }
+
+  // ── Filter ──────────────────────────────────────────────────────────
+  function filterMppGrid(q) {
+    q = q.toLowerCase().trim();
+    document.querySelectorAll('.mpp-mat-card').forEach(c => {
+      c.style.display = (!q || c.querySelector('.mpp-mat-name').textContent.toLowerCase().includes(q)) ? '' : 'none';
+    });
+    document.querySelectorAll('.mpp-cat-label').forEach(lbl => {
+      const grid = lbl.nextElementSibling;
+      if (!grid) return;
+      const vis = Array.from(grid.querySelectorAll('.mpp-mat-card')).some(c => c.style.display !== 'none');
+      lbl.style.display = grid.style.display = vis ? '' : 'none';
+    });
+  }
+
+  // ── Select library material ─────────────────────────────────────────
+  function _selectLibMat(mat) {
+    _mppSelected = {key:mat.key, name:mat.name, rho:mat.rho, color:mat.color, texUrl:_IDX_TEX_URLS[mat.key]||null};
+    document.querySelectorAll('.mpp-mat-card').forEach(c => c.classList.toggle('selected', c.dataset.key === mat.key));
+    _updateRhoReadout(_mppSelected);
+  }
+
+  // ── ρ readout ───────────────────────────────────────────────────────
+  function _updateRhoReadout(mat) {
+    if (!mat) return;
+    document.getElementById('mppRhoValue').textContent = mat.rho.toFixed(2);
+    document.getElementById('mppRhoName').textContent  = mat.name || mat.key;
+    document.getElementById('mppRhoFill').style.width  = (mat.rho * 100) + '%';
+  }
+
+  // ── Apply to surface ────────────────────────────────────────────────
+  function applyPickedMaterial() {
+    if (!_mppSelected) return;
+    window._surfState[_mppSurface] = {..._mppSelected};
+    _updateTriggerBtn(_mppSurface, _mppSelected);
+    // Sync canvas engine's hidden selects if key matches a preset
+    if (_mppSurface === 'walls' || _mppSurface === 'ceiling') {
+      const sel = document.getElementById('studioWallMat');
+      if (sel) { sel.value = _mppSelected.key; sel.dispatchEvent(new Event('change')); }
+    }
+    if (_mppSurface === 'floor') {
+      const sel = document.getElementById('studioFloorMat');
+      if (sel) { sel.value = _mppSelected.key; sel.dispatchEvent(new Event('change')); }
+    }
+    _updateRoomPhysics();
+    _showToast('✓ ' + _mppSelected.name + ' → ' + _mppSurface);
+    closeMatPicker();
+  }
+
+  function _updateTriggerBtn(surface, mat) {
+    const swatchId = {walls:'wallMatSwatch', ceiling:'ceilingMatSwatch', floor:'floorMatSwatch'}[surface];
+    const labelId  = {walls:'wallMatTriggerLabel', ceiling:'ceilingMatTriggerLabel', floor:'floorMatTriggerLabel'}[surface];
+    const rhoId    = {walls:'wallMatRhoLabel', ceiling:'ceilingMatRhoLabel', floor:'floorMatRhoLabel'}[surface];
+    const sw = document.getElementById(swatchId);
+    if (sw) {
+      sw.style.background = mat.color;
+      sw.style.backgroundImage = mat.texUrl ? `url('${mat.texUrl}')` : '';
+      sw.style.backgroundSize = '40px 40px';
+    }
+    const lbl = document.getElementById(labelId);
+    if (lbl) lbl.textContent = mat.name;
+    const rho = document.getElementById(rhoId);
+    if (rho) rho.textContent = 'ρ ' + mat.rho.toFixed(2);
+    // Also update canvas wall colors via colorWallA proxy
+    if (surface === 'walls') {
+      ['colorWallA','colorWallB','colorWallC','colorWallD'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.value = mat.color; el.dispatchEvent(new Event('input')); }
+      });
+    }
+    if (surface === 'floor') {
+      const el = document.getElementById('colorFloor');
+      if (el) { el.value = mat.color; el.dispatchEvent(new Event('input')); }
+    }
+  }
+
+  // ── Room physics (geometry-weighted IRF) ────────────────────────────
+  function _updateRoomPhysics() {
+    const w = parseFloat(document.getElementById('dimA')?.value) || 4;
+    const l = parseFloat(document.getElementById('dimB')?.value) || 3;
+    const h = parseFloat(document.getElementById('dimHeight')?.value) || 3;
+    const A_fl = w*l, A_ce = w*l, A_wa = 2*w*h + 2*l*h, A_tot = A_fl + A_ce + A_wa;
+    const rho_w = window._surfState.walls.rho;
+    const rho_c = window._surfState.ceiling.rho;
+    const rho_f = window._surfState.floor.rho;
+    const rho_bar = (rho_f*A_fl + rho_c*A_ce + rho_w*A_wa) / A_tot;
+    const irf = Math.max(0, Math.min(0.40, rho_bar * 0.232));
+    // Update physics strip
+    const rd = document.getElementById('rhoAvgDisplay');
+    const rb = document.getElementById('rhoAvgBar');
+    const id = document.getElementById('irfDisplay');
+    if (rd) rd.textContent = rho_bar.toFixed(2);
+    if (rb) rb.style.width = (rho_bar * 100).toFixed(1) + '%';
+    if (id) id.textContent = (irf * 100).toFixed(1) + '%';
+    // Keep LuxScalePhysics in sync for core-integration.js
+    window.LuxScalePhysics = {rho_walls:rho_w, rho_ceiling:rho_c, rho_floor:rho_f, rho_bar, irf, A_floor:A_fl, A_ceiling:A_ce, A_walls:A_wa};
+  }
+
+  // ── Reflectance extractor — Canvas §5A/B/C ──────────────────────────
+  function _rhoFromImgEl(imgEl) {
+    return new Promise(resolve => {
+      try {
+        const cv = document.createElement('canvas');
+        cv.width = 64; cv.height = 64;
+        const ctx = cv.getContext('2d');
+        ctx.drawImage(imgEl, 0, 0, 64, 64);
+        const d = ctx.getImageData(0, 0, 64, 64).data;
+        let s = 0, n = 0;
+        for (let i = 0; i < d.length; i += 4) {
+          s += 0.2126*Math.pow(d[i]/255, 2.2) + 0.7152*Math.pow(d[i+1]/255, 2.2) + 0.0722*Math.pow(d[i+2]/255, 2.2);
+          n++;
+        }
+        resolve(n > 0 ? Math.min(1, Math.max(0, s/n)) : 0.5);
+      } catch(e) { resolve(0.5); }
+    });
+  }
+
+  // Roughness correction — name-based estimate (no proxy/CDN needed)
+  // Rough surfaces scatter light → lower effective ρ; metals are mostly specular
+  function _rhoWithRoughnessCorrection(rho_color, acgId, matName) {
+    const name = (matName || acgId || '').toLowerCase();
+    const isMetal    = /metal|steel|iron|copper|brass|chrome|mirror/.test(name);
+    const isRough    = /concrete|brick|rock|stone|asphalt|rough|raw|gravel/.test(name);
+    const isSmooth   = /marble|tile|polished|mirror|glass|lacquer/.test(name);
+    if (isMetal)  return Promise.resolve(Math.min(rho_color, 0.15 + rho_color * 0.1));
+    if (isRough)  return Promise.resolve(Math.max(0, rho_color * 0.82));
+    if (isSmooth) return Promise.resolve(Math.min(1, rho_color * 1.05));
+    return Promise.resolve(rho_color); // neutral — no correction
+  }
+
+  function _avgColorFromCanvas(imgEl) {
+    const cv = document.createElement('canvas');
+    cv.width = 4; cv.height = 4;
+    cv.getContext('2d').drawImage(imgEl, 0, 0, 4, 4);
+    const d = cv.getContext('2d').getImageData(0, 0, 4, 4).data;
+    let r=0,g=0,b=0;
+    for (let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];}
+    const n = d.length/4;
+    const hx = v => Math.round(v/n).toString(16).padStart(2,'0');
+    return '#'+hx(r)+hx(g)+hx(b);
+  }
+
+  // ── Upload handler ───────────────────────────────────────────────────
+  const _dropZone  = document.getElementById('mppDropZone');
+  const _fileInput = document.getElementById('mppFileInput');
+  _dropZone.addEventListener('click', () => _fileInput.click());
+  _dropZone.addEventListener('dragover', e => { e.preventDefault(); _dropZone.classList.add('dragover'); });
+  _dropZone.addEventListener('dragleave', () => _dropZone.classList.remove('dragover'));
+  _dropZone.addEventListener('drop', e => {
+    e.preventDefault(); _dropZone.classList.remove('dragover');
+    const f = e.dataTransfer.files[0];
+    if (f && f.type.startsWith('image/')) _processUploadedFile(f);
+  });
+  _fileInput.addEventListener('change', () => { if (_fileInput.files[0]) _processUploadedFile(_fileInput.files[0]); });
+
+  function _processUploadedFile(file) {
+    document.getElementById('mppComputing').classList.add('visible');
+    document.getElementById('mppUploadPreview').classList.remove('visible');
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = async () => {
+        const rho = await _rhoFromImgEl(img);
+        document.getElementById('mppComputing').classList.remove('visible');
+        document.getElementById('mppUploadImg').src = e.target.result;
+        document.getElementById('mppUploadName').textContent = file.name.slice(0, 28);
+        document.getElementById('mppUploadRho').textContent  = rho.toFixed(3);
+        document.getElementById('mppUploadPreview').classList.add('visible');
+        _mppSelected = {key:'custom_'+Date.now(), name:file.name.replace(/\.[^.]+$/,''), rho, color:_avgColorFromCanvas(img), texUrl:e.target.result};
+        _updateRhoReadout(_mppSelected);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── AmbientCG Local Catalogue — no API, no CORS, no proxy ───────────
+  const _ACG_CATALOGUE = [
+    {id:'Concrete001',tags:['concrete','grey','rough'],    color:'#9a9a9a',rhoEst:0.45},
+    {id:'Concrete004',tags:['concrete','grey','textured'], color:'#8e8e8e',rhoEst:0.43},
+    {id:'Concrete007',tags:['concrete','dark','rough'],    color:'#686868',rhoEst:0.35},
+    {id:'Concrete010',tags:['concrete','light','smooth'],  color:'#b8b8b8',rhoEst:0.55},
+    {id:'Concrete016',tags:['concrete','worn','grey'],     color:'#929292',rhoEst:0.44},
+    {id:'Concrete025',tags:['concrete','polished'],        color:'#a8a8a8',rhoEst:0.50},
+    {id:'Concrete034',tags:['concrete','rough','dark'],    color:'#707070',rhoEst:0.38},
+    {id:'Concrete048',tags:['concrete','grey'],            color:'#969696',rhoEst:0.46},
+    {id:'Wood004',    tags:['wood','oak','grain'],         color:'#c8a06a',rhoEst:0.38},
+    {id:'Wood007',    tags:['wood','pine','light'],        color:'#d4b87a',rhoEst:0.42},
+    {id:'Wood010',    tags:['wood','dark','walnut'],       color:'#6a4830',rhoEst:0.22},
+    {id:'Wood016',    tags:['wood','plank','natural'],     color:'#b89060',rhoEst:0.36},
+    {id:'Wood026',    tags:['wood','panel','medium'],      color:'#a07850',rhoEst:0.32},
+    {id:'Wood035',    tags:['wood','floor','parquet'],     color:'#c09060',rhoEst:0.38},
+    {id:'Wood049',    tags:['wood','birch','pale'],        color:'#dcc8a0',rhoEst:0.48},
+    {id:'WoodFloor007',tags:['wood','floor','herringbone'],color:'#b88858',rhoEst:0.35},
+    {id:'WoodFloor009',tags:['wood','floor','dark'],       color:'#785040',rhoEst:0.25},
+    {id:'Tiles006',   tags:['tile','ceramic','white'],     color:'#e8e8e8',rhoEst:0.72},
+    {id:'Tiles008',   tags:['tile','square','grey'],       color:'#c0c0c0',rhoEst:0.58},
+    {id:'Tiles012',   tags:['tile','marble','white'],      color:'#e0dcd8',rhoEst:0.68},
+    {id:'Tiles020',   tags:['tile','hexagon','grey'],      color:'#b0b0b0',rhoEst:0.55},
+    {id:'Tiles029',   tags:['tile','terracotta'],          color:'#c07858',rhoEst:0.42},
+    {id:'Tiles046',   tags:['tile','mosaic'],              color:'#8090a8',rhoEst:0.38},
+    {id:'Tiles063',   tags:['tile','dark'],                color:'#404040',rhoEst:0.18},
+    {id:'Bricks001',  tags:['brick','red','wall'],         color:'#b05040',rhoEst:0.35},
+    {id:'Bricks005',  tags:['brick','old','weathered'],    color:'#9a6858',rhoEst:0.32},
+    {id:'Bricks011',  tags:['brick','grey','modern'],      color:'#909090',rhoEst:0.40},
+    {id:'Bricks023',  tags:['brick','white','painted'],    color:'#d8d0c8',rhoEst:0.62},
+    {id:'Bricks035',  tags:['brick','dark','rustic'],      color:'#785048',rhoEst:0.28},
+    {id:'Metal006',   tags:['metal','steel','polished'],   color:'#b8b8c0',rhoEst:0.62},
+    {id:'Metal007',   tags:['metal','aluminium','brushed'],color:'#c0c0c8',rhoEst:0.65},
+    {id:'Metal010',   tags:['metal','rust','orange'],      color:'#a06040',rhoEst:0.28},
+    {id:'Metal018',   tags:['metal','galvanized','grey'],  color:'#a0a8b0',rhoEst:0.52},
+    {id:'Metal026',   tags:['metal','corrugated'],         color:'#909898',rhoEst:0.48},
+    {id:'Metal032',   tags:['metal','copper','patina'],    color:'#6a9080',rhoEst:0.35},
+    {id:'Metal036',   tags:['metal','steel','dark'],       color:'#606870',rhoEst:0.30},
+    {id:'MetalPlates001',tags:['metal','plate'],           color:'#808890',rhoEst:0.45},
+    {id:'Plaster001', tags:['plaster','white','smooth'],   color:'#e0e0dc',rhoEst:0.75},
+    {id:'Plaster004', tags:['plaster','rough','grey'],     color:'#c8c4be',rhoEst:0.62},
+    {id:'Plaster006', tags:['plaster','beige'],            color:'#d8cdb8',rhoEst:0.65},
+    {id:'Plaster017', tags:['plaster','stucco','cream'],   color:'#ddd8cc',rhoEst:0.70},
+    {id:'PaintedPlaster001',tags:['plaster','painted'],    color:'#e0dcd8',rhoEst:0.72},
+    {id:'Carpet001',  tags:['carpet','textile','grey'],    color:'#b0aca8',rhoEst:0.50},
+    {id:'Carpet003',  tags:['carpet','fabric','beige'],    color:'#c8c0b0',rhoEst:0.55},
+    {id:'Fabric001',  tags:['fabric','textile','woven'],   color:'#c0b8a8',rhoEst:0.52},
+    {id:'Ground018',  tags:['stone','gravel','grey'],      color:'#989890',rhoEst:0.40},
+    {id:'Ground025',  tags:['stone','pebble','natural'],   color:'#a09880',rhoEst:0.38},
+    {id:'Marble001',  tags:['marble','white','veined'],    color:'#e8e4e0',rhoEst:0.72},
+    {id:'Marble006',  tags:['marble','grey','polished'],   color:'#c8c4c0',rhoEst:0.62},
+    {id:'Marble010',  tags:['marble','dark'],              color:'#504848',rhoEst:0.22},
+    {id:'Rock020',    tags:['rock','rough','grey'],        color:'#888880',rhoEst:0.38},
+    {id:'Rock026',    tags:['rock','sandstone','tan'],     color:'#c8a870',rhoEst:0.45},
+    {id:'Asphalt001', tags:['asphalt','road','dark'],      color:'#383838',rhoEst:0.12},
+    {id:'Asphalt010', tags:['asphalt','worn','grey'],      color:'#606060',rhoEst:0.22},
+    {id:'Foam001',    tags:['foam','white','soft'],        color:'#f0f0f0',rhoEst:0.80},
+    {id:'Cork001',    tags:['cork','natural','brown'],     color:'#c8a870',rhoEst:0.45},
+    {id:'Leather002', tags:['leather','brown'],            color:'#886040',rhoEst:0.30},
+    {id:'Rubber001',  tags:['rubber','black','grip'],      color:'#282828',rhoEst:0.08},
+  ];
+
+  // Canvas swatch — zero network, correct colour, subtle noise
+  function _acgMakeSwatch(color, id) {
+    const c = document.createElement('canvas');
+    c.width = 80; c.height = 80;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, 80, 80);
+    for (let i = 0; i < 600; i++) {
+      const x = Math.random()*80, y = Math.random()*80, v = (Math.random()-.5)*28;
+      const r=Math.round(parseInt(color.slice(1,3),16)+v);
+      const g=Math.round(parseInt(color.slice(3,5),16)+v);
+      const b=Math.round(parseInt(color.slice(5,7),16)+v);
+      ctx.fillStyle=`rgba(${r},${g},${b},0.55)`;
+      ctx.fillRect(x,y,2,2);
+    }
+    ctx.fillStyle='rgba(0,0,0,0.5)';
+    ctx.fillRect(0,60,80,20);
+    ctx.fillStyle='#fff';
+    ctx.font='bold 6px monospace';
+    ctx.fillText(id.slice(0,13),3,72);
+    return c.toDataURL();
+  }
+
+  function _acgFilter(q, sort) {
+    let list = [..._ACG_CATALOGUE];
+    if (q) {
+      const ql = q.toLowerCase();
+      list = list.filter(a => a.id.toLowerCase().includes(ql) || a.tags.some(t => t.includes(ql)));
+    }
+    if (sort === 'alphabet') list.sort((a,b) => a.id.localeCompare(b.id));
+    return list;
+  }
+
+  // ── Chip init ────────────────────────────────────────────────────────
+  document.querySelectorAll('.acg-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.acg-chip').forEach(c => c.classList.remove('acg-chip-active'));
+      chip.classList.add('acg-chip-active');
+      document.getElementById('mppAcgSearchInput').value = chip.dataset.q || '';
+      _acgQuery = chip.dataset.q || '';
+      _acgOffset = 0;
+      _acgRunSearch(true);
+    });
+  });
+
+  function acgSearch() {
+    _acgQuery = document.getElementById('mppAcgSearchInput').value.trim();
+    _acgOffset = 0;
+    if (_acgQuery) document.querySelectorAll('.acg-chip').forEach(c => c.classList.remove('acg-chip-active'));
+    _acgRunSearch(true);
+  }
+  function acgLoadMore() { _acgOffset += ACG_PAGE; _acgRunSearch(false); }
+
+  // Core runner — fully local, zero network
+  function _acgRunSearch(reset) {
+    if (_acgPending) return;
+    _acgPending = true;
+    const comp = document.getElementById('mppAcgComputing');
+    const grid = document.getElementById('acgResultsGrid');
+    const moreBtn = document.getElementById('acgLoadMoreBtn');
+    comp.classList.add('visible');
+    moreBtn.style.display = 'none';
+    if (reset) { grid.innerHTML = ''; _acgShowSkeletons(grid); }
+    const sort = document.getElementById('acgSortSel').value;
+    const filtered = _acgFilter(_acgQuery, sort);
+    const page = filtered.slice(_acgOffset, _acgOffset + ACG_PAGE);
+    setTimeout(() => {
+      if (reset) grid.innerHTML = '';
+      const cnt = document.getElementById('acgResultCount');
+      if (cnt) cnt.textContent = filtered.length + ' assets';
+      page.forEach(asset => grid.appendChild(_acgBuildCard(asset)));
+      const loaded = _acgOffset + page.length;
+      if (loaded < filtered.length) {
+        moreBtn.style.display = '';
+        moreBtn.textContent = `Load more (${filtered.length - loaded}) ↓`;
+      }
+      if (!page.length && reset) grid.innerHTML = `<p style="grid-column:1/-1;font-size:10px;color:rgba(255,255,255,0.3);padding:8px 0;">No results for "${_acgQuery}". Try: wood, concrete, tile, brick, metal…</p>`;
+      comp.classList.remove('visible');
+      _acgPending = false;
+    }, 100);
+  }
+
+  function _acgBuildCard(asset) {
+    const id = asset.id;
+    const swatch = _acgMakeSwatch(asset.color || '#888', id);
+    const colorUrl = `https://acg-public-01.b-cdn.net/make-public/assets/ambientcg-public-package/${id}/${id}_1K-JPG/${id}_1K_Color.jpg`;
+    const card = document.createElement('div');
+    card.className = 'acg-card';
+    card.dataset.id = id;
+    card.innerHTML = `
+      <div class="acg-card-thumb" style="background-image:url('${swatch}');background-size:cover;"></div>
+      <div class="acg-card-info">
+        <div class="acg-card-name" title="${id}">${id}</div>
+        <div class="acg-card-rho">ρ <span id="acgRho_${id}">${asset.rhoEst.toFixed(3)}</span></div>
+      </div>`;
+    card.addEventListener('click', () => _acgSelectCard(card, asset, colorUrl, swatch));
+    return card;
+  }
+
+  function _acgSelectCard(card, asset, colorUrl, swatch) {
+    document.querySelectorAll('.acg-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    const id = asset.id;
+    document.getElementById('mppAcgImg').src = swatch;
+    document.getElementById('mppAcgName').textContent = id;
+    document.getElementById('mppAcgTags').textContent = asset.tags.join(' · ');
+    document.getElementById('mppAcgRho').textContent = asset.rhoEst.toFixed(3);
+    document.getElementById('mppAcgPreview').classList.add('visible');
+    // Apply immediately using catalogue rhoEst — no network needed
+    _mppSelected = {key:'acg_'+id.toLowerCase(), name:id, rho:asset.rhoEst, color:asset.color, texUrl:null};
+    _updateRhoReadout(_mppSelected);
+    _showToast(id + ' — ρ = ' + asset.rhoEst.toFixed(3));
+    // Best-effort: try loading actual texture for display only (no crossOrigin = no CORS preflight)
+    const img = new Image();
+    img.onload = () => { document.getElementById('mppAcgImg').src = colorUrl; };
+    img.src = colorUrl;
+  }
+
+  function _acgShowSkeletons(grid) {
+    for (let i = 0; i < ACG_PAGE; i++) {
+      const sk = document.createElement('div');
+      sk.className = 'acg-skeleton';
+      sk.innerHTML = '<div class="acg-skeleton-thumb"></div><div class="acg-skeleton-line"></div><div class="acg-skeleton-line2"></div>';
+      grid.appendChild(sk);
+    }
+  }
+
+  // ── Toast ────────────────────────────────────────────────────────────
+  function _showToast(msg) {
+    const t = document.getElementById('mppToast');
+    const s = document.getElementById('mppToastText');
+    if (!t || !s) return;
+    s.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  // ── Init ─────────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    _buildMppGrids();
+    _updateRoomPhysics();
+    // Recompute physics when dimensions change
+    ['dimA','dimB','dimHeight'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', _updateRoomPhysics);
+    });
+  });
+  </script>
 
 </body>
 </html>

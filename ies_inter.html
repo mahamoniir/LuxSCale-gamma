@@ -1,0 +1,3706 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-en="IES Photometric Guide — Short Circuit Company" data-ar="دليل IES الفوتومتري — Short Circuit Company">IES Photometric Guide — Short Circuit Company</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --sc-red: #eb1b26;
+  --sc-dark-red: #a40e16;
+  --sc-black: #000000;
+  --sc-gray: #cccccc;
+  --sc-white: #ffffff;
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #1a1a1a;
+  --bg4: #222222;
+  --border: #2a2a2a;
+  --border2: #333333;
+  --text: #f0f0f0;
+  --text2: #999999;
+  --text3: #666666;
+  --card-bg: #141414;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Sans Arabic', 'Poppins', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ─── NAV ─── */
+.main-nav { display:flex; gap:4px; margin-right: auto; }
+.nav-item {
+  font-family:'Poppins',sans-serif; font-size:11px; font-weight:500;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--text3);
+  padding:5px 14px; border-radius:4px; cursor:pointer; border:1px solid transparent;
+  transition: all .18s; text-decoration:none; user-select:none;
+}
+.nav-item:hover { color:var(--text); background:var(--bg3); }
+.nav-item.active { color:var(--sc-red); border-color:rgba(235,27,38,.3); background:rgba(235,27,38,.07); }
+
+.tab-page { display:none; }
+.tab-page.active { display:block; }
+
+/* ─── HEADER ─── */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo-wrap { display: flex; align-items: center; gap: 14px; }
+.logo-wrap svg { height: 28px; width: auto; }
+
+.header-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text2);
+  border-right: 1px solid var(--border2);
+  padding-right: 20px;
+}
+
+.header-tag {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sc-red);
+  background: rgba(235,27,38,0.1);
+  border: 1px solid rgba(235,27,38,0.25);
+  padding: 3px 10px;
+  border-radius: 3px;
+  margin-right: auto;
+}
+
+/* ─── HERO ─── */
+.hero {
+  padding: 80px 40px 60px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -80px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(235,27,38,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--sc-red);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-label::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--sc-red);
+}
+
+.hero h1 {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--sc-white);
+  margin-bottom: 6px;
+}
+
+.hero h1 span { color: var(--sc-red); }
+
+.hero-sub {
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text2);
+  max-width: 520px;
+  margin-top: 16px;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hero-stat-val {
+  font-family: 'Anton', sans-serif;
+  font-size: 28px;
+  color: var(--sc-red);
+  line-height: 1;
+}
+
+.hero-stat-lbl {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+/* ─── SECTION LAYOUT ─── */
+.section {
+  padding: 64px 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.section-num {
+  font-family: 'Anton', sans-serif;
+  font-size: 56px;
+  line-height: 1;
+  color: var(--border2);
+  flex-shrink: 0;
+  margin-top: -6px;
+}
+
+.section-titles { flex: 1; }
+
+.section-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 28px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.section-subtitle {
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 13px;
+  color: var(--text2);
+  margin-top: 6px;
+}
+
+/* ─── IES FILE STRUCTURE DIAGRAM ─── */
+.ies-diagram-wrap {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ies-diagram-toolbar {
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r { background: #ff5f57; }
+.dot-y { background: #febc2e; }
+.dot-g { background: #28c840; }
+
+.ies-diagram-toolbar span {
+  margin-right: auto;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ies-diagram {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ies-row {
+  display: flex;
+  align-items: stretch;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  border: 1px solid transparent;
+}
+
+.ies-row:hover { transform: translateX(-4px); }
+.ies-row.active {
+  border-color: var(--sc-red);
+  box-shadow: 0 0 0 1px rgba(235,27,38,0.2);
+}
+
+.ies-row-num {
+  width: 44px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text3);
+  background: var(--bg3);
+  border-left: 2px solid var(--border2);
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+}
+
+.ies-row-color {
+  width: 4px;
+  flex-shrink: 0;
+}
+
+.ies-row-body {
+  flex: 1;
+  padding: 10px 16px;
+  background: var(--bg3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.ies-row-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
+.ies-row-code {
+  font-family: 'Poppins', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.02em;
+}
+
+.ies-row-arrow {
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg3);
+  color: var(--text3);
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.ies-row:hover .ies-row-arrow,
+.ies-row.active .ies-row-arrow { color: var(--sc-red); }
+
+.ies-detail-panel {
+  margin-top: 20px;
+  padding: 20px 24px;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  border-right: 3px solid var(--sc-red);
+  min-height: 80px;
+  transition: all 0.2s;
+}
+
+.ies-detail-panel h4 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sc-red);
+  margin-bottom: 8px;
+}
+
+.ies-detail-panel p {
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.8;
+}
+
+.ies-detail-panel code {
+  font-family: monospace;
+  font-size: 12px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--sc-red);
+}
+
+/* ─── PARSED LINE DEMO ─── */
+.parsed-line {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.parsed-token {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  cursor: default;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.parsed-token:hover { border-color: var(--sc-red); }
+
+.parsed-token .tok-label {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 50%;
+  transform: translateX(50%);
+  background: var(--sc-red);
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+
+.parsed-token:hover .tok-label { opacity: 1; }
+
+/* ─── ANGLES GRID ─── */
+.angles-visual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.angle-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.angle-card-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sc-red);
+  margin-bottom: 12px;
+}
+
+.angle-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.angle-row:last-child { border-bottom: none; }
+.angle-key { color: var(--text2); font-family: 'Poppins', sans-serif; }
+.angle-val { color: var(--text); font-family: monospace; }
+
+/* ─── SECTION 2: CANDELA/LUX CALCULATOR ─── */
+.calc-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 32px;
+  align-items: start;
+}
+
+.scene-wrap {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.scene-toolbar {
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scene-toolbar span {
+  margin-right: auto;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#scene-canvas {
+  display: block;
+  width: 100%;
+}
+
+.formula-strip {
+  padding: 14px 20px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.formula-strip strong { color: var(--sc-red); }
+
+/* ─── CONTROLS PANEL ─── */
+.controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ctrl-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ctrl-card-head {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ctrl-card-head::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--sc-red);
+}
+
+.ctrl-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+.ctrl-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ctrl-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 12px;
+  color: var(--text2);
+}
+
+.ctrl-label span {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--sc-red);
+  font-weight: 500;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  background: var(--border2);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--sc-red);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--sc-red);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+/* ─── RESULT DISPLAY ─── */
+.result-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.result-item {
+  padding: 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  text-align: center;
+}
+
+.result-val {
+  font-family: 'Anton', sans-serif;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--sc-red);
+}
+
+.result-unit {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+.result-item.accent {
+  background: rgba(235,27,38,0.06);
+  border-color: rgba(235,27,38,0.25);
+  grid-column: span 2;
+}
+
+.result-item.accent .result-val {
+  font-size: 42px;
+}
+
+.lux-context {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--bg3);
+  border-radius: 6px;
+  border-right: 2px solid var(--sc-red);
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 12px;
+  color: var(--text2);
+}
+
+/* ─── REFERENCE TABLE ─── */
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 24px;
+  font-size: 13px;
+}
+
+.ref-table th {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text2);
+  padding: 10px 16px;
+  text-align: right;
+  border-bottom: 1px solid var(--border2);
+  background: var(--bg3);
+}
+
+.ref-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+}
+
+.ref-table td:first-child {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.ref-table td code {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--sc-red);
+  background: rgba(235,27,38,0.08);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.ref-table tr:hover td { background: var(--bg3); }
+
+/* ─── COMPARISON CARDS ─── */
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 32px;
+}
+
+.compare-col {
+  background: var(--card-bg);
+  padding: 24px 20px;
+}
+
+.compare-col-head {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.compare-unit {
+  font-family: 'Anton', sans-serif;
+  font-size: 32px;
+  color: var(--sc-red);
+  line-height: 1;
+}
+
+.compare-unit-en {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+.compare-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 12px;
+}
+
+.compare-row-lbl {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.compare-row-val {
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 13px;
+  color: var(--text2);
+}
+
+/* ─── FOOTER ─── */
+footer {
+  padding: 32px 40px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+footer svg { height: 20px; width: auto; opacity: 0.4; }
+
+.footer-meta {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .calc-layout { grid-template-columns: 1fr; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .angles-visual { grid-template-columns: 1fr; }
+  header { padding: 12px 20px; }
+  .hero, .section { padding-left: 20px; padding-right: 20px; }
+  .polar-grid { grid-template-columns: 1fr !important; }
+}
+/* ══════ IES READER STYLES ══════ */
+.reader-input-row { display:grid; grid-template-columns:1fr 40px 1fr; gap:0; align-items:center; margin-bottom:24px; }
+.reader-drop-zone {
+  border:1.5px dashed var(--border2); border-radius:8px; padding:32px 20px;
+  text-align:center; cursor:pointer; transition:all .2s; background:var(--card-bg);
+}
+.reader-drop-zone:hover { border-color:var(--sc-red); background:rgba(235,27,38,.04); }
+.reader-drop-zone.drag-over { border-color:var(--sc-red); background:rgba(235,27,38,.08); }
+.drop-icon { font-size:32px; margin-bottom:8px; }
+.drop-title { font-family:'Poppins',sans-serif; font-size:13px; font-weight:500; color:var(--text2); }
+.drop-sub { font-size:11px; color:var(--text3); margin-top:4px; font-family:'Poppins',sans-serif; }
+.reader-or { text-align:center; color:var(--text3); font-size:12px; font-family:'Poppins',sans-serif; }
+.reader-paste-wrap { display:flex; flex-direction:column; gap:8px; }
+.ies-paste-area {
+  width:100%; height:140px; background:var(--card-bg); border:1px solid var(--border);
+  border-radius:8px; color:var(--text2); font-family:monospace; font-size:11px;
+  padding:12px; resize:vertical; outline:none; line-height:1.6;
+}
+.ies-paste-area:focus { border-color:var(--sc-red); }
+.btn-parse {
+  align-self:flex-end; padding:8px 24px; background:var(--sc-red); color:#fff;
+  border:none; border-radius:5px; font-family:'Poppins',sans-serif; font-size:12px;
+  font-weight:500; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer;
+  transition:background .15s;
+}
+.btn-parse:hover { background:var(--sc-dark-red); }
+
+.uniformity-params {
+  background:var(--card-bg); border:1px solid var(--border); border-radius:8px;
+  padding:20px 24px; margin-bottom:24px;
+}
+.unif-title { font-family:'Poppins',sans-serif; font-size:11px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--sc-red); margin-bottom:14px; }
+.unif-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.unif-field { display:flex; flex-direction:column; gap:5px; }
+.unif-field label { font-size:11px; color:var(--text3); font-family:'IBM Plex Sans Arabic',sans-serif; }
+.unif-field input {
+  background:var(--bg3); border:1px solid var(--border2); border-radius:5px;
+  color:var(--text); font-family:monospace; font-size:13px; padding:6px 10px; outline:none;
+}
+.unif-field input:focus { border-color:var(--sc-red); }
+
+.parsed-file-wrap {
+  background:var(--card-bg); border:1px solid var(--border); border-radius:8px;
+  overflow:hidden; margin-bottom:20px;
+}
+.parsed-file-title {
+  padding:10px 20px; border-bottom:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:'Poppins',sans-serif; font-size:10px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--text2);
+}
+.parsed-file-body { padding:16px 20px; font-family:monospace; font-size:12px; line-height:2; max-height:400px; overflow-y:auto; }
+.pline { display:flex; gap:12px; padding:2px 0; border-radius:3px; cursor:default; }
+.pline:hover { background:var(--bg3); }
+.pline-num { color:var(--text3); width:32px; flex-shrink:0; text-align:right; user-select:none; }
+.pline-content { flex:1; display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+.ptok {
+  padding:1px 7px; border-radius:3px; cursor:default; position:relative;
+  border:1px solid transparent; transition:border-color .12s;
+}
+.ptok:hover { border-color:rgba(255,255,255,.15); }
+.ptok-tip {
+  display:none; position:absolute; bottom:calc(100% + 6px); right:50%; transform:translateX(50%);
+  background:var(--bg4); border:1px solid var(--border2); border-radius:5px;
+  padding:6px 10px; white-space:nowrap; font-family:'IBM Plex Sans Arabic',sans-serif;
+  font-size:11px; color:var(--text2); z-index:50; pointer-events:none; min-width:140px; text-align:center;
+}
+.ptok:hover .ptok-tip { display:block; }
+
+.key-values-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:12px; margin-bottom:20px;
+}
+.kv-card {
+  background:var(--card-bg); border:1px solid var(--border); border-radius:7px; padding:14px 16px;
+}
+.kv-label { font-family:'Poppins',sans-serif; font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--text3); margin-bottom:4px; }
+.kv-val { font-family:monospace; font-size:18px; font-weight:500; color:var(--sc-red); }
+.kv-unit { font-family:'Poppins',sans-serif; font-size:10px; color:var(--text3); margin-top:2px; }
+
+.cd-table-wrap { margin-bottom:20px; }
+.cd-table-title { font-family:'Poppins',sans-serif; font-size:11px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--text2); margin-bottom:10px; }
+.cd-scroll { overflow-x:auto; }
+.cd-table { border-collapse:collapse; font-family:monospace; font-size:11px; }
+.cd-table th {
+  background:var(--bg3); color:var(--sc-red); padding:5px 10px; border:1px solid var(--border);
+  font-family:'Poppins',sans-serif; font-size:9px; letter-spacing:.06em; text-transform:uppercase;
+}
+.cd-table td { padding:4px 10px; border:1px solid var(--border); color:var(--text2); text-align:center; cursor:default; }
+.cd-table td:hover { background:rgba(235,27,38,.08); color:var(--text); }
+.cd-table .th-angle { color:var(--text3); background:var(--card-bg); }
+
+.lux-math-wrap {
+  background:var(--card-bg); border:1px solid var(--border); border-radius:8px;
+  padding:20px 24px; margin-bottom:20px;
+}
+.lux-math-title { font-family:'Poppins',sans-serif; font-size:11px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--sc-red); margin-bottom:14px; }
+.lux-math-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.lux-step { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:14px 16px; }
+.lux-step-num { font-family:'Poppins',sans-serif; font-size:9px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--text3); margin-bottom:6px; }
+.lux-step-formula { font-family:monospace; font-size:13px; color:var(--text); margin-bottom:4px; }
+.lux-step-result { font-family:monospace; font-size:16px; color:var(--sc-red); font-weight:500; }
+
+.uniformity-result {
+  background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:20px 24px;
+}
+.ies-empty-state {
+  text-align:center; padding:80px 20px; color:var(--text3);
+}
+
+/* ══════ BATTERY STYLES ══════ */
+.batt-type-title {
+  font-family:'Poppins',sans-serif; font-size:11px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--text2); margin-bottom:14px;
+}
+.batt-type-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:12px; margin-bottom:28px;
+}
+.batt-type-card {
+  background:var(--card-bg); border:1.5px solid var(--border); border-radius:8px;
+  padding:18px 16px; cursor:pointer; transition:all .18s; text-align:center;
+}
+.batt-type-card:hover { border-color:rgba(235,27,38,.5); background:rgba(235,27,38,.04); }
+.batt-type-card.selected { border-color:var(--sc-red); background:rgba(235,27,38,.07); }
+.batt-icon { font-size:36px; margin-bottom:8px; }
+.batt-type-name { font-family:'Poppins',sans-serif; font-size:12px; font-weight:500; color:var(--text); margin-bottom:2px; }
+.batt-type-sub { font-size:10px; color:var(--text3); font-family:'Poppins',sans-serif; }
+
+.batt-detail-card {
+  background:var(--card-bg); border:1px solid var(--border); border-radius:8px;
+  padding:20px 24px; margin-bottom:24px; display:grid;
+  grid-template-columns:200px 1fr; gap:24px; align-items:start;
+}
+.batt-detail-img { display:flex; align-items:center; justify-content:center;
+  font-size:72px; background:var(--bg3); border-radius:8px; padding:20px; }
+.batt-specs-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.batt-spec-item { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:10px 14px; }
+.batt-spec-label { font-family:'Poppins',sans-serif; font-size:9px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--text3); margin-bottom:3px; }
+.batt-spec-val { font-family:monospace; font-size:14px; color:var(--sc-red); }
+
+.batt-config-wrap { background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:24px; }
+.batt-config-title { font-family:'Poppins',sans-serif; font-size:11px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--sc-red); margin-bottom:18px; }
+.batt-config-row { display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; margin-bottom:20px; }
+.batt-count-wrap { display:flex; flex-direction:column; gap:8px; }
+.cfg-label { font-family:'IBM Plex Sans Arabic',sans-serif; font-size:12px; color:var(--text2); }
+.batt-counter { display:flex; align-items:center; gap:0; border:1px solid var(--border2); border-radius:6px; overflow:hidden; width:fit-content; }
+.batt-counter button {
+  width:36px; height:36px; background:var(--bg3); border:none; color:var(--text); font-size:18px; cursor:pointer;
+  transition:background .15s;
+}
+.batt-counter button:hover { background:var(--sc-red); }
+.batt-counter span { padding:0 18px; font-family:monospace; font-size:16px; font-weight:500; color:var(--sc-red); }
+.conn-btns { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+.conn-btn {
+  padding:7px 16px; border:1px solid var(--border2); border-radius:5px; background:var(--bg3);
+  color:var(--text2); font-family:'Poppins',sans-serif; font-size:11px; font-weight:500;
+  cursor:pointer; transition:all .15s; letter-spacing:.04em;
+}
+.conn-btn:hover { border-color:rgba(235,27,38,.5); color:var(--text); }
+.conn-btn.active { background:rgba(235,27,38,.1); border-color:var(--sc-red); color:var(--sc-red); }
+.mixed-row { display:flex; gap:12px; align-items:flex-end; margin-top:6px; }
+.mixed-field { display:flex; flex-direction:column; gap:5px; }
+.mixed-field label { font-size:11px; color:var(--text3); font-family:'Poppins',sans-serif; }
+.mixed-field input {
+  width:80px; background:var(--bg3); border:1px solid var(--border2); border-radius:5px;
+  color:var(--text); font-family:monospace; font-size:14px; padding:6px 10px; outline:none; text-align:center;
+}
+.mixed-field input:focus { border-color:var(--sc-red); }
+
+.schematic-wrap { background:var(--bg3); border:1px solid var(--border); border-radius:7px; padding:16px; margin-bottom:20px; }
+.schematic-title { font-family:'Poppins',sans-serif; font-size:10px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--text3); margin-bottom:10px; }
+
+.power-input-wrap { background:var(--bg); border:1px solid var(--border); border-radius:7px; padding:18px 20px; margin-bottom:20px; }
+.power-input-title { font-family:'Poppins',sans-serif; font-size:11px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--text2); margin-bottom:14px; }
+.power-input-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+.power-field { display:flex; flex-direction:column; gap:5px; }
+.power-field label { font-size:11px; color:var(--text3); font-family:'IBM Plex Sans Arabic',sans-serif; }
+.power-field input {
+  background:var(--bg3); border:1px solid var(--border2); border-radius:5px;
+  color:var(--text); font-family:monospace; font-size:14px; padding:8px 12px; outline:none;
+}
+.power-field input:focus { border-color:var(--sc-red); }
+
+.batt-results { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; }
+.batt-res-card {
+  background:var(--bg3); border:1px solid var(--border); border-radius:7px; padding:16px;
+  text-align:center;
+}
+.batt-res-card.highlight {
+  background:rgba(235,27,38,.07); border-color:rgba(235,27,38,.3);
+}
+.batt-res-val { font-family:'Anton',sans-serif; font-size:32px; color:var(--sc-red); line-height:1; }
+.batt-res-unit { font-family:'Poppins',sans-serif; font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--text3); margin-top:4px; }
+.batt-res-label { font-family:'IBM Plex Sans Arabic',sans-serif; font-size:12px; color:var(--text2); margin-top:6px; }
+
+/* ══════ SOLAR STYLES ══════ */
+.solar-type-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:12px; margin-bottom:28px;
+}
+.solar-type-card {
+  background:var(--card-bg); border:1.5px solid var(--border); border-radius:8px;
+  padding:20px 16px; cursor:pointer; transition:all .18s; text-align:center;
+}
+.solar-type-card:hover { border-color:rgba(235,27,38,.5); background:rgba(235,27,38,.04); }
+.solar-type-card.selected { border-color:var(--sc-red); background:rgba(235,27,38,.07); }
+.solar-icon { font-size:42px; margin-bottom:8px; }
+.solar-type-name { font-family:'Poppins',sans-serif; font-size:13px; font-weight:500; color:var(--text); margin-bottom:2px; }
+.solar-eff-badge {
+  display:inline-block; padding:2px 8px; background:rgba(235,27,38,.1); border:1px solid rgba(235,27,38,.25);
+  border-radius:10px; font-family:'Poppins',sans-serif; font-size:10px; color:var(--sc-red);
+  font-weight:500; margin-top:4px;
+}
+.solar-detail-card {
+  background:var(--card-bg); border:1px solid var(--border); border-radius:8px;
+  padding:20px 24px; margin-bottom:24px;
+}
+.solar-config-wrap { background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:24px; }
+.solar-config-title { font-family:'Poppins',sans-serif; font-size:11px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--sc-red); margin-bottom:18px; }
+.solar-config-row { display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; margin-bottom:20px; }
+.solar-count-pair { display:flex; gap:16px; flex-direction:column; }
+.solar-count-pair input {
+  width:80px; background:var(--bg3); border:1px solid var(--border2); border-radius:5px;
+  color:var(--text); font-family:monospace; font-size:14px; padding:6px 10px; outline:none;
+}
+.solar-count-pair input:focus { border-color:var(--sc-red); }
+.solar-mount-wrap, .solar-tilt-wrap { display:flex; flex-direction:column; gap:8px; }
+.mount-btns { display:flex; gap:6px; margin-top:4px; }
+.mount-btn {
+  padding:7px 16px; border:1px solid var(--border2); border-radius:5px; background:var(--bg3);
+  color:var(--text2); font-family:'Poppins',sans-serif; font-size:11px; cursor:pointer; transition:all .15s;
+}
+.mount-btn.active { background:rgba(235,27,38,.1); border-color:var(--sc-red); color:var(--sc-red); }
+.solar-tilt-wrap input[type=range] { width:160px; }
+.solar-schematic-wrap { background:var(--bg3); border:1px solid var(--border); border-radius:7px; padding:16px; margin-bottom:20px; }
+.solar-params-wrap { background:var(--bg); border:1px solid var(--border); border-radius:7px; padding:18px 20px; margin-bottom:20px; }
+.solar-params-title { font-family:'Poppins',sans-serif; font-size:11px; font-weight:500;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--text2); margin-bottom:14px; }
+.solar-params-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+.solar-results { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+.solar-res-card {
+  background:var(--bg3); border:1px solid var(--border); border-radius:7px; padding:16px; text-align:center;
+}
+.solar-res-card.highlight { background:rgba(235,27,38,.07); border-color:rgba(235,27,38,.3); grid-column:span 2; }
+.solar-res-val { font-family:'Anton',sans-serif; font-size:28px; color:var(--sc-red); line-height:1; }
+.solar-res-unit { font-family:'Poppins',sans-serif; font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--text3); margin-top:4px; }
+.solar-res-label { font-family:'IBM Plex Sans Arabic',sans-serif; font-size:12px; color:var(--text2); margin-top:6px; }
+.solar-warning { grid-column:1/-1; background:rgba(235,27,38,.06); border:1px solid rgba(235,27,38,.2); border-radius:6px; padding:12px 16px; font-family:'IBM Plex Sans Arabic',sans-serif; font-size:13px; color:var(--sc-red); }
+
+@media(max-width:700px){
+  .reader-input-row { grid-template-columns:1fr; }
+  .unif-row { grid-template-columns:1fr 1fr; }
+  .batt-detail-card { grid-template-columns:1fr; }
+  .lux-math-grid { grid-template-columns:1fr; }
+  .solar-res-card.highlight { grid-column:span 1; }
+}
+
+
+/* ── Language toggle button ── */
+.lang-btn {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--sc-red);
+  border: 1px solid rgba(235,27,38,0.4);
+  padding: 5px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all .18s;
+  margin-left: auto;
+  white-space: nowrap;
+}
+.lang-btn:hover { background: rgba(235,27,38,0.1); }
+[dir=rtl] .lang-btn { margin-left: 0; margin-right: auto; }
+
+/* RTL adjustments */
+[dir=rtl] body { font-family: 'IBM Plex Sans Arabic', 'Poppins', sans-serif; }
+[dir=rtl] .hero h1 { font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: clamp(32px,5vw,58px); font-weight: 700; text-transform: none; }
+[dir=rtl] .hero-label::before { margin-left: 8px; margin-right: 0; }
+[dir=rtl] .section-num { margin-right: 0; margin-left: 20px; }
+[dir=rtl] .header-title { border-right: none; border-left: 1px solid var(--border2); padding-right: 0; padding-left: 20px; }
+[dir=rtl] .main-nav { margin-right: 0; margin-left: auto; }
+[dir=rtl] .ies-row:hover { transform: translateX(4px); }
+[dir=rtl] .ies-row-num { border-left: none; border-right: 2px solid var(--border2); }
+[dir=rtl] .ies-row-arrow { transform: scaleX(-1); }
+[dir=rtl] .ctrl-card-head::before { left: auto; right: 0; }
+[dir=rtl] .section-subtitle { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .section-title { font-family: 'IBM Plex Sans Arabic', sans-serif; font-weight: 700; text-transform: none; font-size: 24px; }
+[dir=rtl] .nav-item { font-family: 'IBM Plex Sans Arabic', sans-serif; letter-spacing: 0; }
+[dir=rtl] .hero-stat-lbl { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .ies-row-title { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .header-title { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .header-tag { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .angle-card-title { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .angle-row span { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .drop-title { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .unif-title { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .batt-type-title { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .batt-config-title { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .solar-config-title { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .solar-params-title { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .power-input-title { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .schematic-title { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .detail-panel h4 { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .detail-panel p { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .compare-row-lbl { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] .compare-row-val { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+[dir=rtl] footer { direction: ltr; }
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header>
+  <div class="logo-wrap">
+    <img src="https://shortcircuit.company/assets/img/logo-dark.svg" style="width: 100px;" alt="Short Circuit Company">
+    <!-- <svg viewBox="0 0 88.194804 39.567375" xmlns="http://www.w3.org/2000/svg" style="height:28px;width:auto"><g transform="translate(1154.6313,-99.845264)"><path fill="#eb1b26" d="m -1115.1899,99.845264 a 4.0626351,4.0626351 0 0 0 -3.7237,2.438096 h -2.1383 v 0.38368 h -5.9907 c -2.2904,0 -4.2007,1.83906 -4.2007,4.1171 v 12.80001 c 0,2.27804 1.9103,4.11561 4.2007,4.11561 h 12.4648 a 1.1440361,1.1440361 0 0 0 1.144,-1.14396 1.1440361,1.1440361 0 0 0 -1.144,-1.14396 h -12.4648 c -1.0965,0 -1.9125,-0.81267 -1.9125,-1.82769 v -12.80001 c 0,-1.01501 0.816,-1.82886 1.9125,-1.82886 h 5.9907 v 0.3754 h 2.0582 a 4.0626351,4.0626351 0 0 0 3.8038,2.6397 h 1.073 v -8.125116 z m 8.3308,0 v 1.556026 h -2.2031 c -0.3677,0 -0.6639,0.29587 -0.6639,0.66362 v 0.46202 c 0,0.36775 0.2962,0.66362 0.6639,0.66362 h 2.2031 v 1.43454 h -2.2031 c -0.3677,0 -0.6639,0.29617 -0.6639,0.66392 v 0.46171 c 0,0.36776 0.2962,0.66393 0.6639,0.66393 h 2.2031 v 1.55573 h 1.0728 a 4.0626351,4.0626351 0 0 0 3.8037,-2.6397 h 2.0582 v -0.3754 h 5.899 c 1.0965,0 1.9128,0.81385 1.9128,1.82886 v 12.80001 c 0,1.01502 -0.8163,1.82769 -1.9128,1.82769 h -12.2088 a 1.1440361,1.1440361 0 0 0 -1.144,1.14396 1.1440361,1.1440361 0 0 0 1.144,1.14396 h 12.2088 c 2.2905,0 4.2008,-1.83757 4.2008,-4.11561 v -12.80001 c 0,-2.27804 -1.9103,-4.1171 -4.2008,-4.1171 h -5.899 v -0.38368 h -2.138 a 4.0626351,4.0626351 0 0 0 -3.7239,-2.438096 z"/><path fill="#ffffff" d="M -1096.0823,114.27153 h -1.9377 v -3.37219 h -5.8612 v -1.6656 l 5.3901,-7.37511 h 2.4088 v 7.37511 h 1.6885 v 1.6656 h -1.6885 z m -1.9377,-5.03779 v -4.53421 l -3.2397,4.53421 z m 8.3352,5.22289 c -1.2636,0 -2.3181,-0.44469 -3.1636,-1.33406 -0.8374,-0.8975 -1.2561,-2.10182 -1.2561,-3.61295 0,-1.61748 0.4187,-2.89867 1.2561,-3.84356 0.8455,-0.94488 1.9,-1.41732 3.1636,-1.41732 1.2555,0 2.3019,0.47244 3.1393,1.41732 0.8374,0.94489 1.2561,2.22608 1.2561,3.84356 0,1.51113 -0.4187,2.71545 -1.2561,3.61295 -0.8374,0.88937 -1.8838,1.33406 -3.1393,1.33406 z m 0,-1.6656 c 0.6936,0 1.2561,-0.30702 1.6885,-0.92106 0.4405,-0.62217 0.6607,-1.43355 0.6607,-2.43414 0,-1.00059 -0.2202,-1.81197 -0.6607,-2.43413 -0.4324,-0.62217 -0.9949,-0.93325 -1.6885,-0.93325 -0.7017,0 -1.2722,0.31108 -1.7126,0.93325 -0.4324,0.62216 -0.6486,1.43354 -0.6486,2.43413 0,1.00059 0.2162,1.81197 0.6486,2.43414 0.4404,0.61404 1.0109,0.92106 1.7126,0.92106 z"/></g></svg> -->
+  </div>
+  <div class="header-title" data-en="Lighting Design Division" data-ar="قسم تصميم الإضاءة">Lighting Design Division</div>
+  <div class="header-tag" data-en="IES Photometric Reference" data-ar="مرجع IES الفوتومتري">IES Photometric Reference</div>
+  <nav class="main-nav">
+    <a class="nav-item active" onclick="showTab('photometric',this)" data-en="Photometric" data-ar="فوتومتري">Photometric</a>
+    <a class="nav-item" onclick="showTab('ies-reader',this)" data-en="IES Reader" data-ar="قارئ IES">IES Reader</a>
+    <a class="nav-item" onclick="showTab('battery',this)" data-en="Battery" data-ar="بطارية">Battery</a>
+    <a class="nav-item" onclick="showTab('solar',this)" data-en="Solar" data-ar="طاقة شمسية">Solar</a>
+  </nav>
+  <button class="lang-btn" id="lang-btn" onclick="toggleLang()">عربي</button>
+</header>
+
+<!-- ══════════════ TAB: PHOTOMETRIC ══════════════ -->
+<div id="tab-photometric" class="tab-page active">
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-label" data-en="Interactive Photometric Guide" data-ar="دليل فوتومتري تفاعلي">Interactive Photometric Guide</div>
+  <h1><span>IES</span> <span data-en="Files<br>Inside Out" data-ar="ملفات IES<br>من الداخل">Files<br>Inside Out</span></h1>
+  <p class="hero-sub" data-en="A hands-on interactive guide to the IES photometric file format — what every line means, how Candela becomes Lux, and the full math explained step by step" data-ar="دليل مفصّل تفاعلي لبنية الملف الفوتومتري، وفهم الفرق بين Candela وLux، واستخراج البيانات الرياضية منه">A hands-on interactive guide to the IES photometric file format — what every line means, how Candela becomes Lux, and the full math explained step by step</p>
+
+  <div style="margin-bottom:20px;padding:14px 20px;background:rgba(235,27,38,.05);border:1px solid rgba(235,27,38,.12);border-radius:6px;font-family:'IBM Plex Sans Arabic','Poppins',sans-serif;font-size:13px;line-height:1.9;color:var(--text2)">
+    <div style="font-family:'Poppins',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;color:var(--sc-red);margin-bottom:12px" data-en="💡 In Plain English — what this is all about" data-ar="💡 بكلمات بسيطة">💡 In Plain English — what this is all about</div>
+    <div data-en="<b style='color:var(--text)'>IES file</b> = a text file that describes exactly how a lamp throws light in every direction. Think of it like a blueprint of the lamp's light beam." data-ar="<b style='color:var(--text)'>ملف IES</b> = ملف نصي يصف بدقة كيف يوزّع المصباح الضوء في كل الاتجاهات. تخيّله كمخطط توزيع شعاع المصباح."><b style='color:var(--text)'>IES file</b> = a text file that describes exactly how a lamp throws light in every direction. Think of it like a blueprint of the lamp's light beam.</div>
+    <div data-en="<b style='color:var(--text)'>Nadir (0°)</b> = straight down from the lamp — like pointing a flashlight at your feet. 90° = horizontal. Most downlights are strongest at 0°." data-ar="<b style='color:var(--text)'>Nadir (0°)</b> = أسفل مباشرة من المصباح. 90° = أفقي. معظم مصابيح الإضاءة السفلية تكون أقوى عند 0°."><b style='color:var(--text)'>Nadir (0°)</b> = straight down from the lamp — like pointing a flashlight at your feet. 90° = horizontal. Most downlights are strongest at 0°.</div>
+    <div data-en="<b style='color:var(--text)'>Candela (cd)</b> = how strong the light is in one specific direction. It does <em>not</em> change with distance — it's a property of the lamp itself." data-ar="<b style='color:var(--text)'>Candela (cd)</b> = شدة الضوء في اتجاه محدد. <em>لا تتغير</em> بالمسافة — هي خاصية المصباح ذاته."><b style='color:var(--text)'>Candela (cd)</b> = how strong the light is in one specific direction. It does <em>not</em> change with distance — it's a property of the lamp itself.</div>
+    <div data-en="<b style='color:var(--text)'>Lux (lx)</b> = how much light actually lands on a surface. It <em>does</em> drop with distance — double the distance = ¼ the lux." data-ar="<b style='color:var(--text)'>Lux (lx)</b> = كمية الضوء الساقطة على سطح. تنخفض مع المسافة — تضاعف المسافة = ¼ الإضاءة."><b style='color:var(--text)'>Lux (lx)</b> = how much light actually lands on a surface. It <em>does</em> drop with distance — double the distance = ¼ the lux.</div>
+  </div>
+
+  <div class="hero-meta">
+    <div class="hero-stat"><div class="hero-stat-val">LM-63</div><div class="hero-stat-lbl" data-en="ANSI/IES Standard" data-ar="معيار ANSI/IES">ANSI/IES Standard</div></div>
+    <div class="hero-stat"><div class="hero-stat-val">ASCII</div><div class="hero-stat-lbl" data-en="File Format" data-ar="صيغة الملف">File Format</div></div>
+    <div class="hero-stat"><div class="hero-stat-val">cd → lx</div><div class="hero-stat-lbl" data-en="Candela to Lux" data-ar="Candela إلى Lux">Candela to Lux</div></div>
+  </div>
+</section>
+
+<!-- ══ SECTION 01: FILE STRUCTURE ══ -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <div class="section-titles">
+      <div class="section-title" data-en="IES File Structure" data-ar="بنية ملف IES">IES File Structure</div>
+      <div class="section-subtitle" data-en="Click any row to read a plain-English explanation" data-ar="انقر على أي قسم لقراءة شرحه التفصيلي">Click any row to read a plain-English explanation</div>
+    </div>
+  </div>
+  <div style="margin-bottom:24px;padding:14px 20px;background:rgba(235,27,38,.04);border-radius:6px;font-family:'IBM Plex Sans Arabic','Poppins',sans-serif;font-size:13px;color:var(--text2);line-height:1.9">
+    <span data-en="<b style='color:var(--text2)'>In plain English:</b> An IES file is just a plain text file (open it in Notepad — it works!). It has 6 sections: a version stamp, metadata keywords, a tilt flag, one line of numbers describing the lamp, then lists of angles, and finally the brightness values (candela) measured at each angle." data-ar="<b style='color:var(--text2)'>باختصار:</b> ملف IES هو ملف نصي عادي يمكن فتحه بـ Notepad. يحتوي 6 أقسام: رقم الإصدار، كلمات مفتاحية، علامة الإمالة، سطر بيانات المصباح، قوائم الزوايا، ثم قيم الكاندلا (شدة الضوء) عند كل زاوية."><b style='color:var(--text2)'>In plain English:</b> An IES file is just a plain text file (open it in Notepad — it works!). It has 6 sections: a version stamp, metadata keywords, a tilt flag, one line of numbers describing the lamp, then lists of angles, and finally the brightness values (candela) measured at each angle.</span>
+  </div>
+
+  <div class="ies-diagram-wrap">
+    <div class="ies-diagram-toolbar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <span>example_luminaire.ies</span>
+    </div>
+    <div class="ies-diagram">
+      <div class="ies-row" onclick="selectRow(0,this)">
+        <div class="ies-row-num">01</div><div class="ies-row-color" style="background:#534AB7"></div>
+        <div class="ies-row-body"><div class="ies-row-title" data-en="Version Header" data-ar="Version Header — السطر التعريفي">Version Header</div><div class="ies-row-code">IESNA:LM-63-2002</div></div>
+        <div class="ies-row-arrow">›</div>
+      </div>
+      <div class="ies-row" onclick="selectRow(1,this)">
+        <div class="ies-row-num">02–</div><div class="ies-row-color" style="background:#1D9E75"></div>
+        <div class="ies-row-body"><div class="ies-row-title" data-en="Keywords — Metadata" data-ar="Keywords — الكلمات المفتاحية">Keywords — Metadata</div><div class="ies-row-code">[TEST] [MANUFAC] [LUMCAT] [LUMINAIRE] [LAMP] [ISSUEDATE] ...</div></div>
+        <div class="ies-row-arrow">›</div>
+      </div>
+      <div class="ies-row" onclick="selectRow(2,this)">
+        <div class="ies-row-num">N</div><div class="ies-row-color" style="background:#5f5e5a"></div>
+        <div class="ies-row-body"><div class="ies-row-title" data-en="TILT — Lamp Tilt Flag" data-ar="TILT — إمالة المصباح">TILT — Lamp Tilt Flag</div><div class="ies-row-code">TILT=NONE</div></div>
+        <div class="ies-row-arrow">›</div>
+      </div>
+      <div class="ies-row" onclick="selectRow(3,this)">
+        <div class="ies-row-num">N+1</div><div class="ies-row-color" style="background:#BA7517"></div>
+        <div class="ies-row-body"><div class="ies-row-title" data-en="Lamp Data Line — the 10 numbers" data-ar="Lamp Data Line — سطر بيانات المصباح">Lamp Data Line — the 10 numbers</div><div class="ies-row-code">1   4000   1.0   19   1   1   2   0   0   0</div></div>
+        <div class="ies-row-arrow">›</div>
+      </div>
+      <div class="ies-row" onclick="selectRow(4,this)">
+        <div class="ies-row-num">N+2</div><div class="ies-row-color" style="background:#185FA5"></div>
+        <div class="ies-row-body"><div class="ies-row-title" data-en="Vertical Angles — up/down from Nadir" data-ar="Vertical Angles — الزوايا الرأسية">Vertical Angles — up/down from Nadir</div><div class="ies-row-code">0  5  10  15  20  25 ... 85  90</div></div>
+        <div class="ies-row-arrow">›</div>
+      </div>
+      <div class="ies-row" onclick="selectRow(5,this)">
+        <div class="ies-row-num">N+3</div><div class="ies-row-color" style="background:#185FA5"></div>
+        <div class="ies-row-body"><div class="ies-row-title" data-en="Horizontal Angles — left/right symmetry" data-ar="Horizontal Angles — الزوايا الأفقية">Horizontal Angles — left/right symmetry</div><div class="ies-row-code">0  22.5  45  67.5  90  ... 360</div></div>
+        <div class="ies-row-arrow">›</div>
+      </div>
+      <div class="ies-row" onclick="selectRow(6,this)">
+        <div class="ies-row-num">N+4</div><div class="ies-row-color" style="background:#eb1b26"></div>
+        <div class="ies-row-body"><div class="ies-row-title" data-en="Candela Values — the actual brightness data" data-ar="Candela Values — قيم الشدة الضوئية">Candela Values — the actual brightness data</div><div class="ies-row-code">1250.4  1248.1  1241.7  1230.0 ... 0.0</div></div>
+        <div class="ies-row-arrow">›</div>
+      </div>
+    </div>
+    <div style="padding:0 28px 20px">
+      <div class="ies-detail-panel" id="detail-panel">
+        <h4 data-en="Select a row" data-ar="اختر أي سطر">Select a row</h4>
+        <p data-en="Click any row above to get a plain-English explanation with examples." data-ar="انقر على أي قسم من الأقسام أعلاه لقراءة شرحه التفصيلي والمثال الرياضي.">Click any row above to get a plain-English explanation with examples.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parsed line demo -->
+  <div style="margin-top:32px">
+    <div style="font-family:'Poppins',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text2);margin-bottom:14px" data-en="Lamp Data Line decoded — hover each number" data-ar="تحليل سطر البيانات — مرّر على كل رقم">Lamp Data Line decoded — hover each number</div>
+    <div class="parsed-line">
+      <div class="parsed-token" style="color:#1D9E75">1<div class="tok-label" data-en="# of lamps" data-ar="عدد المصابيح"># of lamps</div></div>
+      <div class="parsed-token" style="color:#BA7517">4000<div class="tok-label" data-en="Lumens/lamp" data-ar="Lm لكل مصباح">Lumens/lamp</div></div>
+      <div class="parsed-token" style="color:#534AB7">1.0<div class="tok-label">Multiplier</div></div>
+      <div class="parsed-token" style="color:#185FA5">19<div class="tok-label" data-en="# vertical angles" data-ar="عدد الزوايا الرأسية"># vertical angles</div></div>
+      <div class="parsed-token" style="color:#185FA5">1<div class="tok-label" data-en="# horizontal angles" data-ar="عدد الزوايا الأفقية"># horizontal angles</div></div>
+      <div class="parsed-token" style="color:#5f5e5a">1<div class="tok-label">Type C Photometry</div></div>
+      <div class="parsed-token" style="color:#5f5e5a">2<div class="tok-label" data-en="Unit (metres)" data-ar="وحدة الأبعاد (متر)">Unit (metres)</div></div>
+      <div class="parsed-token" style="color:#333">0<div class="tok-label" data-en="Width (m)" data-ar="العرض (m)">Width (m)</div></div>
+      <div class="parsed-token" style="color:#333">0<div class="tok-label" data-en="Length (m)" data-ar="الطول (m)">Length (m)</div></div>
+      <div class="parsed-token" style="color:#333">0<div class="tok-label" data-en="Height (m)" data-ar="الارتفاع (m)">Height (m)</div></div>
+    </div>
+  </div>
+
+  <!-- Angle reference -->
+  <div class="angles-visual" style="margin-top:32px">
+    <div class="angle-card">
+      <div class="angle-card-title" data-en="Last horizontal angle → symmetry type" data-ar="الزاوية الأفقية الأخيرة → نوع التماثل">Last horizontal angle → symmetry type</div>
+      <div class="angle-row"><span class="angle-key" data-en="Last angle = 0°" data-ar="آخر زاوية = 0°">Last angle = 0°</span><span class="angle-val" data-en="Fully symmetric (same in all directions)" data-ar="متماثل كلياً (Axially Symmetric)">Fully symmetric (same in all directions)</span></div>
+      <div class="angle-row"><span class="angle-key" data-en="Last angle = 90°" data-ar="آخر زاوية = 90°">Last angle = 90°</span><span class="angle-val" data-en="Symmetric every quarter-turn" data-ar="متماثل في الأرباع الأربعة">Symmetric every quarter-turn</span></div>
+      <div class="angle-row"><span class="angle-key" data-en="Last angle = 180°" data-ar="آخر زاوية = 180°">Last angle = 180°</span><span class="angle-val" data-en="Symmetric left-right only" data-ar="متماثل على مستوى رأسي">Symmetric left-right only</span></div>
+      <div class="angle-row"><span class="angle-key">180° &lt; angle ≤ 360°</span><span class="angle-val" data-en="Fully asymmetric (e.g. floodlight)" data-ar="غير متماثل (Full Distribution)">Fully asymmetric (e.g. floodlight)</span></div>
+    </div>
+    <div class="angle-card">
+      <div class="angle-card-title" data-en="Vertical angle — reference" data-ar="الزاوية الرأسية — المرجع">Vertical angle — reference</div>
+      <div class="angle-row"><span class="angle-key">0°</span><span class="angle-val" data-en="Nadir — straight down (most light here for downlights)" data-ar="Nadir (أسفل مباشرة)">Nadir — straight down</span></div>
+      <div class="angle-row"><span class="angle-key">90°</span><span class="angle-key" data-en="Horizontal — pointing at the wall" data-ar="أفقي (Horizontal)">Horizontal — wall</span></div>
+      <div class="angle-row"><span class="angle-key">180°</span><span class="angle-val" data-en="Zenith — straight up" data-ar="Zenith (أعلى مباشرة)">Zenith — straight up</span></div>
+      <div class="angle-row"><span class="angle-key">Nadir → 90°</span><span class="angle-val" data-en="Downward distribution" data-ar="التوزيع السفلي (Down)">Downward distribution</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 02: CANDELA / LUX ══ -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <div class="section-titles">
+      <div class="section-title" data-en="Candela → Lux<br>The Full Math" data-ar="Candela → Lux<br>الرياضيات الكاملة">Candela → Lux<br>The Full Math</div>
+      <div class="section-subtitle" data-en="Inverse Square Law + Cosine (Lambert) — interactive demo" data-ar="قانون التربيع العكسي + قانون Cosine (Lambert)">Inverse Square Law + Cosine (Lambert) — interactive demo</div>
+    </div>
+  </div>
+  <div style="margin-bottom:24px;padding:14px 20px;background:rgba(235,27,38,.04);border-radius:6px;font-family:'IBM Plex Sans Arabic','Poppins',sans-serif;font-size:13px;color:var(--text2);line-height:1.9">
+    <span data-en="<b style='color:var(--text2)'>In plain English:</b> The IES file stores <b style='color:var(--sc-red)'>Candela</b> (lamp strength at each angle). Software converts that to <b style='color:var(--sc-red)'>Lux</b> (brightness on your floor/desk) using distance and angle. Drag the sliders below to see it live." data-ar="ملف IES يخزّن <b style='color:var(--sc-red)'>Candela</b> (شدة الضوء عند كل زاوية). البرامج تحوّله إلى <b style='color:var(--sc-red)'>Lux</b> (الإضاءة على الأرض/السطح) باستخدام المسافة والزاوية. حرّك المنزلقات لترى النتيجة مباشرة."><b style='color:var(--text2)'>In plain English:</b> The IES file stores <b style='color:var(--sc-red)'>Candela</b> (lamp strength at each angle). Software converts that to <b style='color:var(--sc-red)'>Lux</b> (brightness on your floor/desk) using distance and angle. Drag the sliders below to see it live.</span>
+  </div>
+
+  <div class="calc-layout">
+    <div>
+      <div class="scene-wrap">
+        <div class="scene-toolbar">
+          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+          <span data-en="photometric scene — live simulation" data-ar="محاكاة فوتومترية مباشرة">photometric scene — live simulation</span>
+        </div>
+        <canvas id="scene-canvas" height="340"></canvas>
+        <div class="formula-strip" id="formula-strip">E = (I × cos θ) / d² &nbsp;→&nbsp; E = (1000 × 1.000) / 9.00 = <strong>111.1 lux</strong></div>
+      </div>
+
+      <table class="ref-table" style="margin-top:28px">
+        <thead><tr>
+          <th data-en="Space / Use" data-ar="بيئة الاستخدام">Space / Use</th>
+          <th data-en="Required Lux" data-ar="الإضاءة المطلوبة">Required Lux</th>
+          <th data-en="Standard" data-ar="المعيار">Standard</th>
+        </tr></thead>
+        <tbody>
+          <tr><td data-en="Corridors &amp; walkways" data-ar="ممرات وطرقات">Corridors &amp; walkways</td><td><code>50–100 lx</code></td><td>EN 12464-1</td></tr>
+          <tr><td data-en="General offices" data-ar="مكاتب عامة">General offices</td><td><code>300–500 lx</code></td><td>EN 12464-1</td></tr>
+          <tr><td data-en="Classrooms" data-ar="فصول دراسية">Classrooms</td><td><code>300–500 lx</code></td><td>EN 17037</td></tr>
+          <tr><td data-en="Labs / workshops" data-ar="مختبرات / ورش">Labs / workshops</td><td><code>500–750 lx</code></td><td>EN 12464-1</td></tr>
+          <tr><td data-en="Operating theatres" data-ar="غرف عمليات">Operating theatres</td><td><code>1000+ lx</code></td><td>ISO 9001</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="controls-panel">
+      <div class="ctrl-card">
+        <div class="ctrl-card-head" data-en="Controls" data-ar="متغيرات الحساب">Controls</div>
+        <div class="ctrl-body">
+          <div class="ctrl-row">
+            <div class="ctrl-label">
+              <span data-en="Lamp Intensity (Candela)" data-ar="شدة المصباح (Candela)">Lamp Intensity (Candela)</span>
+              <span id="lbl-cd">1000 cd</span>
+            </div>
+            <input type="range" id="sl-cd" min="100" max="5000" step="50" value="1000" oninput="updateCalc()">
+          </div>
+          <div class="ctrl-row">
+            <div class="ctrl-label">
+              <span data-en="Distance (metres)" data-ar="المسافة (أمتار)">Distance (metres)</span>
+              <span id="lbl-d">3.0 m</span>
+            </div>
+            <input type="range" id="sl-d" min="0.5" max="12" step="0.5" value="3" oninput="updateCalc()">
+          </div>
+          <div class="ctrl-row">
+            <div class="ctrl-label">
+              <span data-en="Angle θ from Nadir" data-ar="زاوية السقوط θ">Angle θ from Nadir</span>
+              <span id="lbl-th">0°</span>
+            </div>
+            <input type="range" id="sl-th" min="0" max="80" step="5" value="0" oninput="updateCalc()">
+          </div>
+        </div>
+      </div>
+      <div class="result-card">
+        <div class="result-grid">
+          <div class="result-item accent">
+            <div class="result-val" id="res-lux">111.1</div>
+            <div class="result-unit" data-en="Lux (lx) — light on the surface" data-ar="Lux (lx) — الإضاءة على السطح">Lux (lx) — light on the surface</div>
+          </div>
+          <div class="result-item">
+            <div class="result-val" id="res-cd">1000</div>
+            <div class="result-unit">Candela (cd)</div>
+          </div>
+          <div class="result-item">
+            <div class="result-val" id="res-cos">1.000</div>
+            <div class="result-unit">cos θ</div>
+          </div>
+        </div>
+        <div class="lux-context" id="lux-context" data-en="Office desk / classroom" data-ar="إضاءة مكتب عادي">Office desk / classroom</div>
+      </div>
+      <div class="ctrl-card">
+        <div class="ctrl-card-head" data-en="Inverse Square Law" data-ar="قانون التربيع العكسي">Inverse Square Law</div>
+        <div class="ctrl-body">
+          <div style="font-family:'IBM Plex Sans Arabic','Poppins',sans-serif;font-size:12px;color:var(--text2);line-height:1.8">
+            <span data-en="Double the distance → lux drops to <strong style='color:var(--sc-red)'>¼ of the value</strong>" data-ar="مضاعفة المسافة → الإضاءة تنخفض إلى <strong style='color:var(--sc-red)'>¼ القيمة</strong>">Double the distance → lux drops to <strong style='color:var(--sc-red)'>¼ of the value</strong></span><br>
+            <span data-en="Triple the distance → drops to <strong style='color:var(--sc-red)'>⅑ of the value</strong>" data-ar="تضاعف المسافة 3× → تنخفض إلى <strong style='color:var(--sc-red)'>⅑ القيمة</strong>">Triple the distance → drops to <strong style='color:var(--sc-red)'>⅑ of the value</strong></span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px" id="inv-demo"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div style="margin-top:32px;padding:18px 24px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;font-family:'IBM Plex Sans Arabic','Poppins',sans-serif;font-size:13px;color:var(--text2);line-height:2">
+    <span data-en="<b style='color:var(--sc-red)'>One-line summaries:</b><br>🔦 <b style='color:var(--text)'>Candela</b> = how strong the lamp shines in one direction. Fixed. Doesn't care about distance.<br>💡 <b style='color:var(--text)'>Lumen</b> = total light output in all directions combined. Also fixed for the lamp.<br>☀️ <b style='color:var(--text)'>Lux</b> = how bright the surface actually is. Shrinks fast — double the distance, ¼ the lux." data-ar="<b style='color:var(--sc-red)'>ملخص في سطر:</b><br>🔦 <b style='color:var(--text)'>Candela</b> = شدة المصباح في اتجاه واحد — ثابتة — لا تتأثر بالمسافة.<br>💡 <b style='color:var(--text)'>Lumen</b> = إجمالي الضوء في كل الاتجاهات — ثابت للمصباح.<br>☀️ <b style='color:var(--text)'>Lux</b> = إضاءة السطح الفعلية — تنخفض بسرعة — تضاعف المسافة = ¼ الإضاءة."><b style='color:var(--sc-red)'>One-line summaries:</b><br>🔦 <b style='color:var(--text)'>Candela</b> = how strong the lamp shines in one direction. Fixed. Doesn't care about distance.<br>💡 <b style='color:var(--text)'>Lumen</b> = total light output in all directions combined. Also fixed for the lamp.<br>☀️ <b style='color:var(--text)'>Lux</b> = how bright the surface actually is. Shrinks fast — double the distance, ¼ the lux.</span>
+  </div>
+
+  <!-- Compare grid -->
+  <div class="compare-grid">
+    <div class="compare-col">
+      <div class="compare-col-head"><div class="compare-unit">cd</div><div class="compare-unit-en">Candela — Luminous Intensity</div></div>
+      <div class="compare-row"><div class="compare-row-lbl" data-en="What it is" data-ar="التعريف">What it is</div><div class="compare-row-val" data-en="Brightness in one specific direction" data-ar="الشدة الضوئية في اتجاه محدد">Brightness in one specific direction</div></div>
+      <div class="compare-row"><div class="compare-row-lbl" data-en="Formula" data-ar="الصيغة">Formula</div><div class="compare-row-val">cd = lm ÷ solid angle (steradian)</div></div>
+      <div class="compare-row"><div class="compare-row-lbl" data-en="Changes with distance?" data-ar="يتغير بالمسافة؟">Changes with distance?</div><div class="compare-row-val" style="color:#1D9E75" data-en="No — fixed property of the lamp" data-ar="لا — ثابت للمصدر">No — fixed property of the lamp</div></div>
+      <div class="compare-row"><div class="compare-row-lbl" data-en="In the IES file" data-ar="في ملف IES">In the IES file</div><div class="compare-row-val" style="color:var(--sc-red)" data-en="This is what is stored" data-ar="هو ما يُخزَّن فعلاً">This is what is stored</div></div>
+    </div>
+    <div class="compare-col">
+      <div class="compare-col-head"><div class="compare-unit">lm</div><div class="compare-unit-en">Lumen — Luminous Flux</div></div>
+      <div class="compare-row"><div class="compare-row-lbl" data-en="What it is" data-ar="التعريف">What it is</div><div class="compare-row-val" data-en="Total light output in all directions" data-ar="إجمالي الضوء المُنبعث في كل الاتجاهات">Total light output in all directions</div></div>
+      <div class="compare-row"><div class="compare-row-lbl" data-en="Formula" data-ar="الصيغة">Formula</div><div class="compare-row-val">lm = cd × solid angle (Ω)</div></div>
+      <div class="compare-row"><div class="compare-row-lbl" data-en="Changes with distance?" data-ar="يتغير بالمسافة؟">Changes with distance?</div><div class="compare-row-val" style="color:#1D9E75" data-en="No — fixed property of the lamp" data-ar="لا — خاصية المصدر">No — fixed property of the lamp</div></div>
+      <div class="compare-row"><div class="compare-row-lbl" data-en="In the IES file" data-ar="في ملف IES">In the IES file</div><div class="compare-row-val" data-en="Listed in the lamp data line" data-ar="يُذكر في سطر البيانات">Listed in the lamp data line</div></div>
+    </div>
+    <div class="compare-col">
+      <div class="compare-col-head"><div class="compare-unit">lx</div><div class="compare-unit-en">Lux — Illuminance</div></div>
+      <div class="compare-row"><div class="compare-row-lbl" data-en="What it is" data-ar="التعريف">What it is</div><div class="compare-row-val" data-en="Light landing on a surface (lm/m²)" data-ar="الضوء الساقط على سطح ما (lm/m²)">Light landing on a surface (lm/m²)</div></div>
+      <div class="compare-row"><div class="compare-row-lbl" data-en="Formula" data-ar="الصيغة">Formula</div><div class="compare-row-val">E = (I × cosθ) / d²</div></div>
+      <div class="compare-row"><div class="compare-row-lbl" data-en="Changes with distance?" data-ar="يتغير بالمسافة؟">Changes with distance?</div><div class="compare-row-val" style="color:var(--sc-red)" data-en="Yes — drops by distance squared" data-ar="نعم — ينخفض بمربع المسافة">Yes — drops by distance squared</div></div>
+      <div class="compare-row"><div class="compare-row-lbl" data-en="In the IES file" data-ar="في ملف IES">In the IES file</div><div class="compare-row-val" data-en="Calculated from candela by software" data-ar="يُحسب منه بواسطة البرامج">Calculated from candela by software</div></div>
+    </div>
+  </div>
+</section>
+</div><!-- end tab-photometric -->
+
+<!-- ══════════════ TAB: IES READER ══════════════ -->
+<div id="tab-ies-reader" class="tab-page">
+<section class="section">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <div class="section-titles">
+      <div class="section-title">IES File Reader</div>
+      <div class="section-subtitle" data-en="Upload or paste any .ies file — every line is colour-coded and every value explained on hover" data-ar="ارفع ملف .ies أو الصق محتواه — سيتم تحليله سطراً سطراً وعمودًا عموداً">Upload or paste any .ies file — every line is colour-coded and every value explained on hover</div>
+    </div>
+  </div>
+  <div style="margin-bottom:20px;padding:14px 20px;background:rgba(235,27,38,.04);border-radius:6px;font-family:'IBM Plex Sans Arabic','Poppins',sans-serif;font-size:13px;color:var(--text2);line-height:1.9">
+    <span data-en="<b style='color:var(--text2)'>How it works:</b> Drop any <code style='background:var(--bg3);padding:1px 5px;border-radius:3px;color:var(--sc-red)'>.ies</code> file in the box (or paste the text). Every line gets colour-coded and every number gets a tooltip explaining what it means." data-ar="اسحب أي ملف <code style='background:var(--bg3);padding:1px 5px;border-radius:3px;color:var(--sc-red)'>.ies</code> أو الصق محتواه. كل سطر سيتلوّن حسب نوعه وكل رقم سيظهر له تلميح شارح."><b style='color:var(--text2)'>How it works:</b> Drop any <code style='background:var(--bg3);padding:1px 5px;border-radius:3px;color:var(--sc-red)'>.ies</code> file in the box (or paste the text). Every line gets colour-coded and every number gets a tooltip explaining what it means.</span>
+  </div>
+
+  <div class="reader-input-row">
+    <div class="reader-drop-zone" id="ies-drop-zone" onclick="document.getElementById('ies-file-input').click()">
+      <input type="file" id="ies-file-input" accept=".ies,.txt" style="display:none" onchange="handleIesFile(this)">
+      <div class="drop-icon">📁</div>
+      <div class="drop-title" data-en="Drag &amp; drop an .ies file here or click to browse" data-ar="اسحب ملف .ies هنا أو اضغط للاختيار">Drag &amp; drop an .ies file here or click to browse</div>
+      <div class="drop-sub">IES LM-63 (Type A, B, or C)</div>
+    </div>
+    <div class="reader-or" data-en="or" data-ar="أو">or</div>
+    <div class="reader-paste-wrap">
+      <textarea id="ies-paste-area" class="ies-paste-area"></textarea>
+      <button class="btn-parse" onclick="parseIesPaste()" data-en="Parse ▶" data-ar="تحليل الملف">Parse ▶</button>
+    </div>
+  </div>
+
+  <div class="uniformity-params" id="uniformity-params" style="display:none">
+    <div class="unif-title" data-en="Uniformity — grid of repeated fixtures" data-ar="حساب Uniformity لشبكة مصابيح">Uniformity — grid of repeated fixtures</div>
+    <div class="unif-row">
+      <div class="unif-field"><label data-en="Mounting height h (m)" data-ar="ارتفاع التركيب (h) متر">Mounting height h (m)</label><input type="number" id="unif-h" value="3" step="0.5" min="1" oninput="recalcUniformity()"></div>
+      <div class="unif-field"><label data-en="Fixture spacing S (m)" data-ar="المسافة بين المصابيح (S) متر">Fixture spacing S (m)</label><input type="number" id="unif-s" value="4" step="0.5" min="1" oninput="recalcUniformity()"></div>
+      <div class="unif-field"><label data-en="Number of fixtures N" data-ar="عدد المصابيح في الصف">Number of fixtures N</label><input type="number" id="unif-n" value="4" step="1" min="1" max="20" oninput="recalcUniformity()"></div>
+      <div class="unif-field"><label data-en="Tilt angle θ°" data-ar="زاوية إمالة θ">Tilt angle θ°</label><input type="number" id="unif-theta" value="0" step="5" min="0" max="60" oninput="recalcUniformity(); if(parsedIES) renderSymmetryAnalysis(parsedIES);"></div>
+    </div>
+  </div>
+
+  <div id="ies-parsed-output" style="display:none">
+    <div class="parsed-file-wrap">
+      <div class="parsed-file-title">
+        <span data-en="Annotated file — hover any line or value" data-ar="الملف المحلَّل — مرّر على أي سطر أو قيمة">Annotated file — hover any line or value</span>
+        <span id="parsed-filename" style="color:var(--text3);font-size:11px"></span>
+      </div>
+      <div class="parsed-file-body" id="parsed-file-body"></div>
+    </div>
+    <div class="key-values-grid" id="key-values-grid"></div>
+    <div class="cd-table-wrap" id="cd-table-wrap"></div>
+    <div id="polar-section" style="display:none;margin-bottom:20px">
+      <div class="polar-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;overflow:hidden">
+          <div style="padding:10px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+            <span style="font-family:'IBM Plex Sans Arabic','Poppins',sans-serif;font-size:11px;font-weight:500;color:var(--text2)" data-en="IES Polar Diagram — Light Distribution" data-ar="مخطط قطبي IES — توزيع الضوء">IES Polar Diagram — Light Distribution</span>
+            <div style="display:flex;gap:8px;align-items:center">
+              <label style="font-family:'IBM Plex Sans Arabic','Poppins',sans-serif;font-size:10px;color:var(--text3)" data-en="Plane:" data-ar="المستوى:">Plane:</label>
+              <select id="polar-plane-sel" onchange="redrawPolar()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:'Poppins';font-size:10px;padding:3px 8px;border-radius:4px;outline:none"></select>
+            </div>
+          </div>
+          <div style="padding:16px;display:flex;justify-content:center;align-items:center;background:var(--bg)">
+            <canvas id="polar-canvas" width="360" height="360" style="max-width:100%;display:block"></canvas>
+          </div>
+          <div id="polar-type-caption" style="padding:10px 16px;border-top:1px solid var(--border);font-family:'IBM Plex Sans Arabic','Poppins',sans-serif;font-size:10px;color:var(--text3);line-height:1.7">Type C: 0° = Nadir (bottom) · 90° = Horizontal · 180° = Zenith (top)</div>
+        </div>
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;overflow:hidden">
+          <div style="padding:10px 20px;border-bottom:1px solid var(--border)">
+            <span style="font-family:'IBM Plex Sans Arabic','Poppins',sans-serif;font-size:11px;font-weight:500;color:var(--text2)" data-en="Symmetry Analysis" data-ar="تحليل التماثل">Symmetry Analysis</span>
+          </div>
+          <div id="symmetry-panel" style="padding:16px 20px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="lux-math-wrap" id="lux-math-wrap">
+      <!-- 3D Point Input Panel -->
+      <div id="lux-point-panel" style="display:none;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:20px">
+        <div style="padding:10px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
+          <span style="font-family:'Poppins',sans-serif;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--sc-red)">&#9632;</span>
+          <span style="font-family:'Poppins',sans-serif;font-size:11px;font-weight:500;color:var(--text2)">Point-to-Lux Calculator — 3D Geometry</span>
+          <span style="margin-left:auto;font-family:'Poppins',sans-serif;font-size:9px;color:var(--text3)">d = √(h² + w² + l²) &nbsp;·&nbsp; θ = arccos(h/d)</span>
+        </div>
+        <div style="padding:16px 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <div>
+            <label style="font-family:'Poppins',sans-serif;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:6px">Mounting Height h (m)</label>
+            <input type="number" id="pt-h" value="3" min="0.1" step="0.1" oninput="renderLuxMath(parsedIES)"
+              style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;color:var(--text);font-family:monospace;font-size:14px;padding:8px 12px;outline:none">
+            <div style="font-family:'Poppins',sans-serif;font-size:9px;color:var(--text3);margin-top:4px">Vertical — luminaire above ground</div>
+          </div>
+          <div>
+            <label style="font-family:'Poppins',sans-serif;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:6px">Horizontal Offset w (m)</label>
+            <input type="number" id="pt-w" value="0" min="0" step="0.1" oninput="renderLuxMath(parsedIES)"
+              style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;color:var(--text);font-family:monospace;font-size:14px;padding:8px 12px;outline:none">
+            <div style="font-family:'Poppins',sans-serif;font-size:9px;color:var(--text3);margin-top:4px">Side offset — left/right of nadir</div>
+          </div>
+          <div>
+            <label style="font-family:'Poppins',sans-serif;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:6px">Depth Offset l (m)</label>
+            <input type="number" id="pt-l" value="0" min="0" step="0.1" oninput="renderLuxMath(parsedIES)"
+              style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;color:var(--text);font-family:monospace;font-size:14px;padding:8px 12px;outline:none">
+            <div style="font-family:'Poppins',sans-serif;font-size:9px;color:var(--text3);margin-top:4px">Forward/back offset from nadir</div>
+          </div>
+        </div>
+        <div id="pt-derived" style="padding:10px 20px;background:var(--bg);border-top:1px solid var(--border);display:flex;gap:24px;flex-wrap:wrap">
+          <!-- filled by renderLuxMath -->
+        </div>
+      </div>
+    </div>
+    <div class="uniformity-result" id="uniformity-result"></div>
+  </div>
+
+  <div id="ies-empty-state" class="ies-empty-state">
+    <div style="font-size:48px;margin-bottom:16px">📄</div>
+    <div style="font-family:'IBM Plex Sans Arabic','Poppins',sans-serif;font-size:14px;color:var(--text3)" data-en="Waiting for an IES file…" data-ar="في انتظار ملف IES...">Waiting for an IES file…</div>
+  </div>
+</section>
+</div><!-- end tab-ies-reader -->
+
+<!-- ══════════════ TAB: BATTERY ══════════════ -->
+<div id="tab-battery" class="tab-page">
+<section class="section">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <div class="section-titles">
+      <div class="section-title" data-en="Battery Capacity Calculator" data-ar="حاسبة سعة البطارية">Battery Capacity Calculator</div>
+      <div class="section-subtitle" data-en="Choose battery type, configure wiring, calculate run time" data-ar="اختر نوع البطارية، حدد التوصيل، واحسب وقت التشغيل الكامل">Choose battery type, configure wiring, calculate run time</div>
+    </div>
+  </div>
+  <div class="batt-type-title" data-en="Choose Battery Type" data-ar="اختر نوع البطارية">Choose Battery Type</div>
+  <div class="batt-type-grid" id="batt-type-grid"></div>
+  <div class="batt-detail-card" id="batt-detail-card" style="display:none"></div>
+  <div class="batt-config-wrap" id="batt-config-wrap" style="display:none">
+    <div class="batt-config-title" data-en="Battery Configuration" data-ar="تكوين البطاريات">Battery Configuration</div>
+    <div class="batt-config-row">
+      <div class="batt-count-wrap">
+        <label class="cfg-label" data-en="Number of batteries" data-ar="عدد البطاريات">Number of batteries</label>
+        <div class="batt-counter">
+          <button onclick="changeBattCount(-1)">−</button>
+          <span id="batt-count-val">1</span>
+          <button onclick="changeBattCount(1)">+</button>
+        </div>
+      </div>
+      <div id="connection-selector" style="display:none">
+        <label class="cfg-label" data-en="Connection type" data-ar="نوع التوصيل">Connection type</label>
+        <div class="conn-btns" id="conn-btns"></div>
+      </div>
+      <div id="mixed-config" style="display:none">
+        <label class="cfg-label" data-en="Mixed wiring layout" data-ar="توزيع التوصيل المختلط">Mixed wiring layout</label>
+        <div class="mixed-row">
+          <div class="mixed-field"><label data-en="Parallel" data-ar="Parallel">Parallel</label><input type="number" id="mixed-parallel" value="2" min="1" oninput="updateBattCalc()"></div>
+          <div style="color:var(--text3);font-size:18px;align-self:flex-end;padding-bottom:8px">×</div>
+          <div class="mixed-field"><label data-en="Series" data-ar="Series">Series</label><input type="number" id="mixed-series" value="2" min="1" oninput="updateBattCalc()"></div>
+        </div>
+      </div>
+    </div>
+    <div class="schematic-wrap" id="schematic-wrap">
+      <div class="schematic-title" data-en="Wiring schematic" data-ar="توصيلة كهربية">Wiring schematic</div>
+      <svg id="batt-schematic" width="100%" height="160" style="max-width:600px;display:block;margin:0 auto"></svg>
+    </div>
+    <div class="power-input-wrap">
+      <div class="power-input-title" data-en="Load Parameters" data-ar="معطيات الحِمل الكهربي">Load Parameters</div>
+      <div class="power-input-grid">
+        <div class="power-field"><label data-en="Power (W) — lamp or load wattage" data-ar="Power (W) — وات المصباح أو الحِمل">Power (W) — lamp or load wattage</label><input type="number" id="load-watts" value="10" min="0.1" step="0.5" oninput="updateBattCalc()"></div>
+        <div class="power-field"><label data-en="Voltage (V) — system voltage" data-ar="Voltage (V) — فولت النظام">Voltage (V) — system voltage</label><input type="number" id="load-volts" value="12" min="3" step="0.1" oninput="updateBattCalc()"></div>
+        <div class="power-field"><label data-en="Efficiency % — inverter / converter" data-ar="Efficiency % — كفاءة المحول / المبدِّل">Efficiency % — inverter / converter</label><input type="number" id="load-eff" value="85" min="50" max="100" oninput="updateBattCalc()"></div>
+        <div class="power-field"><label data-en="DoD % — max depth of discharge" data-ar="DoD % — عمق الشحن المسموح">DoD % — max depth of discharge</label><input type="number" id="load-dod" value="80" min="10" max="100" oninput="updateBattCalc()"></div>
+      </div>
+    </div>
+    <div class="batt-results" id="batt-results"></div>
+  </div>
+</section>
+</div><!-- end tab-battery -->
+
+<!-- ══════════════ TAB: SOLAR ══════════════ -->
+<div id="tab-solar" class="tab-page">
+<section class="section">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <div class="section-titles">
+      <div class="section-title" data-en="Solar Panel Customizer" data-ar="حاسبة الألواح الشمسية">Solar Panel Customizer</div>
+      <div class="section-subtitle" data-en="Choose panel type, set wiring, calculate charging details for lighting systems" data-ar="اختر نوع الألواح، حدد التوصيل، واعرف تفاصيل الشحن للإضاءة">Choose panel type, set wiring, calculate charging details for lighting systems</div>
+    </div>
+  </div>
+  <div class="batt-type-title" data-en="Choose Solar Panel Type" data-ar="اختر نوع اللوح الشمسي">Choose Solar Panel Type</div>
+  <div class="solar-type-grid" id="solar-type-grid"></div>
+  <div class="solar-detail-card" id="solar-detail-card" style="display:none"></div>
+  <div class="solar-config-wrap" id="solar-config-wrap" style="display:none">
+    <div class="solar-config-title" data-en="Panel Configuration &amp; Wiring" data-ar="تكوين الألواح والتوصيل">Panel Configuration &amp; Wiring</div>
+    <div class="solar-config-row">
+      <div class="solar-count-pair">
+        <div><label class="cfg-label" data-en="Panels in Parallel" data-ar="ألواح Parallel">Panels in Parallel</label><input type="number" id="solar-parallel" value="1" min="1" max="20" oninput="updateSolarCalc()"></div>
+        <div><label class="cfg-label" data-en="Panels in Series" data-ar="ألواح Series">Panels in Series</label><input type="number" id="solar-series" value="1" min="1" max="20" oninput="updateSolarCalc()"></div>
+      </div>
+      <div class="solar-mount-wrap">
+        <label class="cfg-label" data-en="Fixture mounting type" data-ar="نوع التركيب">Fixture mounting type</label>
+        <div class="mount-btns">
+          <button class="mount-btn active" id="mount-all" onclick="setMount('all-in-one',this)">All-in-One</button>
+          <button class="mount-btn" id="mount-sep" onclick="setMount('separated',this)">Separated</button>
+        </div>
+      </div>
+      <div class="solar-tilt-wrap">
+        <label class="cfg-label" data-en="Tilt Angle" data-ar="زاوية الميل (Tilt Angle)">Tilt Angle</label>
+        <input type="range" id="solar-tilt" min="0" max="60" value="15" step="5" oninput="updateSolarCalc()">
+        <span id="solar-tilt-val" style="font-family:monospace;color:var(--sc-red);font-size:13px">15°</span>
+      </div>
+    </div>
+    <div class="solar-schematic-wrap" id="solar-schematic-wrap">
+      <div class="schematic-title" data-en="Panel layout" data-ar="تمثيل الألواح">Panel layout</div>
+      <canvas id="solar-canvas" height="200" style="width:100%;border-radius:6px;background:var(--bg3)"></canvas>
+    </div>
+    <div class="solar-params-wrap">
+      <div class="solar-params-title" data-en="Charging &amp; Operation Parameters" data-ar="معطيات الشحن والتشغيل">Charging &amp; Operation Parameters</div>
+      <div class="solar-params-grid">
+        <div class="power-field"><label data-en="Peak sun hours / day (PSH)" data-ar="ساعات الشمس الفعلية / يوم (PSH)">Peak sun hours / day (PSH)</label><input type="number" id="sol-psh" value="5" step="0.5" min="1" max="12" oninput="updateSolarCalc()"></div>
+        <div class="power-field"><label data-en="Battery capacity (Ah)" data-ar="سعة البطارية (Ah)">Battery capacity (Ah)</label><input type="number" id="sol-batt-ah" value="100" step="10" min="10" oninput="updateSolarCalc()"></div>
+        <div class="power-field"><label data-en="Battery voltage (V)" data-ar="فولت البطارية (V)">Battery voltage (V)</label><input type="number" id="sol-batt-v" value="12" step="1" min="3" oninput="updateSolarCalc()"></div>
+        <div class="power-field"><label data-en="Lamp load (W)" data-ar="حِمل المصباح (W)">Lamp load (W)</label><input type="number" id="sol-load-w" value="20" step="1" min="1" oninput="updateSolarCalc()"></div>
+        <div class="power-field"><label data-en="Required operating hours / night" data-ar="ساعات تشغيل مطلوبة / ليلة">Required operating hours / night</label><input type="number" id="sol-hours" value="10" step="0.5" min="1" max="24" oninput="updateSolarCalc()"></div>
+        <div class="power-field"><label data-en="MPPT controller efficiency %" data-ar="كفاءة المنظم MPPT %">MPPT controller efficiency %</label><input type="number" id="sol-eff" value="95" step="1" min="70" max="100" oninput="updateSolarCalc()"></div>
+      </div>
+    </div>
+    <div class="solar-results" id="solar-results"></div>
+  </div>
+</section>
+</div><!-- end tab-solar -->
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+  <!-- <svg viewBox="0 0 88.194804 39.567375" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(1154.6313,-99.845264)">
+      <path fill="#ffffff" d="m -1115.1899,99.845264 a 4.0626351,4.0626351 0 0 0 -3.7237,2.438096 h -2.1383 v 0.38368 h -5.9907 c -2.2904,0 -4.2007,1.83906 -4.2007,4.1171 v 12.80001 c 0,2.27804 1.9103,4.11561 4.2007,4.11561 h 12.4648 a 1.1440361,1.1440361 0 0 0 1.144,-1.14396 1.1440361,1.1440361 0 0 0 -1.144,-1.14396 h -12.4648 c -1.0965,0 -1.9125,-0.81267 -1.9125,-1.82769 v -12.80001 c 0,-1.01501 0.816,-1.82886 1.9125,-1.82886 h 5.9907 v 0.3754 h 2.0582 a 4.0626351,4.0626351 0 0 0 3.8038,2.6397 h 1.073 v -8.125116 z m 8.3308,0 v 1.556026 h -2.2031 c -0.3677,0 -0.6639,0.29587 -0.6639,0.66362 v 0.46202 c 0,0.36775 0.2962,0.66362 0.6639,0.66362 h 2.2031 v 1.43454 h -2.2031 c -0.3677,0 -0.6639,0.29617 -0.6639,0.66392 v 0.46171 c 0,0.36776 0.2962,0.66393 0.6639,0.66393 h 2.2031 v 1.55573 h 1.0728 a 4.0626351,4.0626351 0 0 0 3.8037,-2.6397 h 2.0582 v -0.3754 h 5.899 c 1.0965,0 1.9128,0.81385 1.9128,1.82886 v 12.80001 c 0,1.01502 -0.8163,1.82769 -1.9128,1.82769 h -12.2088 a 1.1440361,1.1440361 0 0 0 -1.144,1.14396 1.1440361,1.1440361 0 0 0 1.144,1.14396 h 12.2088 c 2.2905,0 4.2008,-1.83757 4.2008,-4.11561 v -12.80001 c 0,-2.27804 -1.9103,-4.1171 -4.2008,-4.1171 h -5.899 v -0.38368 h -2.138 a 4.0626351,4.0626351 0 0 0 -3.7239,-2.438096 z"/>
+      <path fill="#ffffff" d="M -1096.0823,114.27153 h -1.9377 v -3.37219 h -5.8612 v -1.6656 l 5.3901,-7.37511 h 2.4088 v 7.37511 h 1.6885 v 1.6656 h -1.6885 z m -1.9377,-5.03779 v -4.53421 l -3.2397,4.53421 z m 8.3352,5.22289 c -1.2636,0 -2.3181,-0.44469 -3.1636,-1.33406 -0.8374,-0.8975 -1.2561,-2.10182 -1.2561,-3.61295 0,-1.61748 0.4187,-2.89867 1.2561,-3.84356 0.8455,-0.94488 1.9,-1.41732 3.1636,-1.41732 1.2555,0 2.3019,0.47244 3.1393,1.41732 0.8374,0.94489 1.2561,2.22608 1.2561,3.84356 0,1.51113 -0.4187,2.71545 -1.2561,3.61295 -0.8374,0.88937 -1.8838,1.33406 -3.1393,1.33406 z m 0,-1.6656 c 0.6936,0 1.2561,-0.30702 1.6885,-0.92106 0.4405,-0.62217 0.6607,-1.43355 0.6607,-2.43414 0,-1.00059 -0.2202,-1.81197 -0.6607,-2.43413 -0.4324,-0.62217 -0.9949,-0.93325 -1.6885,-0.93325 -0.7017,0 -1.2722,0.31108 -1.7126,0.93325 -0.4324,0.62216 -0.6486,1.43354 -0.6486,2.43413 0,1.00059 0.2162,1.81197 0.6486,2.43414 0.4404,0.61404 1.0109,0.92106 1.7126,0.92106 z"/>
+    </g>
+  </svg> -->
+  <img src="https://shortcircuit.company/assets/img/logo-dark.svg" style="width: 100px;" alt="Short Circuit Company">
+
+  <div class="footer-meta">SC-DOC-IES-REF-001 · Lighting Design Division · Short Circuit Company</div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════
+   LANGUAGE / i18n SYSTEM
+══════════════════════════════════════════════ */
+const urlParams = new URLSearchParams(window.location.search);
+let LANG = urlParams.get('lang') === 'ar' ? 'ar' : 'en';
+
+function applyLang() {
+  const isAr = LANG === 'ar';
+  document.documentElement.lang = isAr ? 'ar' : 'en';
+  document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+  const url = new URL(window.location.href);
+  url.searchParams.set('lang', LANG);
+  window.history.replaceState({}, '', url.toString());
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.innerHTML = isAr ? (el.dataset.ar || el.dataset.en) : el.dataset.en;
+  });
+  const btn = document.getElementById('lang-btn');
+  if (btn) btn.textContent = isAr ? 'English' : 'عربي';
+  const ta = document.getElementById('ies-paste-area');
+  if (ta) {
+    ta.placeholder = isAr
+      ? 'الصق محتوى الملف هنا...\nمثال:\nIESNA:LM-63-2002\n[MANUFAC] Short Circuit Company\nTILT=NONE\n1 4000 1.0 19 1 1 2 0 0 0\n0 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90\n0\n1250 1248 1241 1228 1209 1183 1148 1104 1050 985 907 815 708 585 446 292 124 38 0'
+      : 'Paste .ies file content here...\nExample:\nIESNA:LM-63-2002\n[MANUFAC] Short Circuit Company\nTILT=NONE\n1 4000 1.0 19 1 1 2 0 0 0\n0 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90\n0\n1250 1248 1241 1228 1209 1183 1148 1104 1050 985 907 815 708 585 446 292 124 38 0';
+  }
+}
+
+function toggleLang() {
+  LANG = LANG === 'en' ? 'ar' : 'en';
+  applyLang();
+  updateCalc();
+  initBattGrid();
+  initSolarGrid();
+  if (parsedIES) renderSymmetryAnalysis(parsedIES);
+}
+
+const rowDetailsEN = [
+  {
+    title: 'Version Header',
+    body: `<span style="color:#aaa;font-size:11px">🇬🇧 Plain English:</span> The very first line of every IES file. It just stamps which version of the standard was used to write the file — like a document format version. Software uses this to know how to read the rest.<br><br>
+    <code>IESNA:LM-63-2002</code> or <code>IES:LM-63-2019</code><br><br>
+    Software like DIALux and AGI32 uses this to know how to parse the rest of the file.`
+  },
+  {
+    title: 'Keywords — Metadata',
+    body: `<span style="color:#aaa;font-size:11px">🇬🇧 Plain English:</span> These are just labels/metadata — like the ID card of the lamp. Who made it, what's the product code, test date, etc. They don't affect calculations, but they're useful for tracking what lamp you're working with.<br><br>
+    <code>[TEST]</code> Lab report number &nbsp;|&nbsp; <code>[MANUFAC]</code> Manufacturer name<br>
+    <code>[LUMCAT]</code> Catalogue number &nbsp;|&nbsp; <code>[LUMINAIRE]</code> Fixture description<br>
+    <code>[ISSUEDATE]</code> Issue date &nbsp;|&nbsp; <code>[LAMP]</code> Lamp type`
+  },
+  {
+    title: 'TILT — Lamp Tilt Flag',
+    body: `<span style="color:#aaa;font-size:11px">🇬🇧 Plain English:</span> Some lamps are tested at an angle, not perfectly vertical. This line tells you if that's the case. Almost always it says NONE — meaning the data is already correct as-is, no tilt correction needed.<br><br>
+    <code>TILT=NONE</code> — No tilt (99% of fixtures)<br>
+    <code>TILT=INCLUDE</code> — Tilt table included in the file<br>
+    <code>TILT=filename</code> — Tilt data is in a separate file`
+  },
+  {
+    title: 'Lamp Data Line — the 10 numbers',
+    body: `<span style="color:#aaa;font-size:11px">🇬🇧 Plain English:</span> The most important single line. Ten numbers that define everything about the lamp setup. Hover each number in the parsed line below to see what it means.<br><br>
+    <code>1</code> Number of lamps &nbsp;|&nbsp; <code>4000</code> Lumens per lamp (<code>-1</code> = use candela values directly)<br>
+    <code>1.0</code> Multiplier — scale all candela by this &nbsp;|&nbsp; <code>19</code> Number of vertical angles<br>
+    <code>1</code> Number of horizontal angles &nbsp;|&nbsp; <code>1</code> Photometric type (1=Type C, most common)<br>
+    <code>2</code> Unit (1=feet, 2=metres) &nbsp;|&nbsp; <code>0 0 0</code> Lamp opening width × length × height`
+  },
+  {
+    title: 'Vertical Angles — up/down from Nadir',
+    body: `<span style="color:#aaa;font-size:11px">🇬🇧 Plain English:</span> A list of the up-down angles where the brightness was measured. Think of it as slicing the lamp's light cone like an orange — each slice is a vertical angle.<br><br>
+    <b>0° = Nadir</b> (straight down, like looking at your feet)<br>
+    <b>90° = Horizontal</b> (like looking at the wall)<br>
+    <b>180° = Zenith</b> (straight up, like looking at the ceiling)<br><br>
+    Usually measured every 5° — so 0, 5, 10, 15 … 90 for a typical downlight. Count = the 4th number in the lamp data line.`
+  },
+  {
+    title: 'Horizontal Angles — left/right symmetry',
+    body: `<span style="color:#aaa;font-size:11px">🇬🇧 Plain English:</span> A list of the left-right angles (rotating around the lamp). The last number here tells you if the lamp is symmetric or not:<br><br>
+    <code>0°</code> → Same in every direction (like a round downlight — fully symmetric)<br>
+    <code>90°</code> → Same in every quarter-turn (many commercial fixtures)<br>
+    <code>180°</code> → Symmetric left-right only<br>
+    <code>360°</code> → Fully different in every direction (asymmetric floodlights)`
+  },
+  {
+    title: 'Candela Values — the heart of the file',
+    body: `<span style="color:#aaa;font-size:11px">🇬🇧 Plain English:</span> This is the actual measurement data — the brightness (in candela) of the lamp at every angle combination. This is what lighting software reads to simulate how a room will be lit.<br><br>
+    <b>Reading order:</b> For each horizontal angle → list all vertical angle values from smallest to largest.<br><br>
+    <b>Actual value = number in file × Multiplier</b> (usually multiplier = 1, so the value is unchanged)<br><br>
+    Software takes these candela values + the angle + the distance → calculates Lux on any surface.`
+  }
+];
+const rowDetailsAR = [
+  {
+    title: 'Version Header — السطر التعريفي',
+    body: `أول سطر في أي ملف IES دائماً. يحدد إصدار معيار ANSI/IES المستخدم.<br><br>
+    <code>IESNA:LM-63-2002</code> أو <code>IES:LM-63-2019</code><br><br>
+    تستخدمه برامج الإضاءة مثل DIALux وAGI32 لتحديد طريقة قراءة باقي الملف وفق الإصدار الصحيح.`
+  },
+  {
+    title: 'Keywords — الكلمات المفتاحية',
+    body: `معلومات وصفية عن المصباح. بعضها إلزامي وبعضها اختياري حسب الإصدار.<br><br>
+    <code>[TEST]</code> رقم تقرير المعمل &nbsp;|&nbsp; <code>[MANUFAC]</code> اسم الشركة المصنعة<br>
+    <code>[LUMCAT]</code> رقم الكاتالوج &nbsp;|&nbsp; <code>[LUMINAIRE]</code> وصف المصباح<br>
+    <code>[ISSUEDATE]</code> تاريخ الإصدار &nbsp;|&nbsp; <code>[LAMP]</code> نوع اللمبة`
+  },
+  {
+    title: 'TILT — إمالة المصباح',
+    body: `يحدد إذا كان للمصباح زاوية إمالة ثابتة تؤثر على توزيع الضوء.<br><br>
+    <code>TILT=NONE</code> — لا توجد إمالة (الأغلبية الساحقة من المصابيح)<br>
+    <code>TILT=INCLUDE</code> — يتبعه جدول زوايا إمالة مضمّن في الملف<br>
+    <code>TILT=filename</code> — يشير إلى ملف TILT خارجي منفصل`
+  },
+  {
+    title: 'Lamp Data Line — سطر بيانات المصباح',
+    body: `السطر الرقمي الأهم — يُحلَّل من اليسار لليمين:<br><br>
+    <code>1</code> عدد المصابيح &nbsp;|&nbsp; <code>4000</code> Lumens لكل مصباح (<code>-1</code> = Absolute Photometry)<br>
+    <code>1.0</code> Multiplier يُضرب في كل قيم الكاندلا &nbsp;|&nbsp; <code>19</code> عدد الزوايا الرأسية<br>
+    <code>1</code> عدد الزوايا الأفقية &nbsp;|&nbsp; <code>1</code> نوع القياس (1=Type C الأكثر شيوعاً)<br>
+    <code>2</code> وحدة الأبعاد (1=قدم، 2=متر) &nbsp;|&nbsp; <code>0 0 0</code> عرض × طول × ارتفاع الفتحة الضوئية`
+  },
+  {
+    title: 'Vertical Angles — الزوايا الرأسية',
+    body: `قائمة الزوايا الرأسية (C-plane) المرتبة تصاعدياً حيث تُقاس الشدة الضوئية.<br><br>
+    <strong>الشرط:</strong> إن كان التوزيع في النصف السفلي فقط: يبدأ من <code>0°</code> وينتهي بـ <code>90°</code><br>
+    إن كان في كلا النصفين: يمتد من <code>0°</code> إلى <code>180°</code><br><br>
+    <strong>الفترة المعتادة:</strong> كل <code>5°</code> أو <code>2.5°</code> لدقة أعلى. عدد النقاط يطابق الرقم السابع في سطر البيانات.`
+  },
+  {
+    title: 'Horizontal Angles — الزوايا الأفقية',
+    body: `قائمة الزوايا الأفقية (V-plane) المرتبة تصاعدياً. تبدأ دائماً من <code>0°</code>.<br><br>
+    <strong>آخر زاوية تحدد نوع التماثل:</strong><br>
+    <code>0°</code> → متماثل كلياً حول المحور (Axially Symmetric)<br>
+    <code>90°</code> → متماثل في الأرباع الأربعة<br>
+    <code>180°</code> → متماثل حول مستوى رأسي<br>
+    <code>360°</code> → غير متماثل (Full Distribution)`
+  },
+  {
+    title: 'Candela Values — جوهر الملف',
+    body: `<strong>هذا هو قلب الملف.</strong> قيم الشدة الضوئية (Candela) لكل نقطة زاوية.<br><br>
+    <strong>ترتيب القراءة:</strong> لكل زاوية أفقية على حدة → جميع قيم الزوايا الرأسية المقابلة من الأصغر للأكبر.<br><br>
+    <strong>القيمة الفعلية:</strong> <code>candela_value × multiplier</code><br><br>
+    البرامج تستورد هذه القيم وتستخدم قانون الـ Inverse Square Law + Cosine لحساب الـ Lux على أي سطح في الفراغ.`
+  }
+];
+function getRowDetails() { return LANG === 'ar' ? rowDetailsAR : rowDetailsEN; }
+
+
+/* ══════ IES ROW DETAILS ══════ */
+
+
+let activeRow = null;
+
+function selectRow(index, el) {
+  document.querySelectorAll('.ies-row').forEach(r => r.classList.remove('active'));
+  el.classList.add('active');
+  activeRow = index;
+  const panel = document.getElementById('detail-panel');
+  const d = getRowDetails()[index];
+  panel.innerHTML = `<h4>${d.title}</h4><p>${d.body}</p>`;
+}
+
+/* ══════ SCENE CANVAS ══════ */
+const canvas = document.getElementById('scene-canvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width;
+}
+
+function getLuxContext(lux) {
+  if (LANG === 'ar') {
+
+  if (lux < 1) return 'أقل من الحد الأدنى — ظلام شبه تام';
+  if (lux < 50) return 'ممر أو مخزن';
+  if (lux < 150) return 'إضاءة عامة منخفضة';
+  if (lux < 300) return 'مناطق استراحة / غرف انتظار';
+  if (lux < 500) return 'مكتب أو فصل دراسي (EN 12464-1)';
+  if (lux < 750) return 'عمل دقيق / ورشة تقنية';
+  if (lux < 1000) return 'مختبر أو بيئة طبية';
+  if (lux < 3000) return 'غرفة عمليات / صناعة دقيقة';
+  return 'ضوء نهار مباشر أو إضاءة جراحية';
+  }
+
+  if (lux < 1) return 'Near total darkness — below minimum threshold';
+  if (lux < 50) return 'Corridor or storage room';
+  if (lux < 150) return 'Low general home lighting';
+  if (lux < 300) return 'Waiting rooms / rest areas';
+  if (lux < 500) return 'Office or classroom (EN 12464-1)';
+  if (lux < 750) return 'Precision work / technical workshop';
+  if (lux < 1000) return 'Lab or medical environment';
+  if (lux < 3000) return 'Operating theatre / precision manufacturing';
+  return 'Direct daylight or surgical lighting';
+}
+
+function drawScene(cd, d, theta) {
+  resizeCanvas();
+  const W = canvas.width;
+  const H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const bg = '#0a0a0a';
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < W; i += 40) {
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, H); ctx.stroke();
+  }
+  for (let i = 0; i < H; i += 40) {
+    ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(W, i); ctx.stroke();
+  }
+
+  const lampX = W * 0.22;
+  const lampY = 60;
+  const groundY = H - 60;
+  const thetaRad = (theta * Math.PI) / 180;
+
+  // Distance scale
+  const scale = (H - 120) / 12;
+  const hitX = lampX + Math.sin(thetaRad) * d * scale;
+  const hitY = groundY;
+
+  // Light cone / glow
+  const cosT = Math.cos(thetaRad);
+  const lux = (cd * cosT) / (d * d);
+  const luxNorm = Math.min(lux / 2000, 1);
+  const coneAlpha = 0.03 + luxNorm * 0.12;
+
+  const grad = ctx.createLinearGradient(lampX, lampY, hitX, hitY);
+  grad.addColorStop(0, `rgba(235,27,38,${coneAlpha * 3})`);
+  grad.addColorStop(1, `rgba(235,150,50,${coneAlpha})`);
+
+  const spread = 20 + luxNorm * 40;
+  ctx.beginPath();
+  ctx.moveTo(lampX, lampY);
+  ctx.lineTo(hitX - spread, hitY);
+  ctx.lineTo(hitX + spread, hitY);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Ray line
+  ctx.beginPath();
+  ctx.moveTo(lampX, lampY);
+  ctx.lineTo(hitX, hitY);
+  ctx.setLineDash([6, 4]);
+  ctx.strokeStyle = 'rgba(235,27,38,0.6)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Normal line at hit point
+  ctx.beginPath();
+  ctx.moveTo(hitX, hitY - 60);
+  ctx.lineTo(hitX, hitY + 4);
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 3]);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Theta arc
+  if (theta > 0) {
+    ctx.beginPath();
+    ctx.arc(hitX, hitY, 30, -Math.PI / 2, -Math.PI / 2 + thetaRad, false);
+    ctx.strokeStyle = '#1D9E75';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = '#1D9E75';
+    ctx.font = '11px Poppins, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('θ = ' + theta + '°', hitX + 14, hitY - 16);
+  }
+
+  // Ground
+  ctx.beginPath();
+  ctx.moveTo(40, groundY);
+  ctx.lineTo(W - 40, groundY);
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Ground label
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.font = '10px Poppins, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('GROUND PLANE', W - 50, groundY - 8);
+
+  // Distance arrow
+  ctx.beginPath();
+  ctx.moveTo(lampX - 12, lampY);
+  ctx.lineTo(lampX - 12, hitY);
+  ctx.strokeStyle = 'rgba(235,27,38,0.4)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  // Arrow heads
+  const ah = 6;
+  ctx.beginPath();
+  ctx.moveTo(lampX - 12, lampY);
+  ctx.lineTo(lampX - 16, lampY + ah); ctx.lineTo(lampX - 8, lampY + ah); ctx.closePath();
+  ctx.fillStyle = 'rgba(235,27,38,0.4)'; ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(lampX - 12, hitY);
+  ctx.lineTo(lampX - 16, hitY - ah); ctx.lineTo(lampX - 8, hitY - ah); ctx.closePath();
+  ctx.fill();
+
+  // Distance label
+  const midY = (lampY + hitY) / 2;
+  ctx.fillStyle = 'rgba(235,27,38,0.8)';
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText('d = ' + d.toFixed(1) + 'm', lampX - 18, midY + 4);
+
+  // Lamp glow
+  const lampGlow = ctx.createRadialGradient(lampX, lampY, 0, lampX, lampY, 30);
+  lampGlow.addColorStop(0, 'rgba(255,230,150,0.8)');
+  lampGlow.addColorStop(0.4, 'rgba(235,150,50,0.3)');
+  lampGlow.addColorStop(1, 'rgba(235,27,38,0)');
+  ctx.beginPath();
+  ctx.arc(lampX, lampY, 30, 0, Math.PI * 2);
+  ctx.fillStyle = lampGlow;
+  ctx.fill();
+
+  // Lamp body
+  ctx.beginPath();
+  ctx.arc(lampX, lampY, 10, 0, Math.PI * 2);
+  ctx.fillStyle = '#FAC775';
+  ctx.fill();
+  ctx.strokeStyle = '#EF9F27';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Lamp label
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.font = '10px Poppins';
+  ctx.textAlign = 'center';
+  ctx.fillText('LUMINAIRE', lampX, lampY - 20);
+  ctx.fillStyle = '#eb1b26';
+  ctx.font = '11px monospace';
+  ctx.fillText(cd + ' cd', lampX, lampY - 8);
+
+  // Hit spot glow
+  const hitLux = Math.min(lux, 3000);
+  const spotSize = 8 + hitLux / 200;
+  const spotGlow = ctx.createRadialGradient(hitX, hitY, 0, hitX, hitY, spotSize * 3);
+  spotGlow.addColorStop(0, `rgba(235,27,38,${0.2 + luxNorm * 0.6})`);
+  spotGlow.addColorStop(1, 'rgba(235,27,38,0)');
+  ctx.beginPath();
+  ctx.arc(hitX, hitY, spotSize * 3, 0, Math.PI * 2);
+  ctx.fillStyle = spotGlow;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(hitX, hitY, 5, 0, Math.PI * 2);
+  ctx.fillStyle = '#eb1b26';
+  ctx.fill();
+
+  // Lux label at hit point
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.font = 'bold 13px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(lux.toFixed(1) + ' lx', hitX, hitY - 18);
+
+  // Shells (inverse square illustration)
+  const shell1 = d * scale * 0.5;
+  const shell2 = d * scale;
+  [shell1, shell2].forEach((r, i) => {
+    ctx.beginPath();
+    ctx.arc(lampX, lampY, r, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255,255,255,${i === 0 ? 0.06 : 0.03})`;
+    ctx.lineWidth = 0.8;
+    ctx.setLineDash([2, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+}
+
+function updateCalc() {
+  const cd = +document.getElementById('sl-cd').value;
+  const d  = +document.getElementById('sl-d').value;
+  const th = +document.getElementById('sl-th').value;
+  const cosT = Math.cos(th * Math.PI / 180);
+  const lux = (cd * cosT) / (d * d);
+
+  document.getElementById('lbl-cd').textContent = cd + ' cd';
+  document.getElementById('lbl-d').textContent = d.toFixed(1) + ' m';
+  document.getElementById('lbl-th').textContent = th + '°';
+
+  document.getElementById('res-lux').textContent = lux.toFixed(1);
+  document.getElementById('res-cd').textContent = cd;
+  document.getElementById('res-cos').textContent = cosT.toFixed(3);
+  document.getElementById('lux-context').textContent = getLuxContext(lux);
+
+  document.getElementById('formula-strip').innerHTML =
+    `E = (I × cos θ) / d² &nbsp;→&nbsp; E = (${cd} × ${cosT.toFixed(3)}) / ${(d*d).toFixed(2)} = <strong>${lux.toFixed(1)} lux</strong>`;
+
+  // Inverse square demo
+  const demos = [1, 2, 3, 4].map(mult => {
+    const dd = d * mult;
+    const ll = (cd * cosT) / (dd * dd);
+    const pct = Math.round((ll / lux) * 100);
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;">
+      <span style="font-family:monospace;color:var(--text2)">d × ${mult} = ${dd.toFixed(1)} m</span>
+      <span style="font-family:monospace;color:var(--sc-red)">${ll.toFixed(1)} lx (${pct}%)</span>
+    </div>`;
+  }).join('');
+  document.getElementById('inv-demo').innerHTML = demos;
+
+  drawScene(cd, d, th);
+}
+
+window.addEventListener('resize', () => {
+  const cd = +document.getElementById('sl-cd').value;
+  const d  = +document.getElementById('sl-d').value;
+  const th = +document.getElementById('sl-th').value;
+  drawScene(cd, d, th);
+});
+
+updateCalc();
+/* ══════════════════════════════════════════════
+   TAB SWITCHING
+══════════════════════════════════════════════ */
+function showTab(name, el) {
+  document.querySelectorAll('.tab-page').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  el.classList.add('active');
+  if (name === 'solar') { setTimeout(drawSolarCanvas, 100); }
+}
+
+/* ══════════════════════════════════════════════
+   IES READER
+══════════════════════════════════════════════ */
+const LINE_COLORS = {
+  version:   '#534AB7',
+  keyword:   '#1D9E75',
+  tilt:      '#7a7a7a',
+  lampdata:  '#BA7517',
+  vangles:   '#185FA5',
+  hangles:   '#185FA5',
+  candela:   '#eb1b26',
+  unknown:   '#555'
+};
+
+const TOKEN_DESCS = {
+  num_lamps:    'How many lamp bulbs are inside the fixture',
+  lumens:       'Total lumen output per lamp (−1 means "use the candela values as-is")',
+  multiplier:   'Multiply every candela number by this — usually 1.0, means no change',
+  n_vert:       'How many vertical angles are listed below (rows in the candela table)',
+  n_horiz:      'How many horizontal angles are listed (columns in the candela table)',
+  phot_type:    '1 = Type C (most common, angles from Nadir), 2 = Type B, 3 = Type A',
+  unit:         '1 = feet, 2 = metres — units used for the fixture dimensions below',
+  width:        'Physical width of the light-emitting surface in metres',
+  length:       'Physical length of the light-emitting surface in metres',
+  height:       'Physical height/depth of the light-emitting surface in metres',
+  v_angle:      'Vertical angle — 0° = Nadir (straight down), 90° = horizontal (wall), 180° = straight up',
+  h_angle:      'Horizontal angle — 0° = symmetric in all directions, 360° = fully asymmetric',
+  candela_val:  'Light intensity (candela) at this angle — multiply by the Multiplier to get the real value'
+};
+
+let parsedIES = null;
+let uniformityTimer = null;
+
+// Drag & drop
+const dropZone = document.getElementById('ies-drop-zone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f) readIesFile(f);
+});
+
+function handleIesFile(input) {
+  if (input.files[0]) readIesFile(input.files[0]);
+}
+
+function readIesFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('ies-paste-area').value = e.target.result;
+    document.getElementById('parsed-filename').textContent = file.name;
+    parseAndRender(e.target.result);
+  };
+  reader.readAsText(file);
+}
+
+function parseIesPaste() {
+  const text = document.getElementById('ies-paste-area').value.trim();
+  if (!text) return;
+  parseAndRender(text);
+}
+
+function parseAndRender(raw) {
+  const lines = raw.split(/\r?\n/);
+  const parsed = parseIES(lines);
+  parsedIES = parsed;
+  renderParsedFile(lines, parsed);
+  renderKeyValues(parsed);
+  renderCandela(parsed);
+  renderLuxMath(parsed);
+  document.getElementById('uniformity-params').style.display = 'block';
+  document.getElementById('ies-parsed-output').style.display = 'block';
+  document.getElementById('ies-empty-state').style.display = 'none';
+  // Polar diagram + symmetry
+  const polarSec = document.getElementById('polar-section');
+  if (polarSec) {
+    polarSec.style.display = 'block';
+    buildPolarPlaneSelector(parsed);
+    setTimeout(() => { drawPolarDiagram(parsed, 0); renderSymmetryAnalysis(parsed); }, 60);
+  }
+  recalcUniformity();
+}
+
+function parseIES(lines) {
+  const res = {
+    version: '', keywords: {}, tilt: '', lampData: null,
+    vAngles: [], hAngles: [], candela: [], raw_lines: lines,
+    lineTypes: [], ballastLine: null
+  };
+  let state = 'start';
+  let lampDataLine = -1;
+  let dataLines = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i].trim();
+    if (i === 0 && (l.startsWith('IESNA') || l.startsWith('IES'))) {
+      res.version = l; res.lineTypes.push('version');
+    } else if (l.startsWith('[')) {
+      const m = l.match(/^\[([^\]]+)\]\s*(.*)/);
+      if (m) res.keywords[m[1]] = m[2];
+      res.lineTypes.push('keyword');
+    } else if (l.startsWith('TILT')) {
+      res.tilt = l; res.lineTypes.push('tilt');
+    } else if (state === 'start' && /^[\d\s\.\-]+$/.test(l) && l.split(/\s+/).filter(Boolean).length >= 10) {
+      state = 'post-lampdata';
+      lampDataLine = i;
+      const nums = l.split(/\s+/).filter(Boolean).map(Number);
+      res.lampData = {
+        num_lamps: nums[0], lumens: nums[1], multiplier: nums[2],
+        n_vert: nums[3], n_horiz: nums[4], phot_type: nums[5],
+        unit: nums[6], width: nums[7], length: nums[8], height: nums[9],
+        raw: nums
+      };
+      res.lineTypes.push('lampdata');
+    } else if (state === 'post-lampdata') {
+      // Check if this is a ballast/input-watts line (exactly 2–4 values, all numeric, NOT a long angle list)
+      // EVERFINE format adds "input_watts_multiplier ballast_factor input_watts" after lamp data
+      const nums = l.split(/\s+/).filter(Boolean).map(Number).filter(n => !isNaN(n));
+      const totalAngles = (res.lampData?.n_vert||0) + (res.lampData?.n_horiz||0);
+      if (nums.length > 0 && nums.length <= 4 && nums.length < totalAngles) {
+        // This is the extra ballast/wattage line — skip it, don't add to data pool
+        res.ballastLine = nums;
+        res.lineTypes.push('ballast');
+        state = 'angles'; // Now we're ready for real angle data
+      } else {
+        // No ballast line — treat this as first data line
+        state = 'angles';
+        if (nums.length) dataLines.push({ idx: i, nums });
+        res.lineTypes.push('vangles');
+      }
+    } else if (state === 'angles') {
+      const nums = l.split(/\s+/).filter(Boolean).map(Number).filter(n => !isNaN(n));
+      if (nums.length) dataLines.push({ idx: i, nums });
+      res.lineTypes.push('_data');
+    } else {
+      res.lineTypes.push('unknown');
+    }
+  }
+
+  // Parse angles and candela from data lines
+  if (res.lampData) {
+    let allNums = [];
+    dataLines.forEach(dl => allNums.push(...dl.nums));
+    const nv = res.lampData.n_vert;
+    const nh = res.lampData.n_horiz;
+    res.vAngles = allNums.splice(0, nv);
+    res.hAngles = allNums.splice(0, nh);
+    // Candela: nh rows × nv cols
+    res.candela = [];
+    for (let h = 0; h < nh; h++) {
+      res.candela.push(allNums.splice(0, nv));
+    }
+    // Fix line types for angles/candela
+    let ang_i = lampDataLine + 1;
+    let angPool = [...res.vAngles, ...res.hAngles];
+    let cdPool = res.candela.flat();
+    // re-label: we'll do it simply
+    let angCount = 0;
+    let cdCount = 0;
+    const totalAngles = nv + nh;
+    for (let i = lampDataLine + 1; i < lines.length; i++) {
+      const nums = lines[i].trim().split(/\s+/).filter(Boolean).filter(x => !isNaN(+x));
+      if (!nums.length) { res.lineTypes[i] = 'unknown'; continue; }
+      if (angCount < totalAngles) {
+        const take = Math.min(nums.length, totalAngles - angCount);
+        const vLeft = Math.max(0, nv - angCount);
+        res.lineTypes[i] = take <= vLeft ? 'vangles' : (angCount < nv ? 'vangles' : 'hangles');
+        angCount += take;
+      } else {
+        res.lineTypes[i] = 'candela';
+      }
+    }
+  }
+  return res;
+}
+
+function renderParsedFile(lines, parsed) {
+  const body = document.getElementById('parsed-file-body');
+
+  // Running counters for angle/candela index tracking across lines
+  let vAngleCount = 0;  // counts vangle tokens seen so far
+  let hAngleCount = 0;  // counts hangle tokens seen so far
+  let cdCount = 0;      // counts candela tokens seen so far
+  const nv   = parsed.lampData?.n_vert  || 0;
+  const nh   = parsed.lampData?.n_horiz || 0;
+  const vA   = parsed.vAngles  || [];
+  const hA   = parsed.hAngles  || [];
+  const mult = parsed.lampData?.multiplier || 1;
+
+  body.innerHTML = lines.map((line, i) => {
+    const type = parsed.lineTypes[i] || 'unknown';
+    const color = LINE_COLORS[type] || LINE_COLORS.unknown;
+    let content = '';
+
+    if (type === 'lampdata' && parsed.lampData) {
+      const keys = ['num_lamps','lumens','multiplier','n_vert','n_horiz','phot_type','unit','width','length','height'];
+      const vals = line.trim().split(/\s+/).filter(Boolean);
+      content = vals.map((v, j) => {
+        const k = keys[j] || 'unknown';
+        return `<span class="ptok" style="color:${color};background:rgba(${hexToRgb(color)},.08)">${v}<span class="ptok-tip">${TOKEN_DESCS[k] || k}</span></span>`;
+      }).join('');
+    } else if (type === 'vangles' && parsed.lampData) {
+      const vals = line.trim().split(/\s+/).filter(Boolean);
+      content = vals.map(v => {
+        const idx = vAngleCount++;
+        const deg = +v;
+        const dirLabel = deg === 0 ? 'Nadir — straight down' : deg === 90 ? 'Horizontal — wall level' : deg === 180 ? 'Zenith — straight up' : deg < 90 ? `${deg}° below horizontal` : `${deg - 90}° above horizontal`;
+        const tip = `V-angle #${idx + 1} of ${nv} — ${deg}° — ${dirLabel}`;
+        return `<span class="ptok" style="color:${color};background:rgba(${hexToRgb(color)},.08)">${v}<span class="ptok-tip">${tip}</span></span>`;
+      }).join('');
+    } else if (type === 'hangles' && parsed.lampData) {
+      const vals = line.trim().split(/\s+/).filter(Boolean);
+      content = vals.map(v => {
+        const idx = hAngleCount++;
+        const deg = +v;
+        const symLabel = deg === 0 && nh === 1 ? 'Only plane — full rotational symmetry' : deg === 0 ? 'Reference plane (front)' : deg === 90 ? 'Side plane' : deg === 180 ? 'Back plane' : `${deg}° azimuth plane`;
+        const tip = `H-angle #${idx + 1} of ${nh} — ${deg}° — ${symLabel}`;
+        return `<span class="ptok" style="color:${color};background:rgba(${hexToRgb(color)},.08)">${v}<span class="ptok-tip">${tip}</span></span>`;
+      }).join('');
+    } else if (type === 'candela') {
+      const vals = line.trim().split(/\s+/).filter(Boolean);
+      content = vals.map(v => {
+        const globalIdx = cdCount++;
+        const hPlane = Math.floor(globalIdx / nv);  // which H-angle row
+        const vPos   = globalIdx % nv;              // position within that row
+        const hDeg   = hA[hPlane] != null ? hA[hPlane] + '°' : '?°';
+        const vDeg   = vA[vPos]   != null ? vA[vPos]   + '°' : '?°';
+        const realCd = (+v * mult).toFixed(1);
+        const tip = `H=${hDeg} · V=${vDeg} → ${v} × ${mult} = ${realCd} cd`;
+        return `<span class="ptok" style="color:${color};background:rgba(${hexToRgb(color)},.08)">${v}<span class="ptok-tip">${tip}</span></span>`;
+      }).join('');
+    } else if (type === 'version') {
+      content = `<span class="ptok" style="color:${color};background:rgba(${hexToRgb(color)},.08)">${line}<span class="ptok-tip">ANSI/IES standard version stamp</span></span>`;
+    } else if (type === 'keyword') {
+      content = `<span class="ptok" style="color:${color}">${line}</span>`;
+    } else if (type === 'ballast') {
+      content = `<span class="ptok" style="color:#888;background:#88888818;padding:0 5px;border-radius:2px" title="Extra ballast/wattage line (EVERFINE format) — detected and skipped by parser. Values: input_watts_multiplier · ballast_factor · input_watts">${line} <span style="font-size:9px;color:#666">[ballast line — auto-skipped]</span></span>`;
+    } else if (type === 'tilt') {
+      content = `<span class="ptok" style="color:${color};background:rgba(${hexToRgb(color)},.08)">${line}<span class="ptok-tip">TILT=NONE means no tilt correction applied</span></span>`;
+    } else {
+      content = `<span style="color:var(--text3)">${line}</span>`;
+    }
+
+    return `<div class="pline"><span class="pline-num">${i+1}</span><div class="pline-content">${content}</div></div>`;
+  }).join('');
+}
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
+function renderKeyValues(parsed) {
+  const ld = parsed.lampData;
+  if (!ld) return;
+  const maxCd = ld.candela ? Math.max(...parsed.candela.flat()) * ld.multiplier : 0;
+  const items = [
+    { label:'Standard Version', val: parsed.version || '—', unit:'' },
+    { label:'# Lamps', val: ld.num_lamps, unit:'lamp(s)' },
+    { label:'Lumens / lamp', val: ld.lumens === -1 ? 'Absolute' : ld.lumens, unit:'lm' },
+    { label:'Multiplier', val: ld.multiplier, unit:'×' },
+    { label:'Photometric Type', val: ['','Type C','Type B','Type A'][ld.phot_type] || ld.phot_type, unit:'' },
+    { label:'Vertical Angles', val: ld.n_vert, unit:'angles' },
+    { label:'Horizontal Angles', val: ld.n_horiz, unit:'angles' },
+    { label:'Max Candela', val: maxCd.toFixed(0), unit:'cd' },
+    { label:'Unit', val: ld.unit === 1 ? 'Feet' : 'Metres', unit:'' },
+    { label:'Manufacturer', val: parsed.keywords['MANUFAC'] || '—', unit:'' },
+  ];
+  document.getElementById('key-values-grid').innerHTML = items.map(it => `
+    <div class="kv-card">
+      <div class="kv-label">${it.label}</div>
+      <div class="kv-val">${it.val}</div>
+      <div class="kv-unit">${it.unit}</div>
+    </div>`).join('');
+}
+
+function renderCandela(parsed) {
+  if (!parsed.lampData || !parsed.candela.length) return;
+  const ld = parsed.lampData;
+  const vA = parsed.vAngles;
+  const hA = parsed.hAngles;
+  const mult = ld.multiplier;
+  const maxCd = Math.max(...parsed.candela.flat()) * mult;
+
+  // Show max 12 vertical angles for readability
+  const vShow = vA.length > 12 ? vA.filter((_,i) => i % 2 === 0) : vA;
+  const vIdx = vShow.map(v => vA.indexOf(v));
+
+  let html = `<div class="cd-table-title">Candela Matrix (cd) — Vertical × Horizontal — hover any cell</div><div class="cd-scroll"><table class="cd-table"><thead><tr><th class="th-angle">H↓ / V→</th>`;
+  vShow.forEach(v => { html += `<th>${v}°</th>`; });
+  html += `</tr></thead><tbody>`;
+
+  parsed.candela.forEach((row, hi) => {
+    html += `<tr><td class="th-angle">${hA[hi]}°</td>`;
+    vIdx.forEach(vi => {
+      const val = (row[vi] || 0) * mult;
+      const intensity = val / maxCd;
+      const r = Math.round(235 * intensity), g = Math.round(27 * intensity), b = Math.round(38 * intensity);
+      html += `<td style="color:rgb(${200+Math.round(55*intensity)},${200+Math.round(55*intensity)},${200+Math.round(55*intensity)});background:rgba(${r},${g},${b},${0.1 + intensity*0.5})" title="${val.toFixed(1)} cd @ H${hA[hi]}° V${vA[vi]}°">${val.toFixed(0)}</td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</tbody></table></div>`;
+  document.getElementById('cd-table-wrap').innerHTML = html;
+}
+
+function renderLuxMath(parsed) {
+  if (!parsed?.lampData) return;
+  const ld   = parsed.lampData;
+  const mult = ld.multiplier;
+
+  // Show the 3D input panel
+  const panel = document.getElementById('lux-point-panel');
+  if (panel) panel.style.display = 'block';
+
+  // Read 3D point inputs
+  const h = Math.max(0.01, +(document.getElementById('pt-h')?.value || 3));
+  const w = Math.max(0,    +(document.getElementById('pt-w')?.value || 0));
+  const l = Math.max(0,    +(document.getElementById('pt-l')?.value || 0));
+
+  // Derived geometry
+  const horiz = Math.sqrt(w*w + l*l);           // horizontal ground distance
+  const d     = Math.sqrt(h*h + horiz*horiz);   // slant distance to point
+  const thetaV_rad = Math.atan2(horiz, h);      // vertical angle from nadir (0=straight down)
+  const thetaV_deg = thetaV_rad * 180 / Math.PI;
+  const thetaH_deg = (w === 0 && l === 0) ? 0 : Math.atan2(l, w) * 180 / Math.PI;
+  const cosInc = h / d;                         // cosine of incidence angle = h/d
+
+  // Update derived readout strip
+  const derived = document.getElementById('pt-derived');
+  if (derived) {
+    derived.innerHTML = [
+      { l: 'd (slant)',   v: d.toFixed(3) + ' m',          c: 'var(--sc-red)' },
+      { l: 'θ vertical',  v: thetaV_deg.toFixed(2) + '°',  c: '#1D9E75' },
+      { l: 'θ horizontal',v: thetaH_deg.toFixed(2) + '°',  c: '#185FA5' },
+      { l: 'cos(θ_inc)',  v: cosInc.toFixed(4),             c: 'var(--text)' },
+      { l: 'horiz dist',  v: horiz.toFixed(3) + ' m',       c: 'var(--text2)' },
+    ].map(m => `<div style="display:flex;flex-direction:column;gap:2px">
+      <div style="font-family:'Poppins',sans-serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)">${m.l}</div>
+      <div style="font-family:monospace;font-size:13px;font-weight:600;color:${m.c}">${m.v}</div>
+    </div>`).join('');
+  }
+
+  // Interpolate candela from IES data at (thetaV_deg, thetaH_deg)
+  const vA  = parsed.vAngles || [];
+  const hA  = parsed.hAngles || [];
+
+  // Find nearest H-plane index
+  let hPlaneIdx = 0;
+  let minHDiff = Infinity;
+  hA.forEach((ha, i) => {
+    const diff = Math.abs(ha - thetaH_deg);
+    if (diff < minHDiff) { minHDiff = diff; hPlaneIdx = i; }
+  });
+  const cdRow = parsed.candela[hPlaneIdx] || parsed.candela[0] || [];
+
+  // Interpolate along V-axis
+  function interpCd(vDeg) {
+    if (vA.length === 0) return 0;
+    if (vDeg <= vA[0]) return (cdRow[0] || 0) * mult;
+    if (vDeg >= vA[vA.length-1]) return (cdRow[vA.length-1] || 0) * mult;
+    let lo = 0, hi = vA.length - 1;
+    for (let i = 0; i < vA.length - 1; i++) {
+      if (vA[i] <= vDeg && vA[i+1] >= vDeg) { lo = i; hi = i+1; break; }
+    }
+    const t = vA[lo] === vA[hi] ? 0 : (vDeg - vA[lo]) / (vA[hi] - vA[lo]);
+    return ((cdRow[lo]||0) * (1-t) + (cdRow[hi]||0) * t) * mult;
+  }
+
+  const nadirCd  = interpCd(0);
+  const pointCd  = interpCd(thetaV_deg);
+  const maxCd    = Math.max(...parsed.candela.flat()) * mult;
+  const pointLux = (pointCd * cosInc) / (d * d);
+
+  const wrap = document.getElementById('lux-math-wrap');
+  // Keep the panel div, replace only the math content after it
+  const existingPanel = document.getElementById('lux-point-panel');
+
+  const mathHtml = `
+  <div class="lux-math-title" style="margin-top:0">Step-by-Step Math — Candela → Lux at Point (h=${h}m, w=${w}m, l=${l}m)</div>
+  <div style="font-family:'IBM Plex Sans Arabic';font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.9">
+    The file stores Candela only. Lux is calculated using the formula:
+    <code style="color:var(--sc-red);background:var(--bg3);padding:2px 8px;border-radius:3px">E = (I(θ) × cos θ_inc) / d²</code>
+    where d = √(h²+w²+l²), θ_inc = arccos(h/d), I(θ) = interpolated candela at vertical angle θ.
+  </div>
+  <div class="lux-math-grid">
+    <div class="lux-step">
+      <div class="lux-step-num">Step 1 — 3D distance to point</div>
+      <div class="lux-step-formula">d = √(${h}² + ${w}² + ${l}²) = √${(h*h+w*w+l*l).toFixed(3)}</div>
+      <div class="lux-step-result">= ${d.toFixed(3)} m</div>
+    </div>
+    <div class="lux-step">
+      <div class="lux-step-num">Step 2 — Vertical angle from nadir</div>
+      <div class="lux-step-formula">θ = arctan(√(w²+l²) / h) = arctan(${horiz.toFixed(3)} / ${h})</div>
+      <div class="lux-step-result">= ${thetaV_deg.toFixed(2)}°</div>
+    </div>
+    <div class="lux-step">
+      <div class="lux-step-num">Step 3 — Candela at θ=${thetaV_deg.toFixed(2)}° (H-plane ${hA[hPlaneIdx] || 0}°)</div>
+      <div class="lux-step-formula">I(${thetaV_deg.toFixed(2)}°) interpolated from IES data</div>
+      <div class="lux-step-result">= ${pointCd.toFixed(1)} cd</div>
+    </div>
+    <div class="lux-step">
+      <div class="lux-step-num">Step 4 — Cosine of incidence angle</div>
+      <div class="lux-step-formula">cos θ_inc = h / d = ${h} / ${d.toFixed(3)}</div>
+      <div class="lux-step-result">= ${cosInc.toFixed(4)}</div>
+    </div>
+    <div class="lux-step" style="grid-column:span 2;border-color:rgba(235,27,38,.3);background:rgba(235,27,38,.04)">
+      <div class="lux-step-num">Step 5 — Final Lux at point</div>
+      <div class="lux-step-formula">E = (${pointCd.toFixed(1)} × ${cosInc.toFixed(4)}) / ${d.toFixed(3)}² = ${pointCd.toFixed(1)} × ${cosInc.toFixed(4)} / ${(d*d).toFixed(3)}</div>
+      <div class="lux-step-result" style="font-size:22px">= ${pointLux.toFixed(2)} lux</div>
+    </div>
+    <div class="lux-step" style="grid-column:span 2">
+      <div class="lux-step-num">File data summary</div>
+      <div class="lux-step-formula">
+        Nadir I(0°) = ${nadirCd.toFixed(1)} cd &nbsp;|&nbsp; Peak I_max = ${maxCd.toFixed(1)} cd
+        &nbsp;|&nbsp; ${ld.lumens === -1 ? '⚠ Absolute Photometry' : 'Lumens = ' + (ld.num_lamps * ld.lumens).toFixed(0) + ' lm'}
+        &nbsp;|&nbsp; Multiplier = ${mult}
+        &nbsp;|&nbsp; ${ld.n_vert} V-angles × ${ld.n_horiz} H-planes = ${ld.n_vert * ld.n_horiz} points
+      </div>
+    </div>
+  </div>`;
+
+  // Inject math after the panel div
+  let mathDiv = document.getElementById('lux-math-content');
+  if (!mathDiv) {
+    mathDiv = document.createElement('div');
+    mathDiv.id = 'lux-math-content';
+    wrap.appendChild(mathDiv);
+  }
+  mathDiv.innerHTML = mathHtml;
+}
+
+function recalcUniformity() {
+  if (!parsedIES?.lampData) return;
+  const h = +document.getElementById('unif-h').value;
+  const S = +document.getElementById('unif-s').value;
+  const N = +document.getElementById('unif-n').value;
+  const theta = +document.getElementById('unif-theta').value;
+  const cosT = Math.cos(theta * Math.PI / 180);
+  const nadirCd = (parsedIES.candela[0]?.[0] || 0) * parsedIES.lampData.multiplier;
+
+  // Sample lux at N evenly spaced points along a row of N luminaires
+  const luxVals = [];
+  for (let x = 0; x <= S * (N-1); x += S/4) {
+    let totalLux = 0;
+    for (let n = 0; n < N; n++) {
+      const dx = x - n * S;
+      const d = Math.sqrt(dx*dx + h*h);
+      const angle = Math.atan2(Math.abs(dx), h) * 180 / Math.PI;
+      // Interpolate candela at this vertical angle
+      const vA = parsedIES.vAngles;
+      const cdRow = parsedIES.candela[0];
+      let cd = nadirCd;
+      if (vA && cdRow) {
+        const mult = parsedIES.lampData.multiplier;
+        let lo = 0, hi = vA.length-1;
+        for (let i=0; i<vA.length-1; i++) { if (vA[i] <= angle && vA[i+1] >= angle) { lo=i; hi=i+1; break; } }
+        const t = vA[lo] === vA[hi] ? 0 : (angle - vA[lo]) / (vA[hi] - vA[lo]);
+        cd = ((cdRow[lo]||0) * (1-t) + (cdRow[hi]||0) * t) * mult;
+      }
+      const cosInc = h / d;
+      totalLux += (cd * cosInc) / (d * d);
+    }
+    luxVals.push(totalLux);
+  }
+
+  const minLux = Math.min(...luxVals);
+  const maxLux = Math.max(...luxVals);
+  const avgLux = luxVals.reduce((a,b)=>a+b,0)/luxVals.length;
+  const u0 = minLux / avgLux;
+  const u1 = minLux / maxLux;
+
+  const uresult = document.getElementById('uniformity-result');
+  uresult.innerHTML = `
+  <div style="font-family:'Poppins';font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--sc-red);margin-bottom:14px">Uniformity Results — grid of ${N} fixtures, spacing ${S}m, height ${h}m</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:14px">
+    ${[
+      {l:'E avg (mean)', v:avgLux.toFixed(1), u:'lux'},
+      {l:'E min', v:minLux.toFixed(1), u:'lux'},
+      {l:'E max', v:maxLux.toFixed(1), u:'lux'},
+      {l:'U₀ = Emin/Eavg', v:u0.toFixed(3), u:'(EN 12464 ≥ 0.6)'},
+      {l:'U₁ = Emin/Emax', v:u1.toFixed(3), u:'uniformity ratio'},
+      {l:'Result', v: u0>=0.6?'✓ Pass':'✗ Fail', u:u0>=0.6?'EN 12464-1 compliant':'reduce fixture spacing'},
+    ].map(it=>`<div class="kv-card"><div class="kv-label">${it.l}</div><div class="kv-val" style="color:${it.l==='Result'&&u0<0.6?'#ff6b6b':'var(--sc-red)'}">${it.v}</div><div class="kv-unit">${it.u}</div></div>`).join('')}
+  </div>
+  <div style="font-family:'IBM Plex Sans Arabic';font-size:12px;color:var(--text2);line-height:1.9">
+    <strong style="color:var(--text)">Formulas:</strong><br>
+    U₀ = E_min / E_avg = ${minLux.toFixed(1)} / ${avgLux.toFixed(1)} = <strong style="color:var(--sc-red)">${u0.toFixed(3)}</strong><br>
+    Lux at each point = Σ (I(θ) × cosθ_inc) / d² — sum of contributions from all fixtures<br>
+    EN 12464-1 requires U₀ ≥ 0.60 for offices and classrooms
+  </div>`;
+};
+
+/* ══════════════════════════════════════════════
+   BATTERY CALCULATOR
+══════════════════════════════════════════════ */
+const BATTERY_TYPES = [
+  { id:'lifepo4', name:'LiFePO4', sub:'Lithium Iron Phosphate', icon:'🔋', emoji:'🟢',
+    nominal_v:3.2, capacity_ah:100, energy_wh:320, dod_max:80, cycle_life:3000, weight_kg:12,
+    self_discharge:3, charge_temp:'-20~60°C', notes:'Best for solar — safe, stable, long life', notes_ar:'الأفضل للطاقة الشمسية — آمن ومستقر',
+    color:'#1D9E75',
+    specs:{ 'Nominal V':'3.2V / cell', 'Typical Config':'4S = 12.8V', 'DoD Max':'80%', 'Cycle Life':'3000+', 'Self Discharge':'<3%/month', 'C-Rate':'0.5C–1C', 'Temp Range':'-20 to +60°C', 'Weight':'~12kg/100Ah' }
+  },
+  { id:'agm', name:'AGM', sub:'Absorbed Glass Mat', icon:'🪫', emoji:'🔵',
+    nominal_v:12, capacity_ah:100, energy_wh:1200, dod_max:50, cycle_life:400, weight_kg:28,
+    self_discharge:5, charge_temp:'0~40°C', notes:'Budget-friendly — vibration resistant — heavy', notes_ar:'اقتصادي — مقاوم للاهتزاز — ثقيل',
+    color:'#185FA5',
+    specs:{ 'Nominal V':'12V / unit', 'DoD Max':'50%', 'Cycle Life':'400–600', 'Self Discharge':'<5%/month', 'C-Rate':'0.1C–0.2C', 'Temp Range':'0 to +40°C', 'Weight':'~28kg/100Ah', 'Maintenance':'Zero' }
+  },
+  { id:'gel', name:'Gel', sub:'Gel Lead Acid', icon:'🧪', emoji:'🟣',
+    nominal_v:12, capacity_ah:100, energy_wh:1200, dod_max:50, cycle_life:600, weight_kg:26,
+    self_discharge:3, charge_temp:'-15~40°C', notes:'Better than AGM in heat — no spillage', notes_ar:'أفضل من AGM في الحرارة — لا تسرّب',
+    color:'#534AB7',
+    specs:{ 'Nominal V':'12V / unit', 'DoD Max':'50%', 'Cycle Life':'600–800', 'Self Discharge':'<3%/month', 'C-Rate':'0.1C', 'Temp Range':'-15 to +40°C', 'Weight':'~26kg/100Ah', 'Maintenance':'Zero' }
+  },
+  { id:'nimh', name:'NiMH', sub:'Nickel-Metal Hydride', icon:'⚡', emoji:'🟡',
+    nominal_v:1.2, capacity_ah:10, energy_wh:12, dod_max:80, cycle_life:500, weight_kg:0.4,
+    self_discharge:30, charge_temp:'0~45°C', notes:'Mid-range — high self-discharge rate', notes_ar:'متوسط — معدل تفريغ ذاتي مرتفع',
+    color:'#BA7517',
+    specs:{ 'Nominal V':'1.2V / cell', 'DoD Max':'80%', 'Cycle Life':'500', 'Self Discharge':'~30%/month', 'C-Rate':'0.2C–1C', 'Temp Range':'0 to +45°C', 'Weight':'~0.4kg/10Ah', 'Memory Effect':'Slight' }
+  },
+  { id:'lion', name:'Li-Ion', sub:'Lithium Ion (NCM/NCA)', icon:'⚡', emoji:'🔴',
+    nominal_v:3.6, capacity_ah:50, energy_wh:180, dod_max:80, cycle_life:1000, weight_kg:1.2,
+    self_discharge:2, charge_temp:'-10~45°C', notes:'High energy density — requires BMS protection', notes_ar:'كثافة طاقة عالية — يتطلب حماية BMS',
+    color:'#eb1b26',
+    specs:{ 'Nominal V':'3.6V / cell', 'Typical Config':'3S1P = 10.8V', 'DoD Max':'80%', 'Cycle Life':'1000–2000', 'Self Discharge':'<2%/month', 'C-Rate':'0.5C–2C', 'Temp Range':'-10 to +45°C', 'BMS Required':'Yes — mandatory' }
+  },
+  { id:'lead', name:'Flooded Lead', sub:'Lead Acid (Wet Cell)', icon:'💧', emoji:'⚪',
+    nominal_v:12, capacity_ah:100, energy_wh:1200, dod_max:30, cycle_life:250, weight_kg:30,
+    self_discharge:10, charge_temp:'0~40°C', notes:'Cheapest — needs maintenance — requires ventilation', notes_ar:'الأرخص — يحتاج صيانة — يتطلب تهوية',
+    color:'#666',
+    specs:{ 'Nominal V':'12V / unit', 'DoD Max':'30%', 'Cycle Life':'200–300', 'Self Discharge':'~10%/month', 'C-Rate':'0.05C–0.1C', 'Temp Range':'0 to +40°C', 'Maintenance':'Monthly — check electrolyte', 'Ventilation':'Required' }
+  },
+];
+
+let selectedBatt = null;
+let battCount = 1;
+let connType = 'parallel';
+
+function initBattGrid() {
+  const g = document.getElementById('batt-type-grid');
+  g.innerHTML = BATTERY_TYPES.map(b => `
+    <div class="batt-type-card" onclick="selectBatt('${b.id}',this)">
+      <div class="batt-icon">${b.icon}</div>
+      <div class="batt-type-name">${LANG==='ar' ? (b.name_ar||b.name) : b.name}</div>
+      <div class="batt-type-sub">${LANG==='ar' ? (b.sub_ar||b.sub) : b.sub}</div>
+      <div style="margin-top:8px;font-size:10px;color:${b.color};font-family:'IBM Plex Sans Arabic','Poppins';font-weight:500">${LANG==='ar' ? (b.notes_ar||b.notes) : b.notes}</div>
+    </div>`).join('');
+}
+
+function selectBatt(id, el) {
+  document.querySelectorAll('.batt-type-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedBatt = BATTERY_TYPES.find(b => b.id === id);
+  renderBattDetail();
+  document.getElementById('batt-config-wrap').style.display = 'block';
+  updateBattCalc();
+}
+
+function renderBattDetail() {
+  if (!selectedBatt) return;
+  const b = selectedBatt;
+  const card = document.getElementById('batt-detail-card');
+  card.style.display = 'grid';
+  card.innerHTML = `
+    <div class="batt-detail-img" style="border:1px solid ${b.color}22;font-size:64px">${b.icon}</div>
+    <div>
+      <div style="font-family:'Anton';font-size:24px;color:${b.color};margin-bottom:4px">${b.name}</div>
+      <div style="font-family:'IBM Plex Sans Arabic';font-size:13px;color:var(--text2);margin-bottom:12px">${b.sub} — ${b.notes}</div>
+      <div class="batt-specs-grid">
+        ${Object.entries(b.specs).map(([k,v]) => `
+        <div class="batt-spec-item">
+          <div class="batt-spec-label">${k}</div>
+          <div class="batt-spec-val">${v}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function changeBattCount(d) {
+  battCount = Math.max(1, battCount + d);
+  document.getElementById('batt-count-val').textContent = battCount;
+  updateConnectionUI();
+  updateBattCalc();
+}
+
+function updateConnectionUI() {
+  const connSel = document.getElementById('connection-selector');
+  const mixedCfg = document.getElementById('mixed-config');
+  if (battCount <= 1) {
+    connSel.style.display = 'none'; mixedCfg.style.display = 'none'; connType = 'single';
+  } else if (battCount === 2) {
+    connSel.style.display = 'block'; mixedCfg.style.display = 'none';
+    const btns = document.getElementById('conn-btns');
+    btns.innerHTML = `
+      <button class="conn-btn ${connType==='parallel'?'active':''}" onclick="setConn('parallel',this)">Parallel</button>
+      <button class="conn-btn ${connType==='series'?'active':''}" onclick="setConn('series',this)">Series</button>`;
+  } else {
+    connSel.style.display = 'block'; mixedCfg.style.display = 'block';
+    const btns = document.getElementById('conn-btns');
+    btns.innerHTML = `
+      <button class="conn-btn ${connType==='parallel'?'active':''}" onclick="setConn('parallel',this)">All Parallel</button>
+      <button class="conn-btn ${connType==='series'?'active':''}" onclick="setConn('series',this)">All Series</button>
+      <button class="conn-btn ${connType==='mixed'?'active':''}" onclick="setConn('mixed',this)">Mixed</button>`;
+  }
+}
+
+function setConn(type, el) {
+  connType = type;
+  document.querySelectorAll('.conn-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mixed-config').style.display = type === 'mixed' ? 'block' : 'none';
+  updateBattCalc();
+}
+
+function updateBattCalc() {
+  if (!selectedBatt) return;
+  updateConnectionUI();
+  drawBattSchematic();
+  calcBattResults();
+}
+
+function drawBattSchematic() {
+  const svg = document.getElementById('batt-schematic');
+  if (!svg) return;
+  const W = svg.clientWidth || 500;
+  const H = 160;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = '';
+
+  const b = selectedBatt;
+  const color = b.color;
+
+  function rect(x,y,w,h,fill,stroke,label,sub){
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    const r = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('x',x); r.setAttribute('y',y); r.setAttribute('width',w); r.setAttribute('height',h);
+    r.setAttribute('rx','4'); r.setAttribute('fill',fill); r.setAttribute('stroke',stroke); r.setAttribute('stroke-width','1.5');
+    g.appendChild(r);
+    if (label) {
+      const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x',x+w/2); t.setAttribute('y',y+h/2-(sub?6:0));
+      t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','central');
+      t.setAttribute('font-size','9'); t.setAttribute('font-family','Poppins,sans-serif');
+      t.setAttribute('fill',color); t.setAttribute('font-weight','500');
+      t.textContent = label; g.appendChild(t);
+    }
+    if (sub) {
+      const t2 = document.createElementNS('http://www.w3.org/2000/svg','text');
+      t2.setAttribute('x',x+w/2); t2.setAttribute('y',y+h/2+8);
+      t2.setAttribute('text-anchor','middle'); t2.setAttribute('font-size','7');
+      t2.setAttribute('font-family','monospace'); t2.setAttribute('fill','#999');
+      t2.textContent = sub; g.appendChild(t2);
+    }
+    svg.appendChild(g);
+    return g;
+  }
+
+  function line(x1,y1,x2,y2,stroke='#555'){
+    const l = document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);
+    l.setAttribute('stroke',stroke);l.setAttribute('stroke-width','1.5');
+    svg.appendChild(l);
+  }
+
+  function label(x,y,text,clr='#999',sz=10){
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('text-anchor','middle');
+    t.setAttribute('font-size',sz);t.setAttribute('font-family','Poppins,sans-serif');
+    t.setAttribute('fill',clr);t.textContent=text; svg.appendChild(t);
+  }
+
+  let np = battCount <= 1 ? 1 : battCount;
+  let parallel = parseInt(document.getElementById('mixed-parallel').value)||2;
+  let series   = parseInt(document.getElementById('mixed-series').value)||2;
+
+  const bW = 50, bH = 50, gap = 14, startY = (H - bH) / 2;
+
+  if (connType === 'single' || battCount === 1) {
+    // Single battery
+    rect(W/2-bW/2, startY, bW, bH, `${color}22`, color, b.name, `${b.nominal_v}V`);
+    line(W/2, startY, W/2, startY-20, color);
+    line(W/2, startY+bH, W/2, startY+bH+20, '#555');
+    label(W/2, startY-28, `+ ${b.nominal_v}V`, color);
+    label(W/2, startY+bH+32, `−`, '#555');
+
+  } else if (connType === 'parallel') {
+    const total = Math.min(np, 8);
+    const totalW = total * bW + (total-1) * gap;
+    const startX = (W - totalW) / 2;
+    const busY1 = startY - 18, busY2 = startY + bH + 18;
+    // Top bus
+    line(startX, busY1, startX + totalW, busY1, color);
+    // Bottom bus
+    line(startX, busY2, startX + totalW, busY2, '#555');
+    for (let i = 0; i < total; i++) {
+      const x = startX + i*(bW+gap);
+      rect(x, startY, bW, bH, `${color}22`, color, b.name, `${b.nominal_v}V`);
+      line(x+bW/2, startY, x+bW/2, busY1, color);
+      line(x+bW/2, startY+bH, x+bW/2, busY2, '#555');
+    }
+    label(startX-10, busY1, '+', color, 12);
+    label(startX-10, busY2, '−', '#555', 12);
+    label(W/2, busY1-12, `Parallel × ${total} → V=${b.nominal_v}V, Ah=${b.capacity_ah*total}Ah`, color, 9);
+
+  } else if (connType === 'series') {
+    const total = Math.min(np, 6);
+    const totalW = total * bW + (total-1) * 30;
+    const startX = (W - totalW) / 2;
+    for (let i = 0; i < total; i++) {
+      const x = startX + i*(bW+30);
+      rect(x, startY, bW, bH, `${color}22`, color, b.name, `${b.nominal_v}V`);
+      if (i < total-1) {
+        line(x+bW, startY+bH/2, x+bW+30, startY+bH/2, color);
+        label(x+bW+15, startY+bH/2-8, '+/−', '#555', 8);
+      }
+    }
+    line(startX, startY+bH/2, startX, startY+bH/2-24, color);
+    line(startX+totalW, startY+bH/2, startX+totalW, startY+bH/2-24, '#555');
+    label(startX, startY+bH/2-30, '+', color, 12);
+    label(startX+totalW, startY+bH/2-30, '−', '#555', 12);
+    label(W/2, H-12, `Series × ${total} → V=${(b.nominal_v*total).toFixed(1)}V, Ah=${b.capacity_ah}Ah`, color, 9);
+
+  } else { // mixed
+    const p = Math.min(parallel, 4), s = Math.min(series, 4);
+    const cellW = bW, cellH = 36, gapX = 10, gapY = 8;
+    const groupW = p * cellW + (p-1)*gapX;
+    const groupH = cellH;
+    const totalH = s * groupH + (s-1)*gapY;
+    const sX = (W - (groupW + 40*(s-1)))/2;
+    const sY = (H - totalH)/2;
+    for (let si=0; si<s; si++) {
+      const gx = sX + si*40;
+      const gy = sY + si*(groupH+gapY);
+      for (let pi=0; pi<p; pi++) {
+        const cx = gx + pi*(cellW+gapX);
+        rect(cx, gy, cellW, groupH, `${color}22`, color, b.name.substring(0,3), `${b.nominal_v}V`);
+      }
+      // Parallel connectors
+      if (p > 1) {
+        line(gx, gy+groupH/2, gx+groupW, gy+groupH/2, `${color}55`);
+      }
+      // Series connectors
+      if (si < s-1) {
+        line(gx+groupW/2, gy+groupH, gx+40+groupW/2, gy+groupH+gapY, color);
+      }
+    }
+    label(W/2, H-8, `${p}P${s}S → V=${(b.nominal_v*s).toFixed(1)}V, Ah=${(b.capacity_ah*p).toFixed(0)}Ah`, color, 9);
+  }
+}
+
+function calcBattResults() {
+  if (!selectedBatt) return;
+  const b = selectedBatt;
+  const watts   = +document.getElementById('load-watts').value || 10;
+  const sysV    = +document.getElementById('load-volts').value || 12;
+  const eff     = (+document.getElementById('load-eff').value || 85) / 100;
+  const dod     = (+document.getElementById('load-dod').value || 80) / 100;
+
+  let totalV = b.nominal_v;
+  let totalAh = b.capacity_ah;
+  let parallel = parseInt(document.getElementById('mixed-parallel').value)||2;
+  let series   = parseInt(document.getElementById('mixed-series').value)||2;
+
+  if (connType === 'single' || battCount === 1) { totalV = b.nominal_v; totalAh = b.capacity_ah; }
+  else if (connType === 'parallel') { totalAh = b.capacity_ah * battCount; }
+  else if (connType === 'series') { totalV = b.nominal_v * battCount; }
+  else { totalV = b.nominal_v * series; totalAh = b.capacity_ah * parallel; }
+
+  const usableWh = totalV * totalAh * dod * eff;
+  const loadCurrent = watts / sysV;
+  const runtimeH = usableWh / watts;
+  const currentMa = loadCurrent * 1000;
+  const totalWh = totalV * totalAh;
+
+  const isAr = LANG === 'ar';
+  const res = [
+    { l: isAr ? 'الجهد الكلي'    : 'Total Voltage',   v: totalV.toFixed(1),      u:'Volt', hi: false },
+    { l: isAr ? 'السعة الكلية'   : 'Total Capacity',  v: totalAh.toFixed(0),     u:'Ah',   hi: false },
+    { l: isAr ? 'الطاقة الكلية'  : 'Total Energy',    v: totalWh.toFixed(0),     u:'Wh',   hi: false },
+    { l: isAr ? 'الطاقة القابلة للاستخدام' : 'Usable Energy', v: usableWh.toFixed(0), u:`Wh (DoD=${(dod*100).toFixed(0)}%)`, hi: false },
+    { l: isAr ? 'تيار الحِمل'    : 'Load Current',    v: loadCurrent.toFixed(2), u:'Ampere', hi: false },
+    { l: isAr ? 'وقت التشغيل'    : 'Run Time',        v: runtimeH.toFixed(1),    u: isAr ? 'ساعة' : 'hours', hi: true },
+  ];
+  document.getElementById('batt-results').innerHTML = res.map(r => `
+    <div class="batt-res-card ${r.hi?'highlight':''}">
+      <div class="batt-res-val">${r.v}</div>
+      <div class="batt-res-unit">${r.u}</div>
+      <div class="batt-res-label">${r.l}</div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════════════
+   SOLAR CUSTOMIZER
+══════════════════════════════════════════════ */
+const SOLAR_TYPES = [
+  { id:'mono', name:'Monocrystalline', sub:'Single crystal silicon', icon:'☀️',
+    eff_pct: 22, pmax_w: 400, voc: 48.5, isc: 10.2, vmp: 40.2, imp: 9.7, temp_coeff: -0.35,
+    size:'1722×1134×30mm', weight:21.5, warranty:'25yr power / 12yr product',
+    color:'#185FA5',
+    notes:'Highest efficiency — best for limited space — performs well in low light', notes_ar:'كفاءة عالية — مثالي للمساحات الضيقة — يعمل جيداً في الإضاءة المنخفضة',
+    mounting:'Suits both All-in-One and Separated mounting',
+    specs:{ 'Efficiency':'22%', 'Pmax':'400W', 'Voc':'48.5V', 'Isc':'10.2A', 'Vmp':'40.2V', 'Imp':'9.7A', 'Temp Coeff':'−0.35%/°C', 'Size':'1722×1134mm', 'Weight':'21.5kg' }
+  },
+  { id:'poly', name:'Polycrystalline', sub:'Multi-crystal silicon', icon:'🌤️',
+    eff_pct: 17, pmax_w: 300, voc: 44.2, isc: 8.9, vmp: 36.4, imp: 8.2, temp_coeff: -0.40,
+    size:'1956×992×40mm', weight:22, warranty:'25yr power / 10yr product',
+    color:'#534AB7',
+    notes:'Cost-effective — good performance in moderate heat — distinctive blue look', notes_ar:'اقتصادي — جيد في الحرارة المعتدلة — مظهر أزرق مميز',
+    mounting:'Suits Separated mounting — too heavy for most All-in-One',
+    specs:{ 'Efficiency':'17%', 'Pmax':'300W', 'Voc':'44.2V', 'Isc':'8.9A', 'Vmp':'36.4V', 'Imp':'8.2A', 'Temp Coeff':'−0.40%/°C', 'Size':'1956×992mm', 'Weight':'22kg' }
+  },
+  { id:'thin', name:'Thin Film (CIGS)', sub:'Thin film deposition', icon:'🌫️',
+    eff_pct: 13, pmax_w: 150, voc: 28, isc: 6.5, vmp: 23, imp: 6.1, temp_coeff: -0.25,
+    size:'1300×1100×6mm', weight:12, warranty:'15yr power / 10yr product',
+    color:'#1D9E75',
+    notes:'Flexible — excellent in diffuse/cloudy light — suits irregular shapes', notes_ar:'مرن — ممتاز في الضوء المنتشر والغائم — يناسب الأشكال غير المنتظمة',
+    mounting:'All-in-One only (very light and flexible)',
+    specs:{ 'Efficiency':'13%', 'Pmax':'150W', 'Voc':'28V', 'Isc':'6.5A', 'Vmp':'23V', 'Imp':'6.1A', 'Temp Coeff':'−0.25%/°C', 'Size':'1300×1100mm', 'Weight':'12kg' }
+  },
+  { id:'bifacial', name:'Bifacial Mono', sub:'Dual-face monocrystalline', icon:'🔆',
+    eff_pct: 24, pmax_w: 450, voc: 51.2, isc: 10.8, vmp: 42.5, imp: 10.4, temp_coeff: -0.33,
+    size:'2094×1038×30mm', weight:25, warranty:'30yr power / 12yr product',
+    color:'#BA7517',
+    notes:'Highest yield — captures reflected light from ground — adds 10–25% extra', notes_ar:'أعلى إنتاجية — يلتقط الضوء المنعكس من الأرض — يضيف 10-25% إضافية',
+    mounting:'Separated only — needs clearance below for light reflection',
+    specs:{ 'Efficiency':'24% (front)', 'Bifacial Gain':'10–25%', 'Pmax':'450W+', 'Voc':'51.2V', 'Isc':'10.8A', 'Vmp':'42.5V', 'Imp':'10.4A', 'Temp Coeff':'−0.33%/°C', 'Weight':'25kg' }
+  },
+  { id:'perc', name:'PERC Mono', sub:'Passivated Emitter Rear Cell', icon:'⚡',
+    eff_pct: 21, pmax_w: 380, voc: 46.8, isc: 10.4, vmp: 38.5, imp: 9.9, temp_coeff: -0.34,
+    size:'1772×1052×35mm', weight:20.5, warranty:'25yr power / 12yr product',
+    color:'#eb1b26',
+    notes:'Excellent efficiency-to-cost ratio — very common in outdoor lighting', notes_ar:'نسبة كفاءة/سعر ممتازة — شائع جداً في الإضاءة الخارجية',
+    mounting:'Suits both All-in-One and Separated perfectly',
+    specs:{ 'Efficiency':'21%', 'Pmax':'380W', 'Voc':'46.8V', 'Isc':'10.4A', 'Vmp':'38.5V', 'Imp':'9.9A', 'Temp Coeff':'−0.34%/°C', 'Size':'1772×1052mm', 'Weight':'20.5kg' }
+  },
+];
+
+let selectedSolar = null;
+let mountType = 'all-in-one';
+
+function initSolarGrid() {
+  const g = document.getElementById('solar-type-grid');
+  g.innerHTML = SOLAR_TYPES.map(s => `
+    <div class="solar-type-card" onclick="selectSolar('${s.id}',this)">
+      <div class="solar-icon">${s.icon}</div>
+      <div class="solar-type-name">${s.name}</div>
+      <div style="font-family:'IBM Plex Sans Arabic';font-size:11px;color:var(--text3);margin-bottom:6px">${s.sub}</div>
+      <div class="solar-eff-badge">η = ${s.eff_pct}%</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:8px;font-family:'IBM Plex Sans Arabic'">${LANG==='ar' ? (s.notes_ar||s.notes) : s.notes}</div>
+    </div>`).join('');
+}
+
+function selectSolar(id, el) {
+  document.querySelectorAll('.solar-type-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSolar = SOLAR_TYPES.find(s => s.id === id);
+  renderSolarDetail();
+  document.getElementById('solar-config-wrap').style.display = 'block';
+  updateSolarCalc();
+}
+
+function renderSolarDetail() {
+  if (!selectedSolar) return;
+  const s = selectedSolar;
+  const card = document.getElementById('solar-detail-card');
+  card.style.display = 'block';
+  card.innerHTML = `
+    <div style="font-family:'Anton';font-size:22px;color:${s.color};margin-bottom:4px">${s.name} — ${s.sub}</div>
+    <div style="font-family:'IBM Plex Sans Arabic';font-size:13px;color:var(--text2);margin-bottom:14px">${s.notes}</div>
+    <div style="font-family:'IBM Plex Sans Arabic';font-size:12px;color:var(--sc-red);margin-bottom:12px;padding:8px 12px;background:rgba(235,27,38,.06);border-radius:5px;border-right:2px solid var(--sc-red)">
+      🔧 Mounting: ${s.mounting}
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px">
+      ${Object.entries(s.specs).map(([k,v]) => `
+      <div class="batt-spec-item">
+        <div class="batt-spec-label">${k}</div>
+        <div class="batt-spec-val">${v}</div>
+      </div>`).join('')}
+    </div>`;
+}
+
+function setMount(type, el) {
+  mountType = type;
+  document.querySelectorAll('.mount-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  updateSolarCalc();
+}
+
+function drawSolarCanvas() {
+  const canvas = document.getElementById('solar-canvas');
+  if (!canvas) return;
+  const W = canvas.parentElement.clientWidth - 32;
+  canvas.width = W;
+  canvas.height = 200;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, 200);
+  ctx.fillStyle = '#1a1a1a';
+  ctx.fillRect(0, 0, W, 200);
+
+  const p = Math.min(parseInt(document.getElementById('solar-parallel').value)||1, 6);
+  const s = Math.min(parseInt(document.getElementById('solar-series').value)||1, 4);
+  const tilt = parseInt(document.getElementById('solar-tilt').value)||15;
+  const color = selectedSolar ? selectedSolar.color : '#185FA5';
+  const isAIO = mountType === 'all-in-one';
+
+  const totalPanels = p * s;
+  const pW = Math.min(80, (W - 60) / (s * p) - 8);
+  const pH = pW * 0.6;
+  const tiltRad = tilt * Math.PI / 180;
+
+  if (isAIO) {
+    // Draw pole + fixture
+    const poleX = W / 2;
+    // Pole
+    ctx.strokeStyle = '#444';
+    ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.moveTo(poleX, 190); ctx.lineTo(poleX, 80); ctx.stroke();
+
+    // Fixture head
+    ctx.fillStyle = '#333';
+    ctx.strokeStyle = '#555'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(poleX-30, 68, 60, 20, 4); ctx.fill(); ctx.stroke();
+
+    // Panels on top of fixture
+    const panelStartX = poleX - (totalPanels * (pW+6)) / 2 + pW/2;
+    for (let i = 0; i < totalPanels; i++) {
+      const px = panelStartX + i * (pW+6);
+      const py = 40;
+      // Tilted panel simulation
+      ctx.save();
+      ctx.translate(px, py);
+      ctx.rotate(-tiltRad * 0.3);
+      ctx.fillStyle = color + '55';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.roundRect(-pW/2, -pH/2, pW, pH, 3); ctx.fill(); ctx.stroke();
+      // Grid lines on panel
+      ctx.strokeStyle = color + '88';
+      ctx.lineWidth = 0.5;
+      for (let gx = -pW/2+pW/3; gx < pW/2; gx += pW/3) {
+        ctx.beginPath(); ctx.moveTo(gx, -pH/2); ctx.lineTo(gx, pH/2); ctx.stroke();
+      }
+      ctx.beginPath(); ctx.moveTo(-pW/2, 0); ctx.lineTo(pW/2, 0); ctx.stroke();
+      ctx.restore();
+    }
+    ctx.fillStyle = '#666';
+    ctx.font = '10px Poppins';
+    ctx.textAlign = 'center';
+    ctx.fillText(`All-in-One — ${totalPanels} Panel${totalPanels>1?'s':''} — Tilt ${tilt}°`, poleX, 185);
+  } else {
+    // Separated: show separate solar array
+    const groupW = s * (pW + 10);
+    const groupH = p * (pH + 8);
+    const startX = (W - groupW) / 2;
+    const startY = (200 - groupH) / 2 + 10;
+
+    // Ground
+    ctx.strokeStyle = '#333'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(40, 175); ctx.lineTo(W-40, 175); ctx.stroke();
+
+    for (let si = 0; si < s; si++) {
+      for (let pi = 0; pi < p; pi++) {
+        const px = startX + si * (pW+10) + pW/2;
+        const py = startY + pi * (pH+8);
+        // Mount structure
+        ctx.strokeStyle = '#444'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(px, py+pH); ctx.lineTo(px, 175); ctx.stroke();
+
+        // Panel
+        ctx.save();
+        ctx.translate(px, py + pH/2);
+        ctx.rotate(-tiltRad * 0.4);
+        ctx.fillStyle = color + '55';
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.roundRect(-pW/2, -pH/2, pW, pH, 3); ctx.fill(); ctx.stroke();
+        ctx.strokeStyle = color + '66'; ctx.lineWidth = 0.5;
+        for (let gx = -pW/2+pW/3; gx < pW/2; gx += pW/3) {
+          ctx.beginPath(); ctx.moveTo(gx, -pH/2); ctx.lineTo(gx, pH/2); ctx.stroke();
+        }
+        ctx.beginPath(); ctx.moveTo(-pW/2, 0); ctx.lineTo(pW/2, 0); ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    // Wiring
+    if (s > 1) {
+      for (let si = 0; si < s-1; si++) {
+        const x1 = startX + si*(pW+10) + pW;
+        const x2 = startX + (si+1)*(pW+10);
+        ctx.strokeStyle = color + '77'; ctx.lineWidth = 1.5;
+        ctx.setLineDash([4,3]);
+        ctx.beginPath(); ctx.moveTo(x1, startY+pH/2); ctx.lineTo(x2, startY+pH/2); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    ctx.fillStyle = '#666'; ctx.font = '10px Poppins'; ctx.textAlign = 'center';
+    ctx.fillText(`Separated Array — ${p}P × ${s}S = ${totalPanels} Panels — Tilt ${tilt}°`, W/2, 193);
+  }
+}
+
+function updateSolarCalc() {
+  if (!selectedSolar) return;
+  document.getElementById('solar-tilt-val').textContent = document.getElementById('solar-tilt').value + '°';
+  drawSolarCanvas();
+  calcSolarResults();
+}
+
+function calcSolarResults() {
+  if (!selectedSolar) return;
+  const s = selectedSolar;
+  const p  = parseInt(document.getElementById('solar-parallel').value)||1;
+  const sr = parseInt(document.getElementById('solar-series').value)||1;
+  const tilt = parseInt(document.getElementById('solar-tilt').value)||15;
+  const psh  = +document.getElementById('sol-psh').value || 5;
+  const bAh  = +document.getElementById('sol-batt-ah').value || 100;
+  const bV   = +document.getElementById('sol-batt-v').value || 12;
+  const load = +document.getElementById('sol-load-w').value || 20;
+  const hrs  = +document.getElementById('sol-hours').value || 10;
+  const eff  = (+document.getElementById('sol-eff').value || 95) / 100;
+
+  // Tilt correction (simple cosine model)
+  const tiltCorrection = Math.cos((tilt - 25) * Math.PI / 180) * 0.1 + 0.9;
+
+  const arrayV   = s.vmp * sr;
+  const arrayA   = s.imp * p;
+  const arrayW   = s.pmax_w * p * sr;
+  const dailyWh  = arrayW * psh * eff * tiltCorrection;
+  const loadWh   = load * hrs;
+  const battWh   = bAh * bV;
+  const chargeDays = loadWh / dailyWh;
+  const surplus  = dailyWh - loadWh;
+  const chargeA  = (arrayW * eff) / bV;
+  const chargeHrs = (battWh * 0.8) / (arrayW * eff / bV);
+
+  const adequate = dailyWh >= loadWh;
+  const warningHtml = !adequate
+    ? `<div class="solar-warning">⚠ ${LANG==='ar' ? `الإنتاج اليومي (${dailyWh.toFixed(0)} Wh) أقل من الحِمل (${loadWh.toFixed(0)} Wh) — أضف ألواح أو قلل الحِمل` : `Daily generation (${dailyWh.toFixed(0)} Wh) is less than the load (${loadWh.toFixed(0)} Wh) — add more panels or reduce the load`}</div>`
+    : '';
+
+  const isAr2 = LANG === 'ar';
+  const res = [
+    { l: isAr2 ? 'Voc الكلي'          : 'Array Voc',          v: (s.voc*sr).toFixed(1),    u:'V',       hi:false },
+    { l: isAr2 ? 'Vmp (تشغيل)'        : 'Array Vmp (working)', v: arrayV.toFixed(1),        u:'V',       hi:false },
+    { l: isAr2 ? 'Isc الكلي'          : 'Array Isc',           v: (s.isc*p).toFixed(1),     u:'A',       hi:false },
+    { l: isAr2 ? 'الطاقة القصوى'      : 'Array Pmax',          v: arrayW.toFixed(0),         u:'W',       hi:false },
+    { l: isAr2 ? 'الإنتاج اليومي'     : 'Daily generation',    v: dailyWh.toFixed(0),        u:'Wh/day',  hi:false },
+    { l: isAr2 ? 'الاستهلاك اليومي'   : 'Daily consumption',   v: loadWh.toFixed(0),         u:'Wh/day',  hi:false },
+    { l: isAr2 ? 'الفائض / العجز'     : 'Surplus / deficit',   v: (surplus >= 0 ? '+' : '') + surplus.toFixed(0), u:'Wh', hi:false },
+    { l: isAr2 ? 'تيار الشحن'         : 'Charge current',      v: chargeA.toFixed(1),        u:'A (MPPT)', hi:false },
+    { l: isAr2 ? 'وقت الشحن'          : 'Charge time',         v: chargeHrs.toFixed(1),      u: isAr2 ? 'ساعة (80%)' : 'hours (to 80%)', hi:false },
+    { l: isAr2 ? 'الكفاية'            : 'Adequacy',            v: adequate ? '✓ ' + (isAr2 ? 'كافٍ' : 'Sufficient') : '✗ ' + (isAr2 ? 'غير كافٍ' : 'Insufficient'), u: isAr2 ? 'للحِمل المطلوب' : 'for the required load', hi:true },
+  ];
+
+  document.getElementById('solar-results').innerHTML = warningHtml + res.map(r => `
+    <div class="solar-res-card ${r.hi?'highlight':''}">
+      <div class="solar-res-val" style="color:${r.l==='Adequacy'&&!adequate?'#ff6b6b':'var(--sc-red)'}">${r.v}</div>
+      <div class="solar-res-unit">${r.u}</div>
+      <div class="solar-res-label">${r.l}</div>
+    </div>`).join('');
+}
+
+// Init
+initBattGrid();
+initSolarGrid();
+
+/* ══════════════════════════════════════════════
+   POLAR DIAGRAM + SYMMETRY ANALYSIS
+══════════════════════════════════════════════ */
+
+function buildPolarPlaneSelector(parsed) {
+  const sel = document.getElementById('polar-plane-sel');
+  if (!sel) return;
+  sel.innerHTML = '';
+  if (!parsed.hAngles) return;
+  parsed.hAngles.forEach((h, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = 'H = ' + h + '°';
+    sel.appendChild(opt);
+  });
+}
+
+function redrawPolar() {
+  if (!parsedIES?.lampData) return;
+  const sel = document.getElementById('polar-plane-sel');
+  const hIdx = sel ? parseInt(sel.value) : 0;
+  drawPolarDiagram(parsedIES, hIdx);
+  renderSymmetryAnalysis(parsedIES);
+}
+
+/* ── helpers ──────────────────────────────── */
+function interpAngle(vAngles, cdRow, mult, targetCdFraction, peakCd) {
+  /* Returns interpolated angle (degrees) where intensity first drops to
+     peakCd * targetCdFraction, searching OUTWARD from the peak index.
+     This handles non-nadir-peak fixtures (batwing, wallwasher, etc.) */
+  const threshold = peakCd * targetCdFraction;
+
+  // Find peak index
+  let peakIdx = 0;
+  let peakVal = -Infinity;
+  for (let i = 0; i < cdRow.length; i++) {
+    const v = (cdRow[i] || 0) * mult;
+    if (v > peakVal) { peakVal = v; peakIdx = i; }
+  }
+
+  // Search rightward from peak (increasing angle)
+  for (let i = peakIdx; i < vAngles.length - 1; i++) {
+    const c0 = (cdRow[i]   || 0) * mult;
+    const c1 = (cdRow[i+1] || 0) * mult;
+    if (c0 >= threshold && c1 <= threshold) {
+      const t = (c0 - threshold) / (c0 - c1);
+      return vAngles[i] + t * (vAngles[i+1] - vAngles[i]);
+    }
+  }
+  return null;
+}
+
+function calcBeamAngles(parsed, hIdx) {
+  /* Returns { beamHalf, fieldAngle, beamFull, peakCd, nadirCd, peakVAngle,
+               leftBeamHalf, leftFieldAngle (if asymmetric data available) } */
+  const vAngles = parsed.vAngles || [];
+  const mult    = parsed.lampData.multiplier || 1;
+  const hAngles = parsed.hAngles || [0];
+
+  // Right-side row (selected plane)
+  const cdRight = parsed.candela[hIdx] || parsed.candela[0] || [];
+  const peakCd  = Math.max(...cdRight.map(v => v * mult));
+  const nadirCd = (cdRight[0] || 0) * mult;
+
+  // peak vertical angle (interpolated) on right side
+  let peakVAngle = 0;
+  let peakVal = 0;
+  for (let i = 0; i < vAngles.length; i++) {
+    if ((cdRight[i] || 0) * mult > peakVal) { peakVal = (cdRight[i] || 0) * mult; peakVAngle = vAngles[i]; }
+  }
+
+  const beamHalf  = interpAngle(vAngles, cdRight, mult, 0.50, peakCd); // 50% → beam angle half
+  const fieldEdge = interpAngle(vAngles, cdRight, mult, 0.10, peakCd); // 10% → field angle half
+
+  // Left-side: check for opposite plane (H = hAngle + 180)
+  const thisH   = hAngles[hIdx] || 0;
+  const oppH    = (thisH + 180) % 360;
+  const oppIdx  = hAngles.findIndex(h => Math.abs(h - oppH) < 1);
+  const isFullSym = hAngles.length === 1 && hAngles[0] === 0;
+
+  let cdLeft, leftBeamHalf = null, leftFieldEdge = null, leftPeakCd = null;
+  if (isFullSym) {
+    cdLeft = cdRight;  // mirror
+    leftBeamHalf  = beamHalf;
+    leftFieldEdge = fieldEdge;
+    leftPeakCd    = peakCd;
+  } else if (oppIdx >= 0) {
+    cdLeft = parsed.candela[oppIdx] || cdRight;
+    leftPeakCd    = Math.max(...cdLeft.map(v => v * mult));
+    leftBeamHalf  = interpAngle(vAngles, cdLeft, mult, 0.50, leftPeakCd);
+    leftFieldEdge = interpAngle(vAngles, cdLeft, mult, 0.10, leftPeakCd);
+  }
+
+  return {
+    peakCd, nadirCd, peakVAngle,
+    beamHalf, fieldEdge,
+    beamFull:  (beamHalf  != null && leftBeamHalf  != null) ? beamHalf  + leftBeamHalf
+             : (beamHalf  != null) ? beamHalf  * 2 : null,
+    fieldFull: (fieldEdge != null && leftFieldEdge != null) ? fieldEdge + leftFieldEdge
+             : (fieldEdge != null) ? fieldEdge * 2 : null,
+    cdRight, cdLeft: cdLeft || null,
+    leftBeamHalf, leftFieldEdge, leftPeakCd,
+    isFullSym,
+    oppIdx
+  };
+}
+
+function calcSymmetryScore(vAngles, cdRight, cdLeft, mult) {
+  /* Per-angle deviation array + overall score 0-100 */
+  const deviations = [];
+  let totalDiff = 0, totalRef = 0;
+  for (let i = 0; i < vAngles.length; i++) {
+    const r = (cdRight[i] || 0) * mult;
+    const l = (cdLeft[i]  || 0) * mult;
+    const ref = Math.max(r, l, 0.001);
+    const pct = Math.abs(r - l) / ref * 100;
+    deviations.push({ angle: vAngles[i], right: r, left: l, pct: +pct.toFixed(1) });
+    totalDiff += Math.abs(r - l);
+    totalRef  += ref;
+  }
+  const score = Math.max(0, Math.round((1 - totalDiff / totalRef) * 100));
+  return { score, deviations };
+}
+
+/* ── main polar draw ──────────────────────── */
+function drawPolarDiagram(parsed, hIdx) {
+  const canvas = document.getElementById('polar-canvas');
+  if (!canvas) return;
+
+  const container = canvas.parentElement;
+  const size = Math.min(container.clientWidth - 32, 420);
+  canvas.width = size;
+  canvas.height = size;
+
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const ctx = canvas.getContext('2d');
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, W, H);
+
+  const hAngles  = parsed.hAngles || [0];
+  const vAngles  = parsed.vAngles || [];
+  const mult     = parsed.lampData.multiplier || 1;
+  const beam     = calcBeamAngles(parsed, hIdx);
+  const cdRight  = beam.cdRight;
+  const maxCd    = beam.peakCd || 1;
+  const R        = Math.min(cx, cy) - 38;
+
+  // --- Grid rings (4 steps) ---
+  for (let i = 1; i <= 4; i++) {
+    const r = R * i / 4;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = i === 4 ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.05)';
+    ctx.lineWidth = 1; ctx.stroke();
+    const cdLabel = Math.round(maxCd * i / 4);
+    ctx.fillStyle = 'rgba(255,255,255,0.28)';
+    ctx.font = '9px Poppins,sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText(cdLabel + ' cd', cx - r - 4, cy + 3);
+  }
+
+  // --- Photometric type (declared early — used by spokes, drawArc, and curve drawing) ---
+  const photType = parsed.lampData.phot_type || 1; // 1=Type C, 2=Type B, 3=Type A
+
+  // --- Spokes every 30° ---
+  for (let a = 0; a < 360; a += 30) {
+    /* For Type C: 0°=nadir(bottom), canvas bottom = π/2.
+       So IES angle a → canvas spoke = π/2 - a*π/180 (right half), mirrored for left.
+       For Type B/A: 0°=horizontal(right), canvas right = 0.
+       So IES angle a → canvas spoke = -a*π/180 (right half), mirrored for left. */
+    let rad;
+    if (photType === 2 || photType === 3) {
+      rad = -a * Math.PI / 180; // 0°=right, 90°=top
+    } else {
+      rad = Math.PI / 2 - a * Math.PI / 180; // 0°=bottom, 90°=right
+    }
+    // Right side spoke
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(rad) * R, cy + Math.sin(rad) * R);
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1; ctx.stroke();
+    // Left side spoke (mirror) — only for Type C and B (not Type A full loop)
+    if (photType !== 3 && a > 0 && a < 180) {
+      ctx.beginPath(); ctx.moveTo(cx, cy);
+      ctx.lineTo(cx - Math.cos(rad) * R, cy + Math.sin(rad) * R);
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1; ctx.stroke();
+    }
+    // Label right side
+    const lr = R + 18;
+    ctx.fillStyle = 'rgba(200,200,200,0.45)';
+    ctx.font = '9px Poppins,sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(a + '°', cx + Math.cos(rad) * lr, cy + Math.sin(rad) * lr);
+    // Label left side mirror
+    if (photType !== 3 && a > 0 && a < 180) {
+      ctx.fillText(a + '°', cx - Math.cos(rad) * lr, cy + Math.sin(rad) * lr);
+    }
+  }
+  ctx.textBaseline = 'alphabetic';
+
+  // --- Beam / Field angle arcs on polar (drawn behind curves) ---
+  function drawArc(halfDeg, color, dash) {
+    if (halfDeg == null) return;
+    /* Arc is drawn at the outer ring to show half-beam angle.
+       For Type C: origin is bottom (nadir). Arc spans from (nadir - halfDeg) to (nadir + halfDeg).
+       For Type B: origin is right (horizontal). Arc spans from (right - halfDeg) to (right + halfDeg).
+       For Type A: same as Type B — 0° is front/right. */
+    let centerAngle; // canvas angle pointing to the "peak" reference direction
+    if (photType === 2 || photType === 3) {
+      centerAngle = 0; // 0° on canvas = right (horizontal axis)
+    } else {
+      centerAngle = Math.PI / 2; // π/2 on canvas = down (nadir for Type C)
+    }
+    const startRad = centerAngle - halfDeg * Math.PI / 180;
+    const endRad   = centerAngle + halfDeg * Math.PI / 180;
+    ctx.beginPath();
+    ctx.arc(cx, cy, R + 6, startRad, endRad);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.setLineDash(dash || []);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // tick labels at both ends
+    [startRad, endRad].forEach(ar => {
+      const tx = cx + Math.cos(ar) * (R + 20);
+      const ty = cy + Math.sin(ar) * (R + 20);
+      ctx.fillStyle = color;
+      ctx.font = 'bold 9px Poppins,sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(halfDeg.toFixed(1) + '°', tx, ty);
+    });
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  drawArc(beam.fieldEdge,  'rgba(255,200,40,0.6)',  [3,3]);  // field angle
+  drawArc(beam.beamHalf,   'rgba(40,200,120,0.85)', []);     // beam angle
+
+  // --- Glow fill ---
+  const glowGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+  glowGrad.addColorStop(0,   'rgba(235,27,38,0.20)');
+  glowGrad.addColorStop(0.6, 'rgba(235,100,50,0.07)');
+  glowGrad.addColorStop(1,   'rgba(235,27,38,0)');
+
+  /* ── Coordinate mapping per IES photometric type ──────────────────────
+   *
+   * Type C (most common — downlights, area lights):
+   *   V=0° = nadir (straight DOWN) → placed at bottom of polar circle.
+   *   V=90° = horizontal.  V=180° = zenith (top).
+   *   Right: x = cx + sin(v)*r,  y = cy + cos(v)*r   (0° plots at bottom)
+   *   Left:  mirror of right (or opposite H-plane)
+   *
+   * Type B (track spots, adjustable floodlights):
+   *   V=0° = horizontal axis (right of diagram, like 3 o'clock).
+   *   V=90° = top.  Negative V = left side.
+   *   Data is stored as the RIGHT half only (V=0° to V=90° or 0°→180°);
+   *   the left half is mirrored.
+   *   Right: x = cx + cos(v)*r,  y = cy - sin(v)*r   (0° plots to the right)
+   *   Left:  x = cx - cos(v)*r,  y = cy - sin(v)*r
+   *
+   * Type A (theatre fresnels, side-mounted fixtures):
+   *   V angles span full 0°→360° around the fixture body (horizontal axis).
+   *   0° = front (right), 90° = top, 180° = back, 270° = bottom.
+   *   Right: x = cx + cos(v)*r,  y = cy - sin(v)*r
+   *   (full loop — no mirroring needed, data wraps 360°)
+   * ─────────────────────────────────────────────────────────────────── */
+
+  function getCoords(vDeg, r, mirror) {
+    const rad = vDeg * Math.PI / 180;
+    if (photType === 2) {
+      // Type B: 0°=horizontal right, 90°=top
+      return { px: cx + (mirror ? -1 : 1) * Math.cos(rad) * r, py: cy - Math.sin(rad) * r };
+    } else if (photType === 3) {
+      // Type A: full 360° around, 0°=right, 90°=top
+      return { px: cx + Math.cos(rad) * r, py: cy - Math.sin(rad) * r };
+    } else {
+      // Type C (default): 0°=nadir(bottom), 90°=horizontal
+      return { px: cx + (mirror ? -1 : 1) * Math.sin(rad) * r, py: cy + Math.cos(rad) * r };
+    }
+  }
+
+  function pathCurve(rowData, mirror) {
+    let first = true;
+    for (let i = 0; i < vAngles.length; i++) {
+      const r = (rowData[i] || 0) * mult / maxCd * R;
+      const { px, py } = getCoords(vAngles[i], r, mirror);
+      if (first) { ctx.moveTo(px, py); first = false; } else ctx.lineTo(px, py);
+    }
+  }
+
+  const cdLeft = beam.cdLeft || cdRight;
+  const isFullSym = beam.isFullSym;
+  const oppIdx    = beam.oppIdx;
+
+  ctx.save();
+  ctx.beginPath(); ctx.moveTo(cx, cy);
+  pathCurve(cdRight, false);
+  if (photType === 3) {
+    // Type A: closed loop, no separate left side
+    ctx.closePath();
+  } else {
+    // Type C / B: mirror the left side
+    for (let i = vAngles.length - 1; i >= 0; i--) {
+      const r = ((photType === 2 ? cdLeft : cdLeft)[i] || 0) * mult / maxCd * R;
+      const { px, py } = getCoords(vAngles[i], r, true);
+      ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+  }
+  ctx.fillStyle = glowGrad; ctx.fill();
+  ctx.restore();
+
+  // --- Curve lines ---
+  function strokeCurve(rowData, mirror, color, lineW, dash) {
+    ctx.beginPath(); ctx.setLineDash(dash || []);
+    pathCurve(rowData, mirror);
+    if (photType === 3) ctx.closePath();
+    ctx.strokeStyle = color; ctx.lineWidth = lineW; ctx.stroke(); ctx.setLineDash([]);
+  }
+
+  strokeCurve(cdRight, false, '#eb1b26', 2.5);
+
+  if (photType !== 3) {
+    if (isFullSym) {
+      strokeCurve(cdRight, true, 'rgba(235,27,38,0.45)', 1.5, [4,3]);
+    } else if (oppIdx >= 0) {
+      strokeCurve(cdLeft, true, 'rgba(100,190,255,0.75)', 1.8, [4,3]);
+    }
+  }
+
+  // --- 50% ring (beam angle reference circle) ---
+  ctx.beginPath();
+  ctx.arc(cx, cy, R * 0.5, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(40,200,120,0.18)'; ctx.lineWidth = 1;
+  ctx.setLineDash([2,4]); ctx.stroke(); ctx.setLineDash([]);
+
+  // --- Reference point dot + label (type-dependent) ---
+  const refLabel = photType === 2 ? 'HORIZ' : photType === 3 ? 'FRONT' : 'NADIR';
+  const refIdx   = vAngles.indexOf(0);
+  const refCdVal = refIdx >= 0 ? (cdRight[refIdx] || 0) : (cdRight[0] || 0);
+  const refR     = refCdVal * mult / maxCd * R;
+  const { px: dotX, py: dotY } = getCoords(0, refR, false);
+  ctx.beginPath(); ctx.arc(dotX, dotY, 5, 0, Math.PI * 2);
+  ctx.fillStyle = '#eb1b26'; ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.65)';
+  ctx.font = 'bold 9px Poppins'; ctx.textAlign = 'center';
+  // offset label away from center
+  const offX = dotX - cx, offY = dotY - cy;
+  const offLen = Math.sqrt(offX*offX + offY*offY) || 1;
+  ctx.fillText(refLabel, dotX + (offX/offLen)*14, dotY + (offY/offLen)*14);
+
+  // --- Photometric type badge (top-right of canvas) ---
+  const typeLabel = photType === 2 ? 'TYPE B' : photType === 3 ? 'TYPE A' : 'TYPE C';
+  const typeColor = photType === 2 ? '#185FA5' : photType === 3 ? '#BA7517' : '#eb1b26';
+  ctx.font = 'bold 9px Poppins,sans-serif';
+  ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+  ctx.fillStyle = typeColor;
+  ctx.fillText(typeLabel, W - 8, 8);
+  ctx.textBaseline = 'alphabetic';
+
+  // --- Luminaire dot ---
+  ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+  ctx.fillStyle = '#FAC775'; ctx.fill();
+  ctx.strokeStyle = '#EF9F27'; ctx.lineWidth = 1.5; ctx.stroke();
+
+  // --- Legend box ---
+  const leg = [
+    { color:'#eb1b26',                    dash:false, label:'Right plane (H=' + (hAngles[hIdx]||0) + '°)' },
+    isFullSym
+      ? { color:'rgba(235,27,38,0.45)',   dash:true,  label:'Left mirror (symmetric)' }
+      : oppIdx >= 0
+        ? { color:'rgba(100,190,255,0.75)',dash:true, label:'Left plane (H=' + ((hAngles[hIdx]||0)+180)%360 + '°)' }
+        : null,
+    { color:'rgba(40,200,120,0.85)',       dash:false, label:'Beam angle (50% Imax)' },
+    { color:'rgba(255,200,40,0.7)',        dash:true,  label:'Field angle (10% Imax)' },
+  ].filter(Boolean);
+
+  const legX = 10, legY = H - 10 - leg.length * 16;
+  leg.forEach((item, i) => {
+    const y = legY + i * 16;
+    ctx.save();
+    if (item.dash) ctx.setLineDash([3,3]);
+    ctx.strokeStyle = item.color; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(legX, y); ctx.lineTo(legX + 16, y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+    ctx.fillStyle = 'rgba(200,200,200,0.6)';
+    ctx.font = '9px Poppins,sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(item.label, legX + 20, y + 4);
+  });
+
+  // Store beam data globally for renderSymmetryAnalysis
+  canvas._beamData = beam;
+
+  // Update caption for photometric type
+  const capEl = document.getElementById('polar-type-caption');
+  if (capEl) {
+    if (photType === 2) {
+      capEl.textContent = 'Type B: 0° = Horizontal (right) · 90° = Top · Symmetric about horizontal axis';
+    } else if (photType === 3) {
+      capEl.textContent = 'Type A: 0° = Front (right) · 90° = Top · 180° = Rear · Full 360° around fixture';
+    } else {
+      capEl.textContent = 'Type C: 0° = Nadir (bottom) · 90° = Horizontal · 180° = Zenith (top)';
+    }
+  }
+}
+
+/* ── symmetry + beam angle panel ─────────── */
+function renderSymmetryAnalysis(parsed) {
+  const panel = document.getElementById('symmetry-panel');
+  if (!panel || !parsed.lampData) return;
+
+  const sel      = document.getElementById('polar-plane-sel');
+  const hIdx     = sel ? parseInt(sel.value) || 0 : 0;
+  const hAngles  = parsed.hAngles || [0];
+  const vAngles  = parsed.vAngles || [];
+  const candela  = parsed.candela || [];
+  const mult     = parsed.lampData.multiplier || 1;
+  const beam     = calcBeamAngles(parsed, hIdx);
+
+  // ── Symmetry classification ──
+  const lastH = hAngles[hAngles.length - 1];
+  let symType, symColor, symExplain;
+  if (hAngles.length === 1 && hAngles[0] === 0) {
+    symType = 'Full Rotational Symmetry'; symColor = '#1D9E75';
+    symExplain = 'Only H=0° stored — identical in every horizontal direction. Typical: round downlights, globes.';
+  } else if (lastH === 90) {
+    symType = 'Quarter Symmetry (0°–90°)'; symColor = '#185FA5';
+    symExplain = 'Repeats every 90°. Typical: square recessed luminaires.';
+  } else if (lastH === 180) {
+    symType = 'Half Symmetry (0°–180°)'; symColor = '#BA7517';
+    symExplain = 'Symmetric left/right. Typical: linear fluorescent, street fixtures.';
+  } else if (lastH >= 359) {
+    symType = 'Full Asymmetric (0°–360°)'; symColor = '#eb1b26';
+    symExplain = 'Different distribution in every direction. Typical: asymmetric floodlights, wall-washers.';
+  } else {
+    symType = 'Partial (' + lastH + '°)'; symColor = '#BA7517';
+    symExplain = 'Horizontal data 0°→' + lastH + '°.';
+  }
+
+  // ── L/R deviation calculation ──
+  const cdRight = beam.cdRight;
+  const cdLeft  = beam.cdLeft;
+  let symScore = 100, deviations = [], hasLR = false;
+
+  if (cdLeft && cdLeft !== cdRight) {
+    hasLR = true;
+    const s = calcSymmetryScore(vAngles, cdRight, cdLeft, mult);
+    symScore    = s.score;
+    deviations  = s.deviations;
+  } else if (beam.isFullSym) {
+    hasLR = true;
+    symScore    = 100;
+    deviations  = vAngles.map((a, i) => ({ angle: a, right: (cdRight[i]||0)*mult, left: (cdRight[i]||0)*mult, pct: 0 }));
+  }
+
+  const symVerdict  = !hasLR ? '—' : symScore >= 97 ? '✓ Symmetric' : symScore >= 85 ? '⚠ Near-symmetric' : '✗ Asymmetric';
+  const symVColor   = !hasLR ? 'var(--text2)' : symScore >= 97 ? '#1D9E75' : symScore >= 85 ? '#BA7517' : '#eb1b26';
+
+  // ── Beam angles ──
+  const ba_r  = beam.beamHalf  != null ? beam.beamHalf.toFixed(1)  : '—';
+  const fa_r  = beam.fieldEdge != null ? beam.fieldEdge.toFixed(1) : '—';
+  const ba_bf = beam.beamFull  != null ? beam.beamFull.toFixed(1)  : '—';
+  const fa_bf = beam.fieldFull != null ? beam.fieldFull.toFixed(1) : '—';
+
+  const ba_l = beam.leftBeamHalf  != null ? beam.leftBeamHalf.toFixed(1)  : ba_r;
+  const fa_l = beam.leftFieldEdge != null ? beam.leftFieldEdge.toFixed(1) : fa_r;
+
+  const beamDiff  = (beam.beamHalf  != null && beam.leftBeamHalf  != null) ? Math.abs(beam.beamHalf  - beam.leftBeamHalf).toFixed(1)  : '0.0';
+  const fieldDiff = (beam.fieldEdge != null && beam.leftFieldEdge != null) ? Math.abs(beam.fieldEdge - beam.leftFieldEdge).toFixed(1) : '0.0';
+
+  const bColor = parseFloat(beamDiff) <= 1 ? '#1D9E75' : parseFloat(beamDiff) <= 5 ? '#BA7517' : '#eb1b26';
+  const fColor = parseFloat(fieldDiff) <= 1 ? '#1D9E75' : parseFloat(fieldDiff) <= 5 ? '#BA7517' : '#eb1b26';
+
+  // ── Max deviation angle list (top 3) ──
+  const top3 = [...deviations].sort((a,b) => b.pct - a.pct).slice(0,3);
+
+  // ── Build deviation bar SVG ──
+  let devBars = '';
+  if (hasLR && deviations.length) {
+    const maxDev = Math.max(...deviations.map(d => d.pct), 1);
+    const barsHtml = deviations.filter(d => d.angle <= 90).map(d => {
+      const w = Math.round(d.pct / maxDev * 100);
+      const col = d.pct <= 2 ? '#1D9E75' : d.pct <= 10 ? '#BA7517' : '#eb1b26';
+      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+        <div style="font-family:monospace;font-size:9px;color:var(--text3);width:26px;text-align:right">${d.angle}°</div>
+        <div style="flex:1;height:6px;background:var(--border2);border-radius:3px;overflow:hidden">
+          <div style="width:${w}%;height:100%;background:${col};border-radius:3px"></div>
+        </div>
+        <div style="font-family:monospace;font-size:9px;color:${col};width:36px">${d.pct.toFixed(1)}%</div>
+      </div>`;
+    }).join('');
+    devBars = `<div style="margin-top:14px">
+      <div style="font-family:'Poppins';font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">L/R Deviation per angle (0°–90°)</div>
+      ${barsHtml}
+    </div>`;
+  }
+
+  const tiltEl = document.getElementById('unif-theta');
+  const tiltDeg = tiltEl ? (+(tiltEl.value) || 0) : 0;
+  const tiltCos = Math.cos(tiltDeg * Math.PI / 180);
+
+  panel.innerHTML = `
+      <div style="font-family:'Poppins';font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:${symColor};margin-bottom:3px">${symType}</div>
+      <div style="font-family:'IBM Plex Sans Arabic';font-size:11px;color:var(--text2);line-height:1.7">${symExplain}</div>
+    </div>
+
+    <!-- L/R verdict + score -->
+    ${hasLR ? `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:var(--bg3);border-radius:6px;border:1px solid var(--border)">
+      <div style="font-family:'Anton';font-size:28px;color:${symVColor};line-height:1">${symScore}%</div>
+      <div>
+        <div style="font-family:'Poppins';font-size:11px;font-weight:600;color:${symVColor}">${symVerdict}</div>
+        <div style="font-family:'IBM Plex Sans Arabic';font-size:10px;color:var(--text3)">L/R symmetry score — 100% = perfect mirror</div>
+      </div>
+    </div>` : ''}
+
+    <!-- Beam angle table -->
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:12px">
+      <div style="padding:8px 12px;border-bottom:1px solid var(--border);font-family:'Poppins';font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text2)">Beam & Field Angle Analysis</div>
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border)">
+            <th style="padding:7px 10px;font-family:'Poppins';font-size:9px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);text-align:left">Angle</th>
+            <th style="padding:7px 10px;font-family:'Poppins';font-size:9px;color:var(--text3);text-align:center">Right side</th>
+            <th style="padding:7px 10px;font-family:'Poppins';font-size:9px;color:var(--text3);text-align:center">Left side</th>
+            <th style="padding:7px 10px;font-family:'Poppins';font-size:9px;color:var(--text3);text-align:center">Full beam</th>
+            <th style="padding:7px 10px;font-family:'Poppins';font-size:9px;color:var(--text3);text-align:center">Δ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:7px 10px;font-family:'Poppins';font-size:10px;color:var(--text2)">
+              <span style="display:inline-block;width:10px;height:10px;background:rgba(40,200,120,0.85);border-radius:2px;margin-right:5px;vertical-align:middle"></span>
+              Beam angle<br><span style="color:var(--text3);font-size:9px">50% of Imax</span>
+            </td>
+            <td style="padding:7px 10px;font-family:monospace;font-size:12px;color:#1D9E75;text-align:center">${ba_r}°</td>
+            <td style="padding:7px 10px;font-family:monospace;font-size:12px;color:rgba(100,190,255,0.9);text-align:center">${ba_l}°</td>
+            <td style="padding:7px 10px;font-family:'Anton';font-size:15px;color:var(--sc-red);text-align:center">${ba_bf}°</td>
+            <td style="padding:7px 10px;font-family:monospace;font-size:11px;color:${bColor};text-align:center">${beamDiff}°</td>
+          </tr>
+          <tr>
+            <td style="padding:7px 10px;font-family:'Poppins';font-size:10px;color:var(--text2)">
+              <span style="display:inline-block;width:10px;height:10px;background:rgba(255,200,40,0.7);border-radius:2px;margin-right:5px;vertical-align:middle"></span>
+              Field angle<br><span style="color:var(--text3);font-size:9px">10% of Imax</span>
+            </td>
+            <td style="padding:7px 10px;font-family:monospace;font-size:12px;color:#1D9E75;text-align:center">${fa_r}°</td>
+            <td style="padding:7px 10px;font-family:monospace;font-size:12px;color:rgba(100,190,255,0.9);text-align:center">${fa_l}°</td>
+            <td style="padding:7px 10px;font-family:'Anton';font-size:15px;color:var(--sc-red);text-align:center">${fa_bf}°</td>
+            <td style="padding:7px 10px;font-family:monospace;font-size:11px;color:${fColor};text-align:center">${fieldDiff}°</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Key values -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:12px">
+      ${[
+        { l:'Peak Imax', v: beam.peakCd.toFixed(0)+' cd', c:'var(--sc-red)' },
+        { l:'Nadir I(0°)', v: beam.nadirCd.toFixed(0)+' cd', c:'var(--text)' },
+        { l:'Peak at V', v: beam.peakVAngle+'°', c:'var(--text2)' },
+      ].map(m=>`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:9px 10px">
+        <div style="font-family:'Poppins';font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:2px">${m.l}</div>
+        <div style="font-family:monospace;font-size:14px;font-weight:600;color:${m.c}">${m.v}</div>
+      </div>`).join('')}
+    </div>
+
+    <!-- Tilt angle row from uniformity panel -->
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:9px 12px;margin-bottom:12px;display:flex;align-items:center;gap:12px">
+      <div style="font-family:'Poppins';font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);flex-shrink:0">Tilt Angle θ (from Uniformity)</div>
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+      <div style="font-family:monospace;font-size:14px;font-weight:600;color:var(--sc-red)">${tiltDeg.toFixed(0)}°</div>
+      <div style="font-family:'Poppins';font-size:9px;color:var(--text3)">→ cos(θ) = ${tiltCos.toFixed(3)}</div>
+    </div>
+
+    <!-- Deviation bars -->
+    ${devBars}
+
+    <!-- Formula note -->
+    <div style="margin-top:12px;padding:9px 12px;background:var(--bg3);border-radius:6px;border-right:2px solid var(--sc-red);font-family:'IBM Plex Sans Arabic';font-size:10px;color:var(--text2);line-height:1.8">
+      <b style="color:var(--text)">Beam angle</b> = full angle between the two 50%-intensity points (left + right half-angles added).<br>
+      <b style="color:var(--text)">Field angle</b> = full angle between the two 10%-intensity points.<br>
+      <b style="color:var(--text)">Δ</b> = difference between right and left half-angles — 0° means perfect symmetry.
+    </div>`;
+}
+
+// Patch parseAndRender to also draw polar diagram
+
+applyLang();
+
+</script>
+</body>
+</html>

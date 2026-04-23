@@ -533,6 +533,24 @@ def api_study_submit():
     return jsonify({"status": "success", "token": token})
 
 
+@app.route("/api/upload-drawing", methods=["POST"])
+def upload_drawing():
+    token = request.form.get("token")
+    file = request.files.get("file")
+    if not token or not file:
+        return jsonify({"status": "error", "message": "Missing token or file"}), 400
+
+    upload_dir = os.path.join("luxscale", "uploads")
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
+
+    filename = f"{token}_drawing.png"
+    filepath = os.path.join(upload_dir, filename)
+    file.save(filepath)
+
+    return jsonify({"status": "success", "message": "Drawing uploaded", "path": filepath})
+
+
 @app.route("/api/get", methods=["GET"])
 def api_study_get():
     """Load study by token (same contract as ``api/get.php``)."""

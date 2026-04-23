@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SC Box Studio — LuxScale</title>
+  <link rel="icon" type="image/x-icon" href="assets/favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    /* ─── SC BRAND TOKENS ─────────────────────────────── */
+    :root {
+      --sc-red:       #eb1b26;
+      --sc-dark-red:  #a40e16;
+      --sc-black:     #000000;
+      --sc-grey:      #cccccc;
+      --sc-white:     #ffffff;
+      --sc-grad:      linear-gradient(135deg, var(--sc-dark-red), var(--sc-red));
+
+      --bg-page:      #0a0a0a;
+      --bg-panel:     #111111;
+      --bg-card:      #181818;
+      --bg-input:     #222222;
+      --border:       #2a2a2a;
+      --border-hot:   var(--sc-red);
+      --text-primary: #ffffff;
+      --text-muted:   #888888;
+      --text-dim:     #555555;
+
+      --font-head:    'Anton', sans-serif;
+      --font-body:    'Poppins', sans-serif;
+      --font-mono:    'IBM Plex Mono', monospace;
+
+      --radius:       4px;
+      --radius-lg:    8px;
+      --radius-xl:    12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg-page);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    /* ─── SCROLLBAR ───────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-panel); }
+    ::-webkit-scrollbar-thumb { background: var(--sc-red); border-radius: 3px; }
+
+    /* ─── HEADER ──────────────────────────────────────── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--sc-black);
+      border-bottom: 2px solid var(--sc-red);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      height: 60px;
+    }
+
+    .header-brand {
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .header-logo img {
+      height: 26px;
+      width: auto;
+    }
+
+    .header-divider {
+      width: 1px; height: 28px;
+      background: var(--border);
+    }
+
+    .header-title {
+      font-family: var(--font-head);
+      font-size: 18px;
+      letter-spacing: 0.08em;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .header-title span {
+      color: var(--sc-red);
+    }
+
+    .header-nav {
+      display: flex; align-items: center; gap: 2px;
+    }
+
+    .header-nav a {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: var(--radius);
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .header-nav a:hover { color: var(--text-primary); background: var(--bg-card); }
+    .header-nav a.active { color: var(--sc-red); }
+
+    .header-actions {
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 18px;
+    }
+
+    .icon-btn:hover { color: var(--sc-red); border-color: var(--sc-red); background: rgba(235,27,38,0.06); }
+    .icon-btn:active { transform: scale(0.94); }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      font-size: inherit;
+    }
+
+    #ies-back-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    #ies-back-btn:hover { background: rgba(255,255,255,0.15); border-color: var(--sc-red); color: var(--sc-red); }
+
+    /* ─── LAYOUT ──────────────────────────────────────── */
+    .app-layout {
+      display: flex;
+      min-height: calc(100dvh - 60px);
+    }
+
+    /* ─── SIDEBAR PANEL ───────────────────────────────── */
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-section {
+      padding: 20px 20px 0;
+    }
+
+    .sidebar-section + .sidebar-section {
+      margin-top: 4px;
+    }
+
+    .section-label {
+      font-family: var(--font-head);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--sc-red);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .field-group {
+      display: flex; flex-direction: column; gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .dim-input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 40px 10px 12px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -moz-appearance: textfield;
+    }
+
+    .dim-input::-webkit-inner-spin-button,
+    .dim-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    .dim-input:focus {
+      border-color: var(--sc-red);
+      box-shadow: 0 0 0 3px rgba(235,27,38,0.12);
+    }
+
+    .input-unit {
+      position: absolute; right: 10px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 9px; font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
+    /* Color rows */
+    .color-row {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px 10px;
+      transition: border-color 0.2s;
+      margin-bottom: 8px;
+    }
+
+    .color-row:hover { border-color: #444; }
+
+    .color-swatch-preview {
+      width: 28px; height: 28px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,0.1);
+      flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+
+    .color-swatch-preview:hover { transform: scale(1.1); }
+
+    .color-row-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      flex: 1;
+    }
+
+    .color-input {
+      background: none; border: none;
+      width: 30px; height: 28px;
+      padding: 0; cursor: pointer;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    /* Generate button */
+    .generate-btn {
+      margin: 20px;
+      width: calc(100% - 40px);
+      background: var(--sc-grad);
+      color: var(--sc-white);
+      font-family: var(--font-head);
+      font-size: 15px;
+      letter-spacing: 0.14em;
+      border: none;
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(235,27,38,0.25);
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .generate-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.2s;
+    }
+
+    .generate-btn:hover::before { background: rgba(255,255,255,0.08); }
+    .generate-btn:active { transform: scale(0.97); }
+
+    /* Summary */
+    .stats-bar {
+      margin: 0 20px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px 14px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+
+    .stat-item {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .stat-key {
+      font-size: 9px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-dim);
+    }
+
+    .stat-val {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--sc-red);
+    }
+
+    /* ─── CANVAS AREA ─────────────────────────────────── */
+    .canvas-area {
+      flex: 1;
+      background: var(--bg-page);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* canvas toolbar */
+    .canvas-toolbar {
+      height: 48px;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px;
+      flex-shrink: 0;
+    }
+
+    .canvas-toolbar-left {
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .canvas-toolbar-label {
+      font-family: var(--font-head);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px rgba(34,197,94,0.6);
+    }
+
+    .canvas-toolbar-right {
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    .zoom-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      padding: 2px 8px;
+      background: var(--bg-input);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    /* grid canvas */
+    .canvas-scroll {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 32px 32px;
+      background-position: center center;
+    }
+
+    .canvas-scroll::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, var(--bg-page) 100%);
+      pointer-events: none;
+    }
+
+    /* the projection holder */
+    #projection-wrap {
+      transform-origin: center center;
+      transition: transform 0.22s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+      padding: 80px;
+    }
+
+    /* ─── THE UNFOLDED BOX ────────────────────────────── */
+    .unfold-cross {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wall-panel {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+      overflow: hidden;
+      transition: box-shadow 0.2s, filter 0.2s;
+    }
+
+    .wall-panel:hover {
+      box-shadow: 0 0 0 2px var(--sc-red), 0 8px 32px rgba(235,27,38,0.15);
+      z-index: 10;
+    }
+
+    .wall-panel .wall-name {
+      font-family: var(--font-head);
+      /* font-size is set dynamically via JS — never fixed */
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+      pointer-events: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
+      max-width: 90%;
+      line-height: 1;
+    }
+
+    .wall-panel .wall-dims {
+      position: absolute;
+      bottom: 3px; right: 4px;
+      font-family: var(--font-mono);
+      /* font-size is set dynamically via JS */
+      color: rgba(255,255,255,0.55);
+      pointer-events: none;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      overflow: hidden;
+      line-height: 1;
+    }
+
+    .wall-panel .wall-mat-label {
+      position: absolute;
+      top: 3px; left: 4px;
+      font-family: var(--font-mono);
+      color: rgba(255,255,255,0.4);
+      pointer-events: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 88%;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      z-index: 2;
+    }
+
+    /* Vertical panels (C/D) rotate their labels */
+    .wall-panel.vert .wall-mat-label {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      top: auto; bottom: 4px; left: 3px;
+      max-width: none;
+      max-height: 80%;
+    }
+
+    .wall-panel.vert .wall-dims {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      bottom: auto; top: 3px; right: auto; left: 3px;
+    }
+
+    .wall-panel.vert .wall-name {
+      writing-mode: vertical-rl;
+    }
+
+    .wall-panel .wall-hatch {
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        45deg,
+        rgba(255,255,255,0.03) 0px,
+        rgba(255,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 8px
+      );
+      pointer-events: none;
+    }
+
+    /* gap between panels */
+    .gap { display: block; }
+
+    /* Dimension tick lines */
+    .dim-tick {
+      position: absolute;
+      background: rgba(235,27,38,0.25);
+      pointer-events: none;
+    }
+
+    .dim-tick-label {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--sc-red);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* ─── FAB EXPORT ──────────────────────────────────── */
+    #shareExport {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 52px; height: 52px;
+      background: var(--sc-grad);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 6px 24px rgba(235,27,38,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      z-index: 200;
+    }
+
+    #shareExport:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 32px rgba(235,27,38,0.5);
+    }
+
+    #shareExport:active { transform: scale(0.95); }
+
+    .fab-tooltip {
+      position: absolute;
+      right: calc(100% + 10px);
+      background: var(--sc-black);
+      color: var(--text-primary);
+      font-size: 9px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 4px 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    #shareExport:hover .fab-tooltip { opacity: 1; }
+
+    /* ─── BOTTOM NAV (mobile) ─────────────────────────── */
+    .bottom-nav {
+      display: none;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      z-index: 300;
+      height: 60px;
+      background: rgba(0,0,0,0.9);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+    .bnav-item {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 2px; font-size: 20px; color: var(--text-muted);
+      cursor: pointer; padding: 6px 16px;
+      border-radius: var(--radius);
+      transition: color 0.2s;
+    }
+
+    .bnav-item.active { color: var(--sc-red); }
+    .bnav-item span.label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; }
+
+    /* ─── SC WATERMARK ────────────────────────────────── */
+    .sc-watermark {
+      position: absolute; bottom: 16px; left: 20px;
+      display: flex; align-items: center; gap: 8px;
+      opacity: 0.18;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .sc-watermark img { height: 14px; }
+    .sc-watermark span {
+      font-family: var(--font-head);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--sc-grey);
+      text-transform: uppercase;
+    }
+
+    /* ─── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .header-nav { display: none; }
+      .bottom-nav { display: flex; }
+      #shareExport { display: none; }
+    }
+
+    /* ─── ANIMATIONS ──────────────────────────────────── */
+    /* ─── MATERIAL SELECT ─────────────────────────────── */
+    .mat-select-wrap { margin-bottom: 10px; }
+
+    .mat-select {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 8px 10px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .mat-select:focus { border-color: var(--sc-red); }
+    .mat-select option, .mat-select optgroup { background: var(--bg-card); }
+
+    /* ─── MATERIAL TEXTURE OVERLAYS ───────────────────── */
+    .mat-tex {
+      position: absolute; inset: 0;
+      pointer-events: none; z-index: 0;
+      transition: background 0.3s;
+    }
+
+    /* Wood grains */
+    .mat-light_wood   .mat-tex { background: repeating-linear-gradient(90deg,rgba(180,130,60,.18) 0,rgba(180,130,60,.18) 2px,transparent 2px,transparent 14px),repeating-linear-gradient(180deg,rgba(255,255,255,.04) 0,rgba(255,255,255,.04) 1px,transparent 1px,transparent 22px); }
+    .mat-medium_wood  .mat-tex { background: repeating-linear-gradient(90deg,rgba(100,60,10,.22) 0,rgba(100,60,10,.22) 2px,transparent 2px,transparent 12px),repeating-linear-gradient(180deg,rgba(0,0,0,.06) 0,rgba(0,0,0,.06) 1px,transparent 1px,transparent 18px); }
+    .mat-dark_wood    .mat-tex { background: repeating-linear-gradient(90deg,rgba(0,0,0,.28) 0,rgba(0,0,0,.28) 2px,transparent 2px,transparent 10px),repeating-linear-gradient(180deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 16px); }
+
+    /* Marble veining */
+    .mat-white_marble .mat-tex { background: repeating-linear-gradient(125deg,rgba(180,180,180,.15) 0,rgba(180,180,180,.15) 1px,transparent 1px,transparent 30px),repeating-linear-gradient(55deg,rgba(150,150,150,.08) 0,rgba(150,150,150,.08) 1px,transparent 1px,transparent 20px); }
+
+    /* Concrete */
+    .mat-light_concrete .mat-tex { background: repeating-linear-gradient(0deg,rgba(0,0,0,.04) 0,rgba(0,0,0,.04) 1px,transparent 1px,transparent 8px),repeating-linear-gradient(90deg,rgba(0,0,0,.03) 0,rgba(0,0,0,.03) 1px,transparent 1px,transparent 8px); }
+    .mat-raw_concrete   .mat-tex { background: repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0,rgba(0,0,0,.07) 1px,transparent 1px,transparent 7px),repeating-linear-gradient(90deg,rgba(0,0,0,.05) 0,rgba(0,0,0,.05) 1px,transparent 1px,transparent 7px); }
+
+    /* Stone */
+    .mat-dark_stone .mat-tex { background: repeating-linear-gradient(45deg,rgba(0,0,0,.12) 0,rgba(0,0,0,.12) 1px,transparent 1px,transparent 11px),repeating-linear-gradient(-45deg,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 1px,transparent 11px); }
+
+    /* Tile */
+    .mat-white_tile .mat-tex { background: repeating-linear-gradient(0deg,rgba(180,180,180,.2) 0,rgba(180,180,180,.2) 1px,transparent 1px,transparent 18px),repeating-linear-gradient(90deg,rgba(180,180,180,.2) 0,rgba(180,180,180,.2) 1px,transparent 1px,transparent 18px); }
+    .mat-terracotta .mat-tex { background: repeating-linear-gradient(0deg,rgba(0,0,0,.15) 0,rgba(0,0,0,.15) 1px,transparent 1px,transparent 16px),repeating-linear-gradient(90deg,rgba(0,0,0,.12) 0,rgba(0,0,0,.12) 1px,transparent 1px,transparent 16px); }
+
+    /* Fabric */
+    .mat-white_fabric .mat-tex { background: repeating-linear-gradient(0deg,rgba(200,200,200,.08) 0,rgba(200,200,200,.08) 1px,transparent 1px,transparent 4px),repeating-linear-gradient(90deg,rgba(200,200,200,.05) 0,rgba(200,200,200,.05) 1px,transparent 1px,transparent 4px); }
+    .mat-linen        .mat-tex { background: repeating-linear-gradient(0deg,rgba(150,120,70,.12) 0,rgba(150,120,70,.12) 1px,transparent 1px,transparent 4px),repeating-linear-gradient(90deg,rgba(150,120,70,.08) 0,rgba(150,120,70,.08) 1px,transparent 1px,transparent 4px); }
+    .mat-dark_curtain .mat-tex { background: repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0,rgba(255,255,255,.04) 1px,transparent 1px,transparent 5px); }
+
+    /* Metal / Mirror */
+    .mat-brushed_steel  .mat-tex { background: repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0,rgba(255,255,255,.06) 1px,transparent 1px,transparent 3px); }
+    .mat-polished_metal .mat-tex { background: linear-gradient(135deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,.04) 40%,rgba(255,255,255,.14) 100%); }
+    .mat-mirror         .mat-tex { background: linear-gradient(135deg,rgba(255,255,255,.35) 0%,rgba(255,255,255,.05) 50%,rgba(200,220,255,.25) 100%); }
+
+    /* Glass */
+    .mat-clear_glass   .mat-tex { background: linear-gradient(135deg,rgba(150,200,255,.18) 0%,rgba(255,255,255,.04) 60%,rgba(150,200,255,.1) 100%); opacity:.7; }
+    .mat-frosted_glass .mat-tex { background: repeating-linear-gradient(45deg,rgba(200,220,255,.08) 0,rgba(200,220,255,.08) 1px,transparent 1px,transparent 6px); }
+    .mat-tinted_glass  .mat-tex { background: linear-gradient(135deg,rgba(50,80,50,.25) 0%,rgba(30,60,30,.1) 100%); opacity:.8; }
+
+    /* Carpet */
+    .mat-light_carpet .mat-tex { background: repeating-linear-gradient(30deg,rgba(200,190,170,.07) 0,rgba(200,190,170,.07) 1px,transparent 1px,transparent 5px),repeating-linear-gradient(-30deg,rgba(200,190,170,.05) 0,rgba(200,190,170,.05) 1px,transparent 1px,transparent 5px); }
+    .mat-dark_carpet  .mat-tex { background: repeating-linear-gradient(30deg,rgba(0,0,0,.14) 0,rgba(0,0,0,.14) 1px,transparent 1px,transparent 5px),repeating-linear-gradient(-30deg,rgba(0,0,0,.1) 0,rgba(0,0,0,.1) 1px,transparent 1px,transparent 5px); }
+
+    /* Plaster / Paint */
+    .mat-white_paint   .mat-tex { background: repeating-linear-gradient(45deg,rgba(200,200,200,.04) 0,rgba(200,200,200,.04) 1px,transparent 1px,transparent 12px); }
+    .mat-light_plaster .mat-tex { background: repeating-linear-gradient(45deg,rgba(180,160,130,.06) 0,rgba(180,160,130,.06) 1px,transparent 1px,transparent 10px); }
+    .mat-beige_plaster .mat-tex { background: repeating-linear-gradient(45deg,rgba(160,140,100,.07) 0,rgba(160,140,100,.07) 1px,transparent 1px,transparent 10px); }
+    .mat-grey_plaster  .mat-tex { background: repeating-linear-gradient(45deg,rgba(120,120,120,.08) 0,rgba(120,120,120,.08) 1px,transparent 1px,transparent 10px); }
+    .mat-dark_paint    .mat-tex { background: repeating-linear-gradient(45deg,rgba(0,0,0,.1) 0,rgba(0,0,0,.1) 1px,transparent 1px,transparent 12px); }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .sidebar-section { animation: fadeSlideIn 0.3s ease both; }
+    .sidebar-section:nth-child(1) { animation-delay: 0.05s; }
+    .sidebar-section:nth-child(2) { animation-delay: 0.1s; }
+    .sidebar-section:nth-child(3) { animation-delay: 0.15s; }
+    .sidebar-section:nth-child(4) { animation-delay: 0.2s; }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 4px 20px rgba(235,27,38,0.25); }
+      50%       { box-shadow: 0 4px 30px rgba(235,27,38,0.5); }
+    }
+
+    .generate-btn { animation: pulse-glow 2.5s ease infinite; }
+
+    /* ═══ MATERIAL PICKER SYSTEM ════════════════════════════ */
+    .mat-picker-trigger {
+      width: 100%; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text-muted);
+      font-family: var(--font-body); font-size: 11px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 9px 12px; cursor: pointer;
+      display: flex; align-items: center; gap: 8px;
+      transition: all 0.2s; margin-bottom: 8px;
+    }
+    .mat-picker-trigger:hover { border-color: var(--sc-red); color: var(--sc-red); }
+    .mat-picker-trigger .mpt-swatch {
+      width: 18px; height: 18px; border-radius: 3px; flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.12);
+      background-size: 36px 36px; background-repeat: repeat;
+    }
+    .mat-picker-trigger .mpt-rho { margin-left: auto; font-family: var(--font-mono); font-size: 9px; color: var(--sc-red); }
+
+    /* ── SLIDE-IN PANEL ── */
+    #matPickerPanel {
+      position: fixed; top: 60px; right: 0; bottom: 0; width: 340px;
+      background: var(--bg-panel); border-left: 1px solid var(--border);
+      z-index: 500; display: flex; flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: -8px 0 32px rgba(0,0,0,0.5);
+    }
+    #matPickerPanel.open { transform: translateX(0); }
+    .mpp-header {
+      height: 52px; background: var(--sc-black); border-bottom: 2px solid var(--sc-red);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px; flex-shrink: 0;
+    }
+    .mpp-title {
+      font-family: var(--font-head); font-size: 14px; letter-spacing: 0.18em;
+      color: var(--text-primary); text-transform: uppercase;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .mpp-surface-tag {
+      font-family: var(--font-body); font-size: 9px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      background: rgba(235,27,38,0.15); color: var(--sc-red);
+      border: 1px solid rgba(235,27,38,0.3); padding: 2px 8px; border-radius: 20px;
+    }
+    .mpp-close {
+      background: transparent; border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--text-muted); cursor: pointer; width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; transition: all 0.2s;
+    }
+    .mpp-close:hover { border-color: var(--sc-red); color: var(--sc-red); }
+
+    /* surface selector */
+    .mpp-surface-selector {
+      display: flex; gap: 6px; padding: 10px 14px;
+      border-bottom: 1px solid var(--border); flex-shrink: 0; flex-wrap: wrap;
+    }
+    .mpp-surf-btn {
+      flex: 1; min-width: 52px; background: var(--bg-input);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--text-dim); font-family: var(--font-body); font-size: 9px;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 5px 4px; cursor: pointer; transition: all 0.15s; text-align: center;
+    }
+    .mpp-surf-btn.active { border-color: var(--sc-red); color: var(--sc-red); background: rgba(235,27,38,0.08); }
+
+    /* tabs */
+    .mpp-tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .mpp-tab {
+      flex: 1; background: transparent; border: none; border-bottom: 2px solid transparent;
+      color: var(--text-dim); font-family: var(--font-body); font-size: 10px;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;
+      padding: 12px 8px; cursor: pointer; transition: all 0.2s;
+    }
+    .mpp-tab.active { color: var(--sc-red); border-bottom-color: var(--sc-red); }
+
+    /* search */
+    .mpp-search-wrap {
+      padding: 10px 14px; border-bottom: 1px solid var(--border);
+      flex-shrink: 0; position: relative;
+    }
+    .mpp-search {
+      width: 100%; background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text-primary);
+      font-family: var(--font-body); font-size: 11px;
+      padding: 8px 12px 8px 32px; outline: none; transition: border-color 0.2s;
+    }
+    .mpp-search:focus { border-color: var(--sc-red); }
+    .mpp-search-icon {
+      position: absolute; left: 24px; top: 50%; transform: translateY(-50%);
+      font-size: 15px; color: var(--text-dim); pointer-events: none;
+    }
+
+    /* body + grid */
+    .mpp-body { flex: 1; overflow-y: auto; padding: 12px 14px; }
+    .mpp-tab-panel { display: none; }
+    .mpp-tab-panel.active { display: block; }
+    .mpp-cat-label {
+      font-family: var(--font-head); font-size: 9px; letter-spacing: 0.2em;
+      color: var(--sc-red); text-transform: uppercase; margin: 14px 0 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .mpp-cat-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .mpp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .mpp-mat-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+      cursor: pointer; transition: all 0.18s; position: relative;
+    }
+    .mpp-mat-card:hover { border-color: var(--sc-red); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(235,27,38,0.15); }
+    .mpp-mat-card.selected { border-color: var(--sc-red); box-shadow: 0 0 0 2px rgba(235,27,38,0.3); }
+    .mpp-mat-card.selected::after {
+      content: '✓'; position: absolute; top: 4px; right: 5px;
+      font-size: 10px; color: var(--sc-red); font-weight: 700;
+    }
+    .mpp-mat-preview {
+      height: 60px; background-size: 120px 120px; background-repeat: repeat;
+      position: relative; overflow: hidden;
+    }
+    .mpp-mat-preview-color { position: absolute; inset: 0; }
+    .mpp-mat-info { padding: 6px 7px; }
+    .mpp-mat-name {
+      font-size: 9px; font-weight: 500; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.07em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .mpp-mat-rho { font-family: var(--font-mono); font-size: 8px; color: var(--text-dim); margin-top: 2px; }
+    .mpp-mat-rho span { color: var(--sc-red); }
+
+    /* rho readout */
+    .mpp-rho-bar {
+      padding: 12px 14px; border-top: 1px solid var(--border);
+      background: var(--bg-card); flex-shrink: 0;
+    }
+    .mpp-rho-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+    .mpp-rho-value { font-family: var(--font-mono); font-size: 22px; font-weight: 600; color: var(--sc-red); }
+    .mpp-rho-name { font-size: 11px; color: var(--text-muted); flex: 1; }
+    .mpp-rho-label { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--text-dim); margin-bottom: 6px; }
+    .rho-track { height: 3px; background: var(--border); border-radius: 2px; }
+    .rho-fill { height: 3px; background: var(--sc-red); border-radius: 2px; transition: width 0.4s ease; }
+
+    /* apply btn */
+    .mpp-footer { padding: 14px; flex-shrink: 0; }
+    .mpp-apply-btn {
+      width: 100%; background: var(--sc-grad); color: var(--sc-white);
+      font-family: var(--font-head); font-size: 14px; letter-spacing: 0.14em;
+      border: none; border-radius: var(--radius); padding: 12px; cursor: pointer;
+      text-transform: uppercase; transition: opacity 0.2s, transform 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .mpp-apply-btn:hover { opacity: 0.9; }
+    .mpp-apply-btn:active { transform: scale(0.97); }
+    .mpp-apply-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+    /* upload tab */
+    .mpp-upload-zone {
+      border: 2px dashed var(--border); border-radius: var(--radius-lg);
+      padding: 26px 16px; text-align: center; cursor: pointer;
+      transition: all 0.2s; margin-bottom: 14px;
+    }
+    .mpp-upload-zone:hover, .mpp-upload-zone.dragover { border-color: var(--sc-red); background: rgba(235,27,38,0.04); }
+    .mpp-upload-zone .uz-icon { font-size: 30px; color: var(--text-dim); margin-bottom: 8px; }
+    .mpp-upload-zone .uz-text { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+    .mpp-upload-zone .uz-hint { font-size: 10px; color: var(--text-dim); }
+    .mpp-url-row { display: flex; gap: 8px; margin-bottom: 12px; }
+    .mpp-url-input {
+      flex: 1; background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text-primary);
+      font-family: var(--font-body); font-size: 11px; padding: 8px 10px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .mpp-url-input:focus { border-color: var(--sc-red); }
+    .mpp-url-input::placeholder { color: var(--text-dim); }
+    .mpp-url-btn {
+      background: var(--sc-red); color: #fff; border: none; border-radius: var(--radius);
+      font-family: var(--font-body); font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.1em; padding: 0 14px;
+      cursor: pointer; transition: background 0.15s; white-space: nowrap;
+    }
+    .mpp-url-btn:hover { background: var(--sc-dark-red); }
+    .mpp-url-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .mpp-upload-preview {
+      background: var(--bg-card); border: 1px solid var(--sc-red);
+      border-radius: var(--radius-lg); overflow: hidden; display: none; margin-bottom: 12px;
+    }
+    .mpp-upload-preview.visible { display: block; }
+    .mpp-up-img { width: 100%; height: 110px; object-fit: cover; background: var(--bg-input); display: block; }
+    .mpp-up-meta { padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; }
+    .mpp-up-name { font-size: 11px; font-weight: 500; color: var(--text-primary); }
+    .mpp-up-rho-wrap { text-align: right; }
+    .mpp-up-rho { font-family: var(--font-mono); font-size: 16px; font-weight: 600; color: var(--sc-red); }
+    .mpp-up-rho-label { font-size: 9px; color: var(--text-dim); }
+    .mpp-computing {
+      display: none; align-items: center; gap: 8px;
+      font-size: 11px; color: var(--text-muted); padding: 8px 0;
+    }
+    .mpp-computing.visible { display: flex; }
+    @keyframes mpp-spin { to { transform: rotate(360deg); } }
+    .mpp-spinner {
+      width: 14px; height: 14px; border: 2px solid var(--border);
+      border-top-color: var(--sc-red); border-radius: 50%;
+      animation: mpp-spin 0.7s linear infinite;
+    }
+
+    /* physics readout in sidebar */
+    .phys-readout {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 10px 12px; margin-bottom: 10px;
+    }
+    .phys-readout-title {
+      font-size: 9px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .12em; color: var(--text-dim); margin-bottom: 8px;
+    }
+    .phys-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+    .phys-key { font-size: 10px; color: var(--text-muted); }
+    .phys-val { font-family: var(--font-mono); font-size: 17px; font-weight: 600; color: var(--sc-red); }
+    .phys-track { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 8px; }
+    .phys-fill { height: 3px; background: var(--sc-red); border-radius: 2px; transition: width 0.4s; }
+    .phys-boost { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-dim); }
+    .phys-boost span:last-child { color: var(--sc-red); font-family: var(--font-mono); }
+
+    /* toast */
+    .mpp-toast {
+      position: fixed; bottom: 80px; right: 16px;
+      background: #1a1a1a; border: 1px solid var(--sc-red); color: var(--text-primary);
+      font-family: var(--font-body); font-size: 11px; padding: 8px 16px;
+      border-radius: var(--radius-lg); z-index: 1000;
+      opacity: 0; transform: translateY(10px); transition: all 0.25s;
+      pointer-events: none; display: flex; align-items: center; gap: 8px;
+    }
+    .mpp-toast.show { opacity: 1; transform: translateY(0); }
+    .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sc-red); flex-shrink: 0; }
+
+    /* mat picker trigger */
+    .mat-picker-trigger {
+      width: 100%; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text-muted);
+      font-family: var(--font-body); font-size: 11px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.1em; padding: 9px 12px;
+      cursor: pointer; display: flex; align-items: center; gap: 8px;
+      transition: all 0.2s; margin-bottom: 8px;
+    }
+    .mat-picker-trigger:hover { border-color: var(--sc-red); color: var(--sc-red); }
+    .mpt-swatch {
+      width: 20px; height: 20px; border-radius: 3px; flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.12);
+      background-size: 40px 40px; background-repeat: repeat;
+    }
+    .mpt-name { flex: 1; text-align: left; }
+    .mpt-rho { font-family: var(--font-mono); font-size: 9px; color: var(--sc-red); }
+
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════ -->
+<header>
+  <div class="header-brand">
+    <div class="header-logo">
+      <img src="assets/brand/logo-bg-dark.svg" alt="Short Circuit" />
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-title">BOX <span>STUDIO</span></div>
+  </div>
+
+  <nav class="header-nav">
+    <a href="#" class="active">Canvas</a>
+    <a href="#">History</a>
+    <a href="#">Assets</a>
+  </nav>
+
+  <div class="header-actions">
+    <a id="ies-back-btn" href="result.html">
+      <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span>
+      Back to Study
+    </a>
+    <div class="header-divider"></div>
+    <button class="icon-btn" title="Zoom In" id="zi">
+      <span class="material-symbols-outlined">zoom_in</span>
+    </button>
+    <button class="icon-btn" title="Zoom Out" id="zo">
+      <span class="material-symbols-outlined">zoom_out</span>
+    </button>
+    <button class="icon-btn" title="Center View" id="co">
+      <span class="material-symbols-outlined">center_focus_weak</span>
+    </button>
+    <button class="icon-btn" title="Settings">
+      <span class="material-symbols-outlined">settings</span>
+    </button>
+  </div>
+</header>
+
+<!-- ═══ MAIN LAYOUT ══════════════════════════════════════ -->
+<div class="app-layout">
+
+  <!-- ── SIDEBAR ────────────────────────────────────────── -->
+  <aside class="sidebar">
+
+    <!-- Dimensions -->
+    <div class="sidebar-section">
+      <div class="section-label">Dimensions</div>
+      <div class="field-group">
+        <div>
+          <div class="field-label">Width (W)</div>
+          <div class="input-wrap">
+            <input class="dim-input" type="number" value="8" step="0.1" id="wallWidth" min="0.5" max="100" />
+            <span class="input-unit">m</span>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Length (L)</div>
+          <div class="input-wrap">
+            <input class="dim-input" type="number" value="6" step="0.1" id="wallLength" min="0.5" max="100" />
+            <span class="input-unit">m</span>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Height (H)</div>
+          <div class="input-wrap">
+            <input class="dim-input" type="number" value="3" step="0.1" id="wallHeight" min="0.5" max="30" />
+            <span class="input-unit">m</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colors / Materials -->
+    <div class="sidebar-section">
+      <div class="section-label">Surface Materials</div>
+
+      <!-- Hidden selects for JS compat -->
+      <select id="wallMat" style="display:none">
+        <option value="white_paint" data-r="80">White Paint</option>
+        <option value="light_plaster" data-r="70">Light Plaster</option>
+        <option value="beige_plaster" data-r="60" selected>Beige Plaster</option>
+        <option value="grey_plaster" data-r="45">Grey Plaster</option>
+        <option value="dark_paint" data-r="20">Dark Paint</option>
+        <option value="light_wood" data-r="50">Light Wood</option>
+        <option value="medium_wood" data-r="35">Medium Wood (Oak)</option>
+        <option value="dark_wood" data-r="15">Dark Wood (Walnut)</option>
+        <option value="white_marble" data-r="72">White Marble</option>
+        <option value="light_concrete" data-r="40">Light Concrete</option>
+        <option value="raw_concrete" data-r="25">Raw Concrete</option>
+        <option value="dark_stone" data-r="12">Dark Stone</option>
+        <option value="white_fabric" data-r="75">White Fabric</option>
+        <option value="linen" data-r="55">Linen / Canvas</option>
+        <option value="dark_curtain" data-r="10">Dark Curtain</option>
+        <option value="brushed_steel" data-r="65">Brushed Steel</option>
+        <option value="polished_metal" data-r="85">Polished Metal</option>
+        <option value="mirror" data-r="92">Mirror</option>
+        <option value="clear_glass" data-r="8">Clear Glass</option>
+        <option value="frosted_glass" data-r="30">Frosted Glass</option>
+        <option value="tinted_glass" data-r="18">Tinted Glass</option>
+      </select>
+      <select id="floorMat" style="display:none">
+        <option value="light_wood" data-r="50">Light Wood</option>
+        <option value="medium_wood" data-r="35" selected>Medium Wood (Oak)</option>
+        <option value="dark_wood" data-r="15">Dark Wood (Walnut)</option>
+        <option value="white_marble" data-r="72">White Marble</option>
+        <option value="white_tile" data-r="78">White Tile</option>
+        <option value="light_concrete" data-r="40">Light Concrete</option>
+        <option value="raw_concrete" data-r="25">Raw Concrete</option>
+        <option value="terracotta" data-r="28">Terracotta Tile</option>
+        <option value="dark_stone" data-r="12">Dark Stone</option>
+        <option value="light_carpet" data-r="45">Light Carpet</option>
+        <option value="dark_carpet" data-r="12">Dark Carpet</option>
+        <option value="brushed_steel" data-r="65">Brushed Steel</option>
+        <option value="polished_metal" data-r="85">Polished Metal</option>
+        <option value="white_paint" data-r="80">Painted White</option>
+        <option value="dark_paint" data-r="20">Painted Dark</option>
+      </select>
+
+      <!-- Hidden color inputs for JS compat -->
+      <div style="display:none">
+        <div id="previewA"></div><input id="wallAColor" type="color" value="#c2a86a" />
+        <div id="previewB"></div><input id="wallBColor" type="color" value="#c2a86a" />
+        <div id="previewC"></div><input id="wallCColor" type="color" value="#c2a86a" />
+        <div id="previewD"></div><input id="wallDColor" type="color" value="#c2a86a" />
+        <div id="previewFloor"></div><input id="floorColor" type="color" value="#8b5e2a" />
+      </div>
+
+      <!-- Walls trigger -->
+      <div class="field-label">Walls Material</div>
+      <button class="mat-picker-trigger" id="wallMatTrigger" onclick="openMatPicker('walls')">
+        <span class="mpt-swatch" id="wallMatSwatch" style="background:#c2a86a"></span>
+        <span class="mpt-name" id="wallMatTriggerLabel">Beige Plaster</span>
+        <span class="mpt-rho" id="wallMatRhoLabel">ρ 0.60</span>
+        <span class="material-symbols-outlined" style="font-size:15px">open_in_new</span>
+      </button>
+
+      <!-- Floor trigger -->
+      <div class="field-label">Floor Material</div>
+      <button class="mat-picker-trigger" id="floorMatTrigger" onclick="openMatPicker('floor')">
+        <span class="mpt-swatch" id="floorMatSwatch" style="background:#8b5e2a"></span>
+        <span class="mpt-name" id="floorMatTriggerLabel">Medium Wood</span>
+        <span class="mpt-rho" id="floorMatRhoLabel">ρ 0.35</span>
+        <span class="material-symbols-outlined" style="font-size:15px">open_in_new</span>
+      </button>
+
+      <!-- Physics Readout -->
+      <div class="phys-readout">
+        <div class="phys-readout-title">Room Reflectance Physics</div>
+        <div class="phys-row">
+          <span class="phys-key">ρ̄ Weighted Avg</span>
+          <span class="phys-val" id="rhoAvgDisplay">0.53</span>
+        </div>
+        <div class="phys-track"><div class="phys-fill" id="rhoAvgBar" style="width:53%"></div></div>
+        <div class="phys-boost">
+          <span>Inter-reflect boost (E.3)</span>
+          <span id="irBoostDisplay">× 2.13</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate -->
+    <button class="generate-btn" id="generateTemplate">
+      ⚡ Generate Template
+    </button>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-item">
+        <span class="stat-key">Surface Area</span>
+        <span class="stat-val" id="statArea">—</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-key">Perimeter</span>
+        <span class="stat-val" id="statPerim">—</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-key">Volume</span>
+        <span class="stat-val" id="statVol">—</span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ── CANVAS ──────────────────────────────────────────── -->
+  <section class="canvas-area">
+
+    <!-- Toolbar -->
+    <div class="canvas-toolbar">
+      <div class="canvas-toolbar-left">
+        <div class="status-dot"></div>
+        <span class="canvas-toolbar-label">Unfolded Projection</span>
+      </div>
+      <div class="canvas-toolbar-right">
+        <button id="texToggle" title="Toggle real textures" style="
+          background:rgba(255,255,255,0.06);border:1px solid var(--border);
+          color:var(--text-muted);font-family:var(--font-mono);font-size:9px;
+          font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+          padding:3px 9px;border-radius:var(--radius);cursor:pointer;
+          transition:all 0.2s;display:flex;align-items:center;gap:5px;">
+          <span class="material-symbols-outlined" style="font-size:13px;">texture</span>
+          <span id="texToggleLabel">TEX ON</span>
+        </button>
+        <span class="zoom-badge" id="zoomBadge">100%</span>
+      </div>
+    </div>
+
+    <!-- Scroll canvas -->
+    <div class="canvas-scroll" id="canvasScroll">
+      <div id="projection-wrap">
+        <div class="unfold-cross" id="unfoldCross">
+
+          <!-- Floor (center) -->
+          <div id="floor" class="wall-panel mat-medium_wood" style="width:160px;height:120px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.07);border-radius:3px;position:relative;">
+            <div class="wall-hatch"></div>
+            <div class="mat-tex"></div>
+            <span class="wall-mat-label" id="floorMatLabel">Med. Wood</span>
+            <span class="wall-name">Floor</span>
+            <span class="wall-dims" id="floorDims">8.0 × 6.0 m</span>
+          </div>
+
+          <!-- Wall A — top -->
+          <div id="wallA" class="wall-panel mat-beige_plaster" style="width:160px;height:80px;background:#eb1b26;bottom:100%;margin-bottom:2px;left:50%;transform:translateX(-50%);border-radius:3px 3px 0 0;">
+            <div class="wall-hatch"></div>
+            <div class="mat-tex"></div>
+            <span class="wall-mat-label" id="wallAMatLabel">Beige Plaster</span>
+            <span class="wall-name">A</span>
+            <span class="wall-dims" id="wallADims">8.0 × 3.0 m</span>
+          </div>
+
+          <!-- Wall B — bottom -->
+          <div id="wallB" class="wall-panel mat-beige_plaster" style="width:160px;height:80px;background:#a40e16;top:100%;margin-top:2px;left:50%;transform:translateX(-50%);border-radius:0 0 3px 3px;">
+            <div class="wall-hatch"></div>
+            <div class="mat-tex"></div>
+            <span class="wall-mat-label" id="wallBMatLabel">Beige Plaster</span>
+            <span class="wall-name">B</span>
+            <span class="wall-dims" id="wallBDims">8.0 × 3.0 m</span>
+          </div>
+
+          <!-- Wall C — left -->
+          <div id="wallC" class="wall-panel vert mat-beige_plaster" style="width:80px;height:120px;background:#333333;right:100%;margin-right:2px;top:50%;transform:translateY(-50%);border-radius:3px 0 0 3px;">
+            <div class="wall-hatch"></div>
+            <div class="mat-tex"></div>
+            <span class="wall-mat-label" id="wallCMatLabel">BP</span>
+            <span class="wall-name">C</span>
+            <span class="wall-dims" id="wallCDims">3×6</span>
+          </div>
+
+          <!-- Wall D — right -->
+          <div id="wallD" class="wall-panel vert mat-beige_plaster" style="width:80px;height:120px;background:#222222;left:100%;margin-left:2px;top:50%;transform:translateY(-50%);border-radius:0 3px 3px 0;">
+            <div class="wall-hatch"></div>
+            <div class="mat-tex"></div>
+            <span class="wall-mat-label" id="wallDMatLabel">BP</span>
+            <span class="wall-name">D</span>
+            <span class="wall-dims" id="wallDDims">3×6</span>
+          </div>
+
+          <!-- Dim W line -->
+          <div id="widthLine" style="position:absolute;top:-36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none;">
+            <span id="wLabel" style="font-family:var(--font-mono);font-size:9px;font-weight:600;color:var(--sc-red);letter-spacing:0.1em;">W: 8.0m</span>
+            <div id="wLine" style="height:1px;background:rgba(235,27,38,0.3);width:160px;"></div>
+          </div>
+
+          <!-- Dim L line -->
+          <div id="lengthLine" style="position:absolute;left:-56px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:2px;pointer-events:none;">
+            <span id="lLabel" style="font-family:var(--font-mono);font-size:9px;font-weight:600;color:var(--sc-red);letter-spacing:0.1em;writing-mode:vertical-rl;transform:rotate(180deg);">L: 6.0m</span>
+            <div id="lLine" style="width:1px;background:rgba(235,27,38,0.3);height:120px;"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SC watermark -->
+      <div class="sc-watermark">
+        <img src="assets/brand/logo-bg-dark.svg" alt="" />
+        <span>Box Studio</span>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<!-- ═══ FAB ══════════════════════════════════════════════ -->
+<button id="shareExport">
+  <span class="material-symbols-outlined">ios_share</span>
+  <div class="fab-tooltip">Export Drawing</div>
+</button>
+
+<!-- ═══ BOTTOM NAV (mobile) ═════════════════════════════ -->
+<nav class="bottom-nav">
+  <div class="bnav-item active">
+    <span class="material-symbols-outlined">view_in_ar</span>
+    <span class="label">Canvas</span>
+  </div>
+  <div class="bnav-item">
+    <span class="material-symbols-outlined">tune</span>
+    <span class="label">Parameters</span>
+  </div>
+  <div class="bnav-item" onclick="document.getElementById('shareExport').click()">
+    <span class="material-symbols-outlined">ios_share</span>
+    <span class="label">Export</span>
+  </div>
+</nav>
+
+<!-- ═══ SCRIPT ═══════════════════════════════════════════ -->
+<script>
+  // ── element refs ──────────────────────────────────────
+  const wallWidthInput  = document.getElementById('wallWidth');
+  const wallLengthInput = document.getElementById('wallLength');
+  const wallHeightInput = document.getElementById('wallHeight');
+
+  const wallAColor  = document.getElementById('wallAColor');
+  const wallBColor  = document.getElementById('wallBColor');
+  const wallCColor  = document.getElementById('wallCColor');
+  const wallDColor  = document.getElementById('wallDColor');
+  const floorColor  = document.getElementById('floorColor');
+
+  const previewA    = document.getElementById('previewA');
+  const previewB    = document.getElementById('previewB');
+  const previewC    = document.getElementById('previewC');
+  const previewD    = document.getElementById('previewD');
+  const previewFloor= document.getElementById('previewFloor');
+
+  const wallA       = document.getElementById('wallA');
+  const wallB       = document.getElementById('wallB');
+  const wallC       = document.getElementById('wallC');
+  const wallD       = document.getElementById('wallD');
+  const floor       = document.getElementById('floor');
+
+  // ── Material system ───────────────────────────────────
+  const wallMatSel  = document.getElementById('wallMat');
+  const floorMatSel = document.getElementById('floorMat');
+
+  const MAT_COLOR = {
+    white_paint:'#e8e4dc',  light_plaster:'#d4c9b0',  beige_plaster:'#c2a86a',
+    grey_plaster:'#8a8880',  dark_paint:'#2a2622',
+    light_wood:'#c8a05a',   medium_wood:'#8b5e2a',    dark_wood:'#3a2210',
+    white_marble:'#ece8e0', light_concrete:'#9a9890',  raw_concrete:'#706e6a',  dark_stone:'#2c2a28',
+    white_fabric:'#dedad2', linen:'#b8a880',           dark_curtain:'#1e1c1a',
+    brushed_steel:'#9098a0',polished_metal:'#b8c0c8',  mirror:'#c8d4e0',
+    clear_glass:'#aab8c8',  frosted_glass:'#b8c4cc',   tinted_glass:'#4a6040',
+    white_tile:'#dcdad4',   terracotta:'#a05838',      light_carpet:'#c0b498',  dark_carpet:'#2e2820'
+  };
+
+  function wallVariants(hex) {
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    const c = (r,g,b) => '#'+[r,g,b].map(v=>Math.min(255,Math.max(0,Math.round(v))).toString(16).padStart(2,'0')).join('');
+    return [
+      c(r*.94, g*.94, b*.92),    // A: slightly darker
+      c(r*1.06,g*1.05,b*1.04),   // B: slightly lighter
+      c(r*.96, g*.96, b*.98),    // C: cool tint
+      c(r*1.04,g*1.03,b*.97)     // D: warm tint
+    ];
+  }
+
+  function setMatClass(el, key) {
+    // Remove old mat-* classes but preserve structural classes (wall-panel, vert, etc.)
+    el.className = el.className.replace(/\bmat-\S+/g, '').trim() + ' mat-' + key;
+  }
+
+  const MAT_SHORTNAME = {
+    white_paint:'W.Paint',  light_plaster:'Lt.Plstr',  beige_plaster:'Bg.Plstr',
+    grey_plaster:'Gy.Plstr', dark_paint:'Dk.Paint',
+    light_wood:'Lt.Wood',   medium_wood:'Med.Wood',    dark_wood:'Dk.Wood',
+    white_marble:'W.Mrbl',  light_concrete:'Lt.Conc',  raw_concrete:'Raw.Con',  dark_stone:'Dk.Stone',
+    white_fabric:'W.Fabrc', linen:'Linen',             dark_curtain:'Dk.Curt',
+    brushed_steel:'Br.Stl', polished_metal:'Pl.Mtl',   mirror:'Mirror',
+    clear_glass:'Clr.Gls',  frosted_glass:'Fr.Gls',    tinted_glass:'Tnt.Gls',
+    white_tile:'W.Tile',    terracotta:'Terrctta',     light_carpet:'Lt.Crpt', dark_carpet:'Dk.Crpt'
+  };
+
+  function applyMaterials() {
+    const wKey = wallMatSel.value;
+    const fKey = floorMatSel.value;
+    const wBase = MAT_COLOR[wKey] || '#888';
+    const fBase = MAT_COLOR[fKey] || '#555';
+    const [cA, cB, cC, cD] = wallVariants(wBase);
+
+    // Update color pickers & swatches
+    wallAColor.value = cA; previewA.style.background = cA; wallA.style.background = cA;
+    wallBColor.value = cB; previewB.style.background = cB; wallB.style.background = cB;
+    wallCColor.value = cC; previewC.style.background = cC; wallC.style.background = cC;
+    wallDColor.value = cD; previewD.style.background = cD; wallD.style.background = cD;
+    floorColor.value = fBase; previewFloor.style.background = fBase; floor.style.background = fBase;
+
+    // Apply texture classes
+    setMatClass(wallA, wKey); setMatClass(wallB, wKey);
+    setMatClass(wallC, wKey); setMatClass(wallD, wKey);
+    setMatClass(floor, fKey);
+
+    // Reset CSS-pattern textures first
+    [wallA, wallB, wallC, wallD].forEach(el => {
+      const t = el.querySelector('.mat-tex');
+      if (t) { t.style.backgroundImage = ''; t.style.opacity = ''; t.style.mixBlendMode = ''; }
+    });
+    const ft = floor.querySelector('.mat-tex');
+    if (ft) { ft.style.backgroundImage = ''; ft.style.opacity = ''; ft.style.mixBlendMode = ''; }
+
+    // Apply real textures from AmbientCG
+    applyRealTexture([wallA, wallB, wallC, wallD], wKey);
+    applyRealTexture([floor], fKey);
+
+    // Update mat-label spans
+    const ws = MAT_SHORTNAME[wKey] || wKey;
+    const fs = MAT_SHORTNAME[fKey] || fKey;
+    ['wallAMatLabel','wallBMatLabel','wallCMatLabel','wallDMatLabel'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = ws;
+    });
+    const fml = document.getElementById('floorMatLabel');
+    if (fml) fml.textContent = fs;
+  }
+
+  wallMatSel.addEventListener('change', applyMaterials);
+  floorMatSel.addEventListener('change', applyMaterials);
+
+  const widthLine   = document.getElementById('widthLine');
+  const lengthLine  = document.getElementById('lengthLine');
+
+  const zoomBadge   = document.getElementById('zoomBadge');
+  const projWrap    = document.getElementById('projection-wrap');
+
+  let zoom = 1.0;
+
+  // ── Study Integration (Phase 3) ──────────────────────
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+
+  async function fetchStudyData(token) {
+    try {
+      const response = await fetch(`./api/get.php?token=${encodeURIComponent(token)}`);
+      const data = await response.json();
+      if (data && data.payload && data.payload.request) {
+        const req = data.payload.request;
+        const w = parseFloat(req.sides?.[0] || req.width || 160);
+        const l = parseFloat(req.sides?.[1] || req.length || 120);
+        const h = parseFloat(req.height || 80);
+
+        wallWidthInput.value  = w;
+        wallLengthInput.value = l;
+        wallHeightInput.value = h;
+
+        // Switch units to meters if it's a real study
+        document.querySelectorAll('.input-unit').forEach(u => u.textContent = 'm');
+        
+        updateDraw();
+        showStudyBanner(data.payload.project_name || "Linked Study");
+
+        if (data.payload.results && data.payload.results.length > 0) {
+          window._studyResults = data.payload.results;
+          createSolutionSelector(data.payload.results.length);
+          renderFixtures(data.payload.results[0], w, l);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch study data:', err);
+    }
+  }
+
+  function createSolutionSelector(count) {
+    if (count <= 1) return;
+    const selDiv = document.createElement('div');
+    selDiv.style.cssText = `
+      display: flex; gap: 8px; margin-top: 10px;
+    `;
+    for (let i = 0; i < count; i++) {
+      const btn = document.createElement('button');
+      btn.className = 'icon-btn';
+      btn.style.width = '30px';
+      btn.style.height = '30px';
+      btn.textContent = i + 1;
+      btn.onclick = () => {
+        const w = parseInt(wallWidthInput.value);
+        const l = parseInt(wallLengthInput.value);
+        renderFixtures(window._studyResults[i], w, l);
+        document.querySelectorAll('.sol-btn').forEach(b => b.style.borderColor = 'var(--border)');
+        btn.style.borderColor = 'var(--sc-red)';
+      };
+      btn.classList.add('sol-btn');
+      if (i === 0) btn.style.borderColor = 'var(--sc-red)';
+      selDiv.appendChild(btn);
+    }
+    
+    const solSection = document.createElement('div');
+    solSection.className = 'sidebar-section';
+    solSection.innerHTML = `<div class="section-label">Solutions</div>`;
+    solSection.appendChild(selDiv);
+    
+    const sidebar = document.querySelector('.sidebar');
+    const genBtn = document.getElementById('generateTemplate');
+    sidebar.insertBefore(solSection, genBtn);
+  }
+
+  function renderFixtures(res, roomW, roomL) {
+    // remove old
+    document.querySelectorAll('.fixture-dot').forEach(d => d.remove());
+    
+    let nx = parseInt(res.layout_nx) || 0;
+    let ny = parseInt(res.layout_ny) || 0;
+    const sx = parseFloat(res.spacing_x || res["Spacing X (m)"] || 0);
+    const sy = parseFloat(res.spacing_y || res["Spacing Y (m)"] || 0);
+    
+    if (!nx || !ny) {
+      // try to split "Layout grid" e.g. "4 x 2"
+      const grid = res["Layout grid"] || "";
+      const parts = grid.split(/[x\u00D7X]/);
+      if (parts.length === 2) {
+        nx = parseInt(parts[0]);
+        ny = parseInt(parts[1]);
+      }
+    }
+
+    if (!nx || !ny || !sx || !sy) return;
+
+    // We want to center the nx*ny grid in roomW*roomL
+    // sx/sy is distance between centers. 
+    // offset from wall = (roomW - (nx-1)*sx)/2
+    const startX = (roomW - (nx - 1) * sx) / 2;
+    const startY = (roomL - (ny - 1) * sy) / 2;
+
+    const floorEl = document.getElementById('floor');
+    const fw = floorEl.offsetWidth;
+    const fh = floorEl.offsetHeight;
+    const scaleX = fw / roomW;
+    const scaleY = fh / roomL;
+
+    for (let iy = 0; iy < ny; iy++) {
+      for (let ix = 0; ix < nx; ix++) {
+        const dot = document.createElement('div');
+        dot.className = 'fixture-dot';
+        dot.style.cssText = `
+          position: absolute; width: 6px; height: 6px;
+          background: var(--sc-red); border-radius: 50%;
+          left: ${(startX + ix * sx) * scaleX}px;
+          top: ${(startY + iy * sy) * scaleY}px;
+          transform: translate(-50%, -50%);
+          box-shadow: 0 0 8px var(--sc-red);
+          z-index: 5;
+        `;
+        floorEl.appendChild(dot);
+      }
+    }
+  }
+
+  function showStudyBanner(name) {
+    const banner = document.createElement('div');
+    banner.style.cssText = `
+      position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+      background: rgba(235,27,38,0.15); border: 1px solid var(--sc-red);
+      color: var(--sc-red); padding: 4px 16px; border-radius: 20px;
+      font-size: 10px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; z-index: 50; display: flex; align-items: center; gap: 8px;
+    `;
+    banner.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;">link</span> Study: ${name}`;
+    document.querySelector('.canvas-area').appendChild(banner);
+  }
+
+  if (token) {
+    fetchStudyData(token);
+    // Update back button with token
+    const backBtn = document.getElementById('ies-back-btn');
+    if (backBtn) backBtn.href = `result.html?token=${encodeURIComponent(token)}`;
+  }
+
+  // ── sync color swatches live ──────────────────────────
+  function bindColorPreview(input, preview, el) {
+    input.addEventListener('input', () => {
+      preview.style.background = input.value;
+      el.style.background = input.value;
+    });
+  }
+
+  bindColorPreview(wallAColor,  previewA,     wallA);
+  bindColorPreview(wallBColor,  previewB,     wallB);
+  bindColorPreview(wallCColor,  previewC,     wallC);
+  bindColorPreview(wallDColor,  previewD,     wallD);
+  bindColorPreview(floorColor,  previewFloor, floor);
+
+  // ── Real texture loader (AmbientCG CC0 flat color maps) ─
+  // These are direct JPG color-map URLs served by AmbientCG's CDN.
+  // Format: https://ambientcg.com/get?file={ID}_1K-JPG.zip  ← zipped
+  // Better: use their direct image CDN at cdn.ambientcg.com which
+  // serves individual map files: {ID}_1K_Color.jpg
+  // Poly Haven also has: https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/{id}/{id}_diff_1k.jpg
+  // We use a hybrid: AmbientCG IDs with Poly Haven CDN fallback.
+
+  const TEX_URLS = {
+    // AmbientCG flat color maps — direct CDN pattern (no zip, no auth)
+    white_paint:    'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/PaintedPlaster003/PaintedPlaster003_1K-JPG/PaintedPlaster003_1K_Color.jpg',
+    light_plaster:  'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Plaster004/Plaster004_1K-JPG/Plaster004_1K_Color.jpg',
+    beige_plaster:  'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Plaster006/Plaster006_1K-JPG/Plaster006_1K_Color.jpg',
+    grey_plaster:   'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Concrete025/Concrete025_1K-JPG/Concrete025_1K_Color.jpg',
+    dark_paint:     'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Painted006/Painted006_1K-JPG/Painted006_1K_Color.jpg',
+    light_wood:     'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/WoodFloor051/WoodFloor051_1K-JPG/WoodFloor051_1K_Color.jpg',
+    medium_wood:    'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/WoodFloor012/WoodFloor012_1K-JPG/WoodFloor012_1K_Color.jpg',
+    dark_wood:      'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/WoodFloor049/WoodFloor049_1K-JPG/WoodFloor049_1K_Color.jpg',
+    white_marble:   'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Marble010/Marble010_1K-JPG/Marble010_1K_Color.jpg',
+    light_concrete: 'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Concrete034/Concrete034_1K-JPG/Concrete034_1K_Color.jpg',
+    raw_concrete:   'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Concrete031/Concrete031_1K-JPG/Concrete031_1K_Color.jpg',
+    dark_stone:     'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Rock023/Rock023_1K-JPG/Rock023_1K_Color.jpg',
+    white_fabric:   'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Fabric035/Fabric035_1K-JPG/Fabric035_1K_Color.jpg',
+    linen:          'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Fabric020/Fabric020_1K-JPG/Fabric020_1K_Color.jpg',
+    dark_curtain:   'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Fabric011/Fabric011_1K-JPG/Fabric011_1K_Color.jpg',
+    brushed_steel:  'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Metal032/Metal032_1K-JPG/Metal032_1K_Color.jpg',
+    polished_metal: 'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Metal029/Metal029_1K-JPG/Metal029_1K_Color.jpg',
+    mirror:         'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Metal034/Metal034_1K-JPG/Metal034_1K_Color.jpg',
+    white_tile:     'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Tiles101/Tiles101_1K-JPG/Tiles101_1K_Color.jpg',
+    terracotta:     'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Tiles074/Tiles074_1K-JPG/Tiles074_1K_Color.jpg',
+    light_carpet:   'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Carpet008/Carpet008_1K-JPG/Carpet008_1K_Color.jpg',
+    dark_carpet:    'https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/Carpet005/Carpet005_1K-JPG/Carpet005_1K_Color.jpg',
+    // Glass: no good flat color map, use CSS gradient fallbacks
+    clear_glass:    null,
+    frosted_glass:  null,
+    tinted_glass:   null,
+  };
+
+  // Preloaded image cache
+  const _texCache = {};
+
+  function loadTex(matKey, cb) {
+    const url = TEX_URLS[matKey];
+    if (!url) { cb(null); return; }
+    if (_texCache[matKey]) { cb(_texCache[matKey]); return; }
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload  = () => { _texCache[matKey] = url; cb(url); };
+    img.onerror = () => { _texCache[matKey] = null;  cb(null);  };
+    img.src = url;
+  }
+
+  // Apply real tiled texture to a set of panel elements
+  function applyRealTexture(elements, matKey) {
+    if (!texEnabled) return; // respect toggle
+    loadTex(matKey, url => {
+      if (!texEnabled) return; // guard against toggle during async load
+      elements.forEach(el => {
+        const td = el.querySelector('.mat-tex');
+        if (!td) return;
+        if (url) {
+          td.style.backgroundImage   = `url('${url}')`;
+          td.style.backgroundSize    = '200px 200px';
+          td.style.backgroundRepeat  = 'repeat';
+          td.style.backgroundPosition = '0 0';
+          td.style.opacity           = '0.55';
+          td.style.mixBlendMode      = 'multiply';
+        } else {
+          td.style.backgroundImage   = '';
+          td.style.backgroundSize    = '';
+          td.style.backgroundRepeat  = '';
+          td.style.opacity           = '';
+          td.style.mixBlendMode      = '';
+        }
+      });
+    });
+  }
+
+  // ── Scale: 1 metre = SCALE px on canvas ──────────────
+  // We pick scale so the cross fits comfortably in the viewport
+  const CANVAS_TARGET = 480; // target longest dimension in px
+
+  function computeScale(w, l, h) {
+    const longest = Math.max(w + 2*h, l + 2*h); // cross spans
+    return Math.max(10, Math.min(200, CANVAS_TARGET / longest));
+  }
+
+  // ── Font sizing: proportional to panel's shorter side ─
+  function scaledFont(shortSide, baseRatio, min, max) {
+    return Math.min(max, Math.max(min, shortSide * baseRatio));
+  }
+
+  // ── Update panel text fonts based on pixel size ───────
+  function updatePanelFonts(wPx, lPx, hPx) {
+    // Floor: wPx × lPx
+    const fShort = Math.min(wPx, lPx);
+    const fName  = scaledFont(fShort, 0.13, 7, 20);
+    const fDims  = scaledFont(fShort, 0.06, 5, 11);
+    const fMat   = scaledFont(fShort, 0.05, 4, 9);
+    floor.querySelector('.wall-name').style.fontSize = fName + 'px';
+    floor.querySelector('.wall-dims').style.fontSize = fDims + 'px';
+    const fml = floor.querySelector('.wall-mat-label');
+    if (fml) fml.style.fontSize = fMat + 'px';
+
+    // Walls A/B: wPx × hPx
+    const wShort = Math.min(wPx, hPx);
+    const wName  = scaledFont(wShort, 0.18, 7, 22);
+    const wDims  = scaledFont(wShort, 0.07, 5, 11);
+    const wMat   = scaledFont(wShort, 0.055, 4, 9);
+    [wallA, wallB].forEach(el => {
+      el.querySelector('.wall-name').style.fontSize = wName + 'px';
+      el.querySelector('.wall-dims').style.fontSize = wDims + 'px';
+      const m = el.querySelector('.wall-mat-label');
+      if (m) m.style.fontSize = wMat + 'px';
+    });
+
+    // Walls C/D: hPx × lPx
+    const cShort = Math.min(hPx, lPx);
+    const cName  = scaledFont(cShort, 0.18, 7, 22);
+    const cDims  = scaledFont(cShort, 0.07, 5, 11);
+    const cMat   = scaledFont(cShort, 0.055, 4, 9);
+    [wallC, wallD].forEach(el => {
+      el.querySelector('.wall-name').style.fontSize = cName + 'px';
+      el.querySelector('.wall-dims').style.fontSize = cDims + 'px';
+      const m = el.querySelector('.wall-mat-label');
+      if (m) m.style.fontSize = cMat + 'px';
+    });
+  }
+
+  // ── Auto-zoom to fit ──────────────────────────────────
+  function autoFitZoom(wPx, lPx, hPx) {
+    const crossW = wPx + 2 * hPx + 20;
+    const crossH = lPx + 2 * hPx + 20;
+    const canvasEl = document.getElementById('canvasScroll');
+    const vw = canvasEl.clientWidth  - 160;
+    const vh = canvasEl.clientHeight - 160;
+    const fit = Math.min(vw / crossW, vh / crossH, 2.5);
+    zoom = Math.max(0.2, parseFloat(fit.toFixed(2)));
+    applyZoom();
+  }
+
+  // ── generate / redraw ─────────────────────────────────
+  function updateDraw() {
+    const wM = parseFloat(wallWidthInput.value)  || 8;
+    const lM = parseFloat(wallLengthInput.value) || 6;
+    const hM = parseFloat(wallHeightInput.value) || 3;
+
+    const scale = computeScale(wM, lM, hM);
+
+    const wPx = Math.round(wM * scale);
+    const lPx = Math.round(lM * scale);
+    const hPx = Math.round(hM * scale);
+
+    const fmt = v => v % 1 === 0 ? v.toFixed(0) : v.toFixed(1);
+
+    // Floor
+    floor.style.width  = wPx + 'px';
+    floor.style.height = lPx + 'px';
+    floor.style.background = floorColor.value;
+    floor.querySelector('.wall-dims').textContent = `${fmt(wM)}×${fmt(lM)}m`;
+
+    // Wall A (top — W × H)
+    wallA.style.width  = wPx + 'px';
+    wallA.style.height = hPx + 'px';
+    wallA.style.background = wallAColor.value;
+    wallA.querySelector('.wall-dims').textContent = `${fmt(wM)}×${fmt(hM)}m`;
+
+    // Wall B (bottom — W × H)
+    wallB.style.width  = wPx + 'px';
+    wallB.style.height = hPx + 'px';
+    wallB.style.background = wallBColor.value;
+    wallB.querySelector('.wall-dims').textContent = `${fmt(wM)}×${fmt(hM)}m`;
+
+    // Wall C (left — H × L)
+    wallC.style.width  = hPx + 'px';
+    wallC.style.height = lPx + 'px';
+    wallC.style.background = wallCColor.value;
+    wallC.querySelector('.wall-dims').textContent = `${fmt(hM)}×${fmt(lM)}`;
+
+    // Wall D (right — H × L)
+    wallD.style.width  = hPx + 'px';
+    wallD.style.height = lPx + 'px';
+    wallD.style.background = wallDColor.value;
+    wallD.querySelector('.wall-dims').textContent = `${fmt(hM)}×${fmt(lM)}`;
+
+    // Dimension labels
+    document.getElementById('wLabel').textContent = `W: ${fmt(wM)}m`;
+    document.getElementById('wLine').style.width  = wPx + 'px';
+    document.getElementById('lLabel').textContent = `L: ${fmt(lM)}m`;
+    document.getElementById('lLine').style.height = lPx + 'px';
+
+    // Fluid font sizes
+    updatePanelFonts(wPx, lPx, hPx);
+
+    // Auto-fit zoom
+    requestAnimationFrame(() => autoFitZoom(wPx, lPx, hPx));
+
+    // Stats in m²/m³
+    const area   = (2*(wM*lM) + 2*(wM*hM) + 2*(lM*hM)).toFixed(2);
+    const perim  = (4*(wM + lM + hM)).toFixed(2);
+    const volume = (wM * lM * hM).toFixed(2);
+    document.getElementById('statArea').textContent  = area   + ' m²';
+    document.getElementById('statPerim').textContent = perim  + ' m';
+    document.getElementById('statVol').textContent   = volume + ' m³';
+  }
+
+  document.getElementById('generateTemplate').addEventListener('click', updateDraw);
+  wallWidthInput.addEventListener('input', updateDraw);
+  wallLengthInput.addEventListener('input', updateDraw);
+  wallHeightInput.addEventListener('input', updateDraw);
+
+  // run once on load
+  updateDraw();
+  applyMaterials();
+
+  // ── Texture toggle ─────────────────────────────────────
+  let texEnabled = true;
+
+  document.getElementById('texToggle').addEventListener('click', () => {
+    texEnabled = !texEnabled;
+    const btn   = document.getElementById('texToggle');
+    const label = document.getElementById('texToggleLabel');
+    if (texEnabled) {
+      btn.style.color = 'var(--sc-red)';
+      btn.style.borderColor = 'var(--sc-red)';
+      label.textContent = 'TEX ON';
+      applyMaterials();
+    } else {
+      btn.style.color = 'var(--text-muted)';
+      btn.style.borderColor = 'var(--border)';
+      label.textContent = 'TEX OFF';
+      // Clear all real texture overrides, fall back to CSS patterns
+      [wallA, wallB, wallC, wallD, floor].forEach(el => {
+        const td = el.querySelector('.mat-tex');
+        if (td) {
+          td.style.backgroundImage  = '';
+          td.style.backgroundSize   = '';
+          td.style.backgroundRepeat = '';
+          td.style.opacity          = '';
+          td.style.mixBlendMode     = '';
+        }
+      });
+    }
+  });
+
+  // ── zoom controls ──────────────────────────────────────
+  function applyZoom() {
+    projWrap.style.transform = `scale(${zoom})`;
+    zoomBadge.textContent = Math.round(zoom * 100) + '%';
+  }
+
+  document.getElementById('zi').addEventListener('click', () => {
+    zoom = Math.min(zoom + 0.1, 3);
+    applyZoom();
+  });
+
+  document.getElementById('zo').addEventListener('click', () => {
+    zoom = Math.max(zoom - 0.1, 0.2);
+    applyZoom();
+  });
+
+  document.getElementById('co').addEventListener('click', () => {
+    zoom = 1.0;
+    applyZoom();
+  });
+
+  // mousewheel zoom on canvas
+  document.getElementById('canvasScroll').addEventListener('wheel', (e) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      zoom = Math.min(Math.max(zoom - e.deltaY * 0.001, 0.2), 3);
+      applyZoom();
+    }
+  }, { passive: false });
+
+  // ── export ─────────────────────────────────────────────
+  document.getElementById('shareExport').addEventListener('click', async () => {
+    const btn = document.getElementById('shareExport');
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+
+    try {
+      const canvas = await html2canvas(projWrap, {
+        backgroundColor: '#0a0a0a',
+        scale: 2,
+        useCORS: true
+      });
+      
+      const date = new Date().toISOString().split('T')[0];
+      const t8 = token ? token.slice(0, 8) : 'standalone';
+      
+      const link = document.createElement('a');
+      link.download = `SC_BoxStudio_${t8}_${date}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (err) {
+      console.error('Export failed:', err);
+      alert('Export failed. See console.');
+    } finally {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    }
+  });
+
+  // Copy to Report Button (Phase 5)
+  if (token) {
+    const copyBtn = document.createElement('button');
+    copyBtn.id = 'copyToReport';
+    copyBtn.style.cssText = `
+      position: fixed; bottom: 84px; right: 24px;
+      width: 52px; height: 52px;
+      background: #22c55e;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 6px 24px rgba(34,197,148,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      z-index: 200;
+    `;
+    copyBtn.innerHTML = `
+      <span class="material-symbols-outlined">add_to_photos</span>
+      <div class="fab-tooltip">Attach to Report</div>
+    `;
+    document.body.appendChild(copyBtn);
+
+    copyBtn.addEventListener('click', async () => {
+      copyBtn.disabled = true;
+      copyBtn.style.opacity = '0.5';
+      try {
+        const canvas = await html2canvas(projWrap, {
+          backgroundColor: '#0a0a0a',
+          scale: 2,
+          useCORS: true
+        });
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        const formData = new FormData();
+        formData.append('file', blob, 'drawing.png');
+        formData.append('token', token);
+
+        const response = await fetch('/api/upload-drawing', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+        if (result.status === 'success') {
+          alert('Drawing attached to study report!');
+        } else {
+          alert('Failed to attach: ' + result.message);
+        }
+      } catch (err) {
+        console.error('Upload failed:', err);
+        alert('Upload failed.');
+      } finally {
+        copyBtn.disabled = false;
+        copyBtn.style.opacity = '1';
+      }
+    });
+  }
+</script>
+
+<!-- ═══ MATERIAL PICKER PANEL ════════════════════════════ -->
+<div id="matPickerPanel">
+
+  <!-- Header -->
+  <div class="mpp-header">
+    <div class="mpp-title">
+      MATERIALS
+      <span class="mpp-surface-tag" id="mppSurfaceTag">WALLS</span>
+    </div>
+    <button class="mpp-close" onclick="closeMatPicker()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <!-- Surface selector -->
+  <div class="mpp-surface-selector">
+    <button class="mpp-surf-btn active" data-surf="walls" onclick="switchSurface('walls')">All Walls</button>
+    <button class="mpp-surf-btn" data-surf="floor" onclick="switchSurface('floor')">Floor</button>
+    <button class="mpp-surf-btn" data-surf="ceiling" onclick="switchSurface('ceiling')">Ceiling</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="mpp-tabs">
+    <button class="mpp-tab active" onclick="switchMppTab('library', this)">Library</button>
+    <button class="mpp-tab" onclick="switchMppTab('upload', this)">Upload</button>
+    <button class="mpp-tab" onclick="switchMppTab('ambientcg', this)">AmbientCG</button>
+  </div>
+
+  <!-- Search (library only) -->
+  <div class="mpp-search-wrap" id="mppSearchWrap">
+    <span class="mpp-search-icon material-symbols-outlined">search</span>
+    <input class="mpp-search" id="mppSearch" type="text" placeholder="Search materials…" oninput="filterMppGrid(this.value)" />
+  </div>
+
+  <!-- Body -->
+  <div class="mpp-body">
+
+    <!-- LIBRARY TAB -->
+    <div class="mpp-tab-panel active" id="mppPanelLibrary">
+      <div class="mpp-cat-label">Painted / Plaster</div>
+      <div class="mpp-grid" id="mppGridPlaster"></div>
+      <div class="mpp-cat-label">Wood</div>
+      <div class="mpp-grid" id="mppGridWood"></div>
+      <div class="mpp-cat-label">Stone / Concrete</div>
+      <div class="mpp-grid" id="mppGridStone"></div>
+      <div class="mpp-cat-label">Fabric / Soft</div>
+      <div class="mpp-grid" id="mppGridFabric"></div>
+      <div class="mpp-cat-label">Metal / Reflective</div>
+      <div class="mpp-grid" id="mppGridMetal"></div>
+      <div class="mpp-cat-label">Glass</div>
+      <div class="mpp-grid" id="mppGridGlass"></div>
+      <div class="mpp-cat-label">Tile</div>
+      <div class="mpp-grid" id="mppGridTile"></div>
+      <div class="mpp-cat-label">Carpet</div>
+      <div class="mpp-grid" id="mppGridCarpet"></div>
+    </div>
+
+    <!-- UPLOAD TAB -->
+    <div class="mpp-tab-panel" id="mppPanelUpload">
+      <div class="mpp-upload-zone" id="mppDropZone">
+        <div class="uz-icon"><span class="material-symbols-outlined" style="font-size:36px;color:var(--text-dim)">upload_file</span></div>
+        <div class="uz-text">Drag &amp; drop texture image</div>
+        <div class="uz-hint">JPG, PNG, WEBP — any diffuse/color map</div>
+        <input type="file" id="mppFileInput" accept="image/*" style="display:none" />
+      </div>
+      <div class="mpp-computing" id="mppComputing">
+        <div class="mpp-spinner"></div>
+        <span>Computing reflectance from texture…</span>
+      </div>
+      <div class="mpp-upload-preview" id="mppUploadPreview">
+        <img class="mpp-up-img" id="mppUploadImg" src="" alt="texture" />
+        <div class="mpp-up-meta">
+          <span class="mpp-up-name" id="mppUploadName">custom_texture.jpg</span>
+          <div class="mpp-up-rho-wrap">
+            <div class="mpp-up-rho" id="mppUploadRho">—</div>
+            <div class="mpp-up-rho-label">ρ computed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AMBIENTCG TAB -->
+    <div class="mpp-tab-panel" id="mppPanelAmbientcg">
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:12px;line-height:1.6;">
+        Paste any AmbientCG URL or asset ID.<br>
+        ρ will be auto-computed from the diffuse map.
+      </p>
+      <div class="mpp-url-row">
+        <input class="mpp-url-input" id="mppUrlInput" type="text" placeholder="ambientcg.com/view?id=Bricks104  or  Bricks104" />
+        <button class="mpp-url-btn" id="mppUrlFetchBtn" onclick="fetchAmbientCG()">FETCH</button>
+      </div>
+      <div class="mpp-computing" id="mppAcgComputing">
+        <div class="mpp-spinner"></div>
+        <span id="mppAcgStatus">Fetching asset data…</span>
+      </div>
+      <div class="mpp-upload-preview" id="mppAcgPreview">
+        <img class="mpp-up-img" id="mppAcgImg" src="" alt="acg texture" />
+        <div class="mpp-up-meta">
+          <span class="mpp-up-name" id="mppAcgName">—</span>
+          <div class="mpp-up-rho-wrap">
+            <div class="mpp-up-rho" id="mppAcgRho">—</div>
+            <div class="mpp-up-rho-label">ρ computed</div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:10px;color:var(--text-dim);margin-top:10px;line-height:1.6;">
+        Note: CORS on AmbientCG API requires a proxy for live fetch in local files.
+        The asset URL is used directly as texture + ρ computed from color map.
+      </p>
+    </div>
+
+  </div><!-- /mpp-body -->
+
+  <!-- ρ Readout -->
+  <div class="mpp-rho-bar">
+    <div class="mpp-rho-label">Selected Material Reflectance</div>
+    <div class="mpp-rho-row">
+      <span class="mpp-rho-value" id="mppRhoValue">0.60</span>
+      <span class="mpp-rho-name" id="mppRhoName">Beige Plaster</span>
+    </div>
+    <div class="rho-track"><div class="rho-fill" id="mppRhoFill" style="width:60%"></div></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="mpp-footer">
+    <button class="mpp-apply-btn" id="mppApplyBtn" onclick="applyPickedMaterial()">
+      <span class="material-symbols-outlined" style="font-size:18px">check_circle</span>
+      APPLY TO SURFACE
+    </button>
+  </div>
+
+</div><!-- /matPickerPanel -->
+
+<!-- Toast -->
+<div class="mpp-toast" id="mppToast">
+  <div class="toast-dot"></div>
+  <span id="mppToastText">Material applied</span>
+</div>
+
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// LUXSCALEAI — MATERIAL PICKER + REFLECTANCE ENGINE
+// ═══════════════════════════════════════════════════════════
+
+// ── Material Library Definition ────────────────────────────
+const MAT_LIBRARY = {
+  plaster: [
+    { key:'white_paint',    name:'White Paint',     rho:0.80, color:'#e8e4dc' },
+    { key:'light_plaster',  name:'Light Plaster',   rho:0.70, color:'#d4c9b0' },
+    { key:'beige_plaster',  name:'Beige Plaster',   rho:0.60, color:'#c2a86a' },
+    { key:'grey_plaster',   name:'Grey Plaster',    rho:0.45, color:'#8a8880' },
+    { key:'dark_paint',     name:'Dark Paint',      rho:0.20, color:'#2a2622' },
+  ],
+  wood: [
+    { key:'light_wood',     name:'Light Wood',      rho:0.50, color:'#c8a05a' },
+    { key:'medium_wood',    name:'Medium Wood',     rho:0.35, color:'#8b5e2a' },
+    { key:'dark_wood',      name:'Dark Wood (Walnut)', rho:0.15, color:'#3a2210' },
+  ],
+  stone: [
+    { key:'white_marble',   name:'White Marble',    rho:0.72, color:'#ece8e0' },
+    { key:'light_concrete', name:'Light Concrete',  rho:0.40, color:'#9a9890' },
+    { key:'raw_concrete',   name:'Raw Concrete',    rho:0.25, color:'#706e6a' },
+    { key:'dark_stone',     name:'Dark Stone',      rho:0.12, color:'#2c2a28' },
+  ],
+  fabric: [
+    { key:'white_fabric',   name:'White Fabric',    rho:0.75, color:'#dedad2' },
+    { key:'linen',          name:'Linen / Canvas',  rho:0.55, color:'#b8a880' },
+    { key:'dark_curtain',   name:'Dark Curtain',    rho:0.10, color:'#1e1c1a' },
+  ],
+  metal: [
+    { key:'brushed_steel',  name:'Brushed Steel',   rho:0.65, color:'#9098a0' },
+    { key:'polished_metal', name:'Polished Metal',  rho:0.85, color:'#b8c0c8' },
+    { key:'mirror',         name:'Mirror',          rho:0.92, color:'#c8d4e0' },
+  ],
+  glass: [
+    { key:'clear_glass',    name:'Clear Glass',     rho:0.08, color:'#aab8c8' },
+    { key:'frosted_glass',  name:'Frosted Glass',   rho:0.30, color:'#b8c4cc' },
+    { key:'tinted_glass',   name:'Tinted Glass',    rho:0.18, color:'#4a6040' },
+  ],
+  tile: [
+    { key:'white_tile',     name:'White Tile',      rho:0.78, color:'#dcdad4' },
+    { key:'terracotta',     name:'Terracotta',      rho:0.28, color:'#a05838' },
+  ],
+  carpet: [
+    { key:'light_carpet',   name:'Light Carpet',    rho:0.45, color:'#c0b498' },
+    { key:'dark_carpet',    name:'Dark Carpet',     rho:0.12, color:'#2e2820' },
+  ],
+};
+
+// Flat lookup map
+const MAT_BY_KEY = {};
+Object.values(MAT_LIBRARY).flat().forEach(m => MAT_BY_KEY[m.key] = m);
+
+// Grid IDs map
+const GRID_IDS = {
+  plaster:'mppGridPlaster', wood:'mppGridWood', stone:'mppGridStone',
+  fabric:'mppGridFabric', metal:'mppGridMetal', glass:'mppGridGlass',
+  tile:'mppGridTile', carpet:'mppGridCarpet'
+};
+
+// Current picker state
+let _mppSurface = 'walls';       // 'walls' | 'floor' | 'ceiling'
+let _mppSelected = null;         // { key, name, rho, color, texUrl? }
+let _mppCustom = null;           // custom upload / ACG material
+let _mppTab = 'library';
+
+// Per-surface current material state
+const _surfState = {
+  walls:   { key:'beige_plaster', name:'Beige Plaster',  rho:0.60, color:'#c2a86a', texUrl:null },
+  floor:   { key:'medium_wood',   name:'Medium Wood',    rho:0.35, color:'#8b5e2a', texUrl:null },
+  ceiling: { key:'white_paint',   name:'White Paint',    rho:0.80, color:'#e8e4dc', texUrl:null },
+};
+
+// ── Build Library Grid ──────────────────────────────────────
+function buildMppGrids() {
+  Object.entries(MAT_LIBRARY).forEach(([cat, mats]) => {
+    const grid = document.getElementById(GRID_IDS[cat]);
+    if (!grid) return;
+    grid.innerHTML = '';
+    mats.forEach(mat => {
+      const texUrl = TEX_URLS[mat.key] || null;
+      const card = document.createElement('div');
+      card.className = 'mpp-mat-card';
+      card.dataset.key = mat.key;
+      card.innerHTML = `
+        <div class="mpp-mat-preview">
+          <div class="mpp-mat-preview-color" style="background:${mat.color}"></div>
+          ${texUrl ? `<div style="position:absolute;inset:0;background-image:url('${texUrl}');background-size:120px 120px;background-repeat:repeat;opacity:0.7;mix-blend-mode:multiply;"></div>` : ''}
+        </div>
+        <div class="mpp-mat-info">
+          <div class="mpp-mat-name">${mat.name}</div>
+          <div class="mpp-mat-rho">ρ <span>${mat.rho.toFixed(2)}</span></div>
+        </div>`;
+      card.addEventListener('click', () => selectLibraryMat(mat));
+      grid.appendChild(card);
+    });
+  });
+}
+
+// ── Open / Close ────────────────────────────────────────────
+function openMatPicker(surface) {
+  _mppSurface = surface;
+  updateSurfaceBtns();
+  syncSelectedFromState();
+  document.getElementById('matPickerPanel').classList.add('open');
+  document.getElementById('mppSearch').value = '';
+  filterMppGrid('');
+}
+
+function closeMatPicker() {
+  document.getElementById('matPickerPanel').classList.remove('open');
+}
+
+function switchSurface(surf) {
+  _mppSurface = surf;
+  updateSurfaceBtns();
+  syncSelectedFromState();
+}
+
+function updateSurfaceBtns() {
+  document.querySelectorAll('.mpp-surf-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.surf === _mppSurface);
+  });
+  const tags = { walls:'WALLS', floor:'FLOOR', ceiling:'CEILING' };
+  document.getElementById('mppSurfaceTag').textContent = tags[_mppSurface] || _mppSurface.toUpperCase();
+}
+
+function syncSelectedFromState() {
+  const s = _surfState[_mppSurface];
+  _mppSelected = s ? { ...s } : null;
+  updateMppRhoReadout(_mppSelected);
+  // highlight selected card
+  document.querySelectorAll('.mpp-mat-card').forEach(c => {
+    c.classList.toggle('selected', s && c.dataset.key === s.key);
+  });
+}
+
+// ── Tab switching ───────────────────────────────────────────
+function switchMppTab(tab, btn) {
+  _mppTab = tab;
+  document.querySelectorAll('.mpp-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.mpp-tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('mppPanel' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  document.getElementById('mppSearchWrap').style.display = tab === 'library' ? '' : 'none';
+}
+
+// ── Filter ──────────────────────────────────────────────────
+function filterMppGrid(q) {
+  q = q.toLowerCase().trim();
+  document.querySelectorAll('.mpp-mat-card').forEach(card => {
+    const name = card.querySelector('.mpp-mat-name').textContent.toLowerCase();
+    card.style.display = (!q || name.includes(q)) ? '' : 'none';
+  });
+  // Hide empty category labels
+  document.querySelectorAll('.mpp-cat-label').forEach(label => {
+    const grid = label.nextElementSibling;
+    if (!grid) return;
+    const visible = Array.from(grid.querySelectorAll('.mpp-mat-card')).some(c => c.style.display !== 'none');
+    label.style.display = visible ? '' : 'none';
+    grid.style.display = visible ? '' : 'none';
+  });
+}
+
+// ── Select a library material ───────────────────────────────
+function selectLibraryMat(mat) {
+  _mppSelected = { key: mat.key, name: mat.name, rho: mat.rho, color: mat.color, texUrl: TEX_URLS[mat.key] || null };
+  document.querySelectorAll('.mpp-mat-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.key === mat.key);
+  });
+  updateMppRhoReadout(_mppSelected);
+}
+
+// ── Update ρ readout in panel ───────────────────────────────
+function updateMppRhoReadout(mat) {
+  if (!mat) return;
+  document.getElementById('mppRhoValue').textContent = mat.rho.toFixed(2);
+  document.getElementById('mppRhoName').textContent = mat.name || mat.key;
+  document.getElementById('mppRhoFill').style.width = (mat.rho * 100) + '%';
+}
+
+// ── Apply to surface ────────────────────────────────────────
+function applyPickedMaterial() {
+  const mat = _mppSelected;
+  if (!mat) return;
+
+  // update surface state
+  _surfState[_mppSurface] = { ...mat };
+
+  if (_mppSurface === 'walls' || _mppSurface === 'ceiling') {
+    // sync hidden wallMat select for compatibility
+    const sel = document.getElementById('wallMat');
+    if (sel) { sel.value = mat.key; sel.dispatchEvent(new Event('change')); }
+    // Update trigger button
+    updateTriggerBtn('wall', mat);
+  }
+  if (_mppSurface === 'floor') {
+    const sel = document.getElementById('floorMat');
+    if (sel) { sel.value = mat.key; sel.dispatchEvent(new Event('change')); }
+    updateTriggerBtn('floor', mat);
+  }
+
+  // Recompute room physics
+  updateRoomPhysics();
+
+  showToast('✓ ' + mat.name + ' applied to ' + _mppSurface);
+  closeMatPicker();
+}
+
+function updateTriggerBtn(which, mat) {
+  const isWall = which === 'wall';
+  const swatchEl = document.getElementById(isWall ? 'wallMatSwatch' : 'floorMatSwatch');
+  const labelEl  = document.getElementById(isWall ? 'wallMatTriggerLabel' : 'floorMatTriggerLabel');
+  const rhoEl    = document.getElementById(isWall ? 'wallMatRhoLabel' : 'floorMatRhoLabel');
+  if (swatchEl) {
+    swatchEl.style.background = mat.color;
+    if (mat.texUrl) {
+      swatchEl.style.backgroundImage = `url('${mat.texUrl}')`;
+      swatchEl.style.backgroundSize = '40px 40px';
+    } else {
+      swatchEl.style.backgroundImage = '';
+    }
+  }
+  if (labelEl) labelEl.textContent = mat.name;
+  if (rhoEl)   rhoEl.textContent   = 'ρ ' + mat.rho.toFixed(2);
+}
+
+// ── Room Physics (E.1 → E.3) ───────────────────────────────
+function updateRoomPhysics() {
+  const wM = parseFloat(document.getElementById('wallWidth').value)  || 8;
+  const lM = parseFloat(document.getElementById('wallLength').value) || 6;
+  const hM = parseFloat(document.getElementById('wallHeight').value) || 3;
+
+  // Areas
+  const A_floor   = wM * lM;
+  const A_ceiling = wM * lM;
+  const A_wallsAB = 2 * wM * hM;
+  const A_wallsCD = 2 * lM * hM;
+  const A_total   = A_floor + A_ceiling + A_wallsAB + A_wallsCD;
+
+  // Reflectances
+  const rho_walls   = _surfState.walls.rho;
+  const rho_floor   = _surfState.floor.rho;
+  const rho_ceiling = _surfState.ceiling.rho;
+
+  // E.1 — Weighted average
+  const rho_bar = (
+    rho_floor   * A_floor   +
+    rho_ceiling * A_ceiling +
+    rho_walls   * (A_wallsAB + A_wallsCD)
+  ) / A_total;
+
+  // E.3 — Inter-reflection boost (2-bounce approx)
+  const ir_boost = 1 / (1 - rho_bar);
+
+  // Update sidebar readouts
+  const rhoDisp  = document.getElementById('rhoAvgDisplay');
+  const rhoBar   = document.getElementById('rhoAvgBar');
+  const irDisp   = document.getElementById('irBoostDisplay');
+  if (rhoDisp)  rhoDisp.textContent  = rho_bar.toFixed(2);
+  if (rhoBar)   rhoBar.style.width   = (rho_bar * 100).toFixed(1) + '%';
+  if (irDisp)   irDisp.textContent   = '× ' + ir_boost.toFixed(2);
+
+  // Expose globally for calc engine integration
+  window.LuxScalePhysics = {
+    rho_walls, rho_floor, rho_ceiling, rho_bar,
+    ir_boost,
+    A_floor, A_ceiling, A_wallsAB, A_wallsCD, A_total
+  };
+}
+
+// ── Toast ────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('mppToast');
+  const s = document.getElementById('mppToastText');
+  if (!t || !s) return;
+  s.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ═══════════════════════════════════════════════════════════
+// REFLECTANCE EXTRACTOR — Canvas API (Equations §5A/B/C)
+// ═══════════════════════════════════════════════════════════
+function computeRhoFromImage(imgEl) {
+  return new Promise(resolve => {
+    const canvas = document.createElement('canvas');
+    // Sample at 64x64 — plenty of precision, very fast
+    canvas.width = 64; canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(imgEl, 0, 0, 64, 64);
+    const data = ctx.getImageData(0, 0, 64, 64).data;
+    let totalRho = 0, count = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      // §5A Normalize
+      const rn = data[i]     / 255;
+      const gn = data[i + 1] / 255;
+      const bn = data[i + 2] / 255;
+      // §5B Gamma correction (linearize)
+      const rl = Math.pow(rn, 2.2);
+      const gl = Math.pow(gn, 2.2);
+      const bl = Math.pow(bn, 2.2);
+      // §5C Luminous reflectance
+      totalRho += 0.2126 * rl + 0.7152 * gl + 0.0722 * bl;
+      count++;
+    }
+    resolve(count > 0 ? totalRho / count : 0);
+  });
+}
+
+// ── Upload handler ──────────────────────────────────────────
+const dropZone    = document.getElementById('mppDropZone');
+const fileInput   = document.getElementById('mppFileInput');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) processUploadedFile(file);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) processUploadedFile(fileInput.files[0]);
+});
+
+function processUploadedFile(file) {
+  document.getElementById('mppComputing').classList.add('visible');
+  document.getElementById('mppUploadPreview').classList.remove('visible');
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = async () => {
+      const rho = await computeRhoFromImage(img);
+      document.getElementById('mppComputing').classList.remove('visible');
+
+      // Show preview
+      document.getElementById('mppUploadImg').src = e.target.result;
+      document.getElementById('mppUploadName').textContent = file.name.length > 28 ? file.name.slice(0, 25) + '…' : file.name;
+      document.getElementById('mppUploadRho').textContent = rho.toFixed(3);
+      document.getElementById('mppUploadPreview').classList.add('visible');
+
+      // Set as selected custom material
+      _mppSelected = {
+        key: 'custom_' + Date.now(),
+        name: file.name.replace(/\.[^.]+$/, ''),
+        rho: rho,
+        color: avgColorFromCanvas(img),
+        texUrl: e.target.result
+      };
+      updateMppRhoReadout(_mppSelected);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function avgColorFromCanvas(imgEl) {
+  const c = document.createElement('canvas');
+  c.width = 4; c.height = 4;
+  c.getContext('2d').drawImage(imgEl, 0, 0, 4, 4);
+  const d = c.getContext('2d').getImageData(0, 0, 4, 4).data;
+  let r = 0, g = 0, b = 0;
+  for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i+1]; b += d[i+2]; }
+  const n = d.length / 4;
+  const hex = v => Math.round(v/n).toString(16).padStart(2,'0');
+  return '#' + hex(r) + hex(g) + hex(b);
+}
+
+// ── AmbientCG URL fetch ─────────────────────────────────────
+async function fetchAmbientCG() {
+  const rawInput = document.getElementById('mppUrlInput').value.trim();
+  if (!rawInput) return;
+
+  // Extract ID from full URL or bare ID
+  let matId = rawInput;
+  const urlMatch = rawInput.match(/[?&]id=([A-Za-z0-9]+)/);
+  if (urlMatch) matId = urlMatch[1];
+  else if (rawInput.includes('ambientcg.com/view/')) matId = rawInput.split('/').pop();
+
+  const btn = document.getElementById('mppUrlFetchBtn');
+  const comp = document.getElementById('mppAcgComputing');
+  const statusEl = document.getElementById('mppAcgStatus');
+  btn.disabled = true;
+  comp.classList.add('visible');
+  statusEl.textContent = 'Loading texture for ' + matId + '…';
+  document.getElementById('mppAcgPreview').classList.remove('visible');
+
+  // Build direct CDN URL pattern (AmbientCG public CDN)
+  // Pattern: https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/{ID}/{ID}_1K-JPG/{ID}_1K_Color.jpg
+  // Try that first, then fallback attempts
+  const cdnUrl = `https://cdn.ambientcg.com/make-public/assets/ambientcg-public-package/${matId}/${matId}_1K-JPG/${matId}_1K_Color.jpg`;
+
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+
+  img.onload = async () => {
+    const rho = await computeRhoFromImage(img);
+    comp.classList.remove('visible');
+    btn.disabled = false;
+
+    document.getElementById('mppAcgImg').src = cdnUrl;
+    document.getElementById('mppAcgName').textContent = matId;
+    document.getElementById('mppAcgRho').textContent = rho.toFixed(3);
+    document.getElementById('mppAcgPreview').classList.add('visible');
+
+    _mppSelected = {
+      key: 'acg_' + matId.toLowerCase(),
+      name: matId,
+      rho: rho,
+      color: avgColorFromCanvas(img),
+      texUrl: cdnUrl
+    };
+    updateMppRhoReadout(_mppSelected);
+    showToast('AmbientCG: ' + matId + ' loaded — ρ = ' + rho.toFixed(3));
+  };
+
+  img.onerror = () => {
+    comp.classList.remove('visible');
+    btn.disabled = false;
+    statusEl.textContent = 'Could not load texture. Check the material ID.';
+    // Still set a placeholder with estimated rho from name
+    showToast('⚠ CORS block in local files — deploy to server for live fetch');
+  };
+
+  img.src = cdnUrl;
+}
+
+// ── Dimension change → re-run physics ──────────────────────
+['wallWidth','wallLength','wallHeight'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', updateRoomPhysics);
+});
+
+// ── Init ────────────────────────────────────────────────────
+buildMppGrids();
+updateRoomPhysics();
+updateTriggerBtn('wall',  _surfState.walls);
+updateTriggerBtn('floor', _surfState.floor);
+</script>
+
+</body>
+</html>

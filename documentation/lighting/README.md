@@ -21,4 +21,4 @@ This folder documents **how lighting is modeled, calculated, and compared to sta
 
 **Related code:** `luxscale/lighting_calc/calculate.py`, `luxscale/lighting_calc/geometry.py`, `luxscale/lighting_calc/constants.py`, `luxscale/uniformity_calculator.py`, `luxscale/ies_fixture_params.py`.
 
-**Related docs:** [../math/](../math/README.md) (compact formulas, compliance inequalities, pipeline, IES math); [../back-end/](../back-end/README.md); [uniformity/](../../uniformity/) (older design notes — prefer this folder and `luxscale/uniformity_calculator.py` for current behavior).
+**Related docs:** [../math/](../math/README.md); [../ai/](../ai/README.md) (AI quality scoring on lighting results) (compact formulas, compliance inequalities, pipeline, IES math); [../back-end/](../back-end/README.md); [uniformity/](../../uniformity/) (older design notes — prefer this folder and `luxscale/uniformity_calculator.py` for current behavior).

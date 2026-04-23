@@ -12,16 +12,87 @@ from __future__ import annotations
 import json
 import os
 import time
+import threading
+from urllib.parse import urlparse
+from urllib.request import Request, urlopen
+from typing import Optional
 
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, Response
 from luxscale.app_logging import log_step, log_exception
 
 ai_bp = Blueprint("ai", __name__)
 
 
+_CHAT_MAX_BODY_BYTES = 32_000
+_CHAT_MAX_MESSAGE_CHARS = 1_200
+_CHAT_IP_MIN_INTERVAL_SECONDS = 0.25
+_CHAT_RL_LOCK = threading.Lock()
+_CHAT_IP_LAST: dict[str, float] = {}
+
+
 def register_ai_routes(app):
     """Call this in app.py after creating the Flask app."""
     app.register_blueprint(ai_bp)
+
+
+def _chat_client_ip() -> str:
+    fwd = (request.headers.get("X-Forwarded-For") or "").strip()
+    if fwd:
+        return fwd.split(",")[0].strip()
+    return (request.remote_addr or "unknown").strip() or "unknown"
+
+
+def _chat_rate_limit_ok(ip: str) -> tuple[bool, float]:
+    now = time.time()
+    with _CHAT_RL_LOCK:
+        # purge stale entries
+        stale = [k for k, ts in _CHAT_IP_LAST.items() if now - ts > 3600]
+        for k in stale:
+            _CHAT_IP_LAST.pop(k, None)
+
+        last = float(_CHAT_IP_LAST.get(ip, 0.0))
+        delta = now - last
+        if delta < _CHAT_IP_MIN_INTERVAL_SECONDS:
+            return False, max(0.0, _CHAT_IP_MIN_INTERVAL_SECONDS - delta)
+        _CHAT_IP_LAST[ip] = now
+    return True, 0.0
+
+
+def _chat_size_guard() -> tuple[bool, Optional[tuple], str]:
+    ip = _chat_client_ip()
+    clen = request.content_length
+    if isinstance(clen, int) and clen > _CHAT_MAX_BODY_BYTES:
+        return False, (
+            jsonify(
+                {
+                    "status": "error",
+                    "message": "Request too large",
+                    "max_bytes": _CHAT_MAX_BODY_BYTES,
+                }
+            ),
+            413,
+        ), ip
+    return True, None, ip
+
+
+def _chat_request_guard() -> tuple[bool, Optional[tuple], str]:
+    size_ok, size_err, ip = _chat_size_guard()
+    if not size_ok:
+        return size_ok, size_err, ip
+
+    ok, retry = _chat_rate_limit_ok(ip)
+    if not ok:
+        return False, (
+            jsonify(
+                {
+                    "status": "error",
+                    "message": "Too many requests. Please slow down.",
+                    "retry_after_seconds": round(float(retry), 2),
+                }
+            ),
+            429,
+        ), ip
+    return True, None, ip
 
 
 def _ai_admin_ok() -> bool:
@@ -73,6 +144,205 @@ def _ai_admin_ok() -> bool:
         return True
 
     return False
+
+
+# ---------------------------------------------------------------------------
+# CHAT ROUTES
+# ---------------------------------------------------------------------------
+
+@ai_bp.route("/api/chat/menu", methods=["GET"])
+def api_chat_menu():
+    from luxscale.chat_service import get_menu_items
+
+    return jsonify(
+        {
+            "status": "success",
+            "menu_items": get_menu_items(),
+        }
+    )
+
+
+@ai_bp.route("/api/chat/health", methods=["GET"])
+def api_chat_health():
+    from luxscale.chat_service import chat_health
+
+    return jsonify({"status": "success", **chat_health()})
+
+
+@ai_bp.route("/api/chat/ask", methods=["POST"])
+def api_chat_ask():
+    from luxscale.chat_service import handle_question
+
+    allowed, err_resp, ip = _chat_request_guard()
+    if not allowed:
+        return err_resp
+
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"status": "error", "message": "Expected JSON body"}), 400
+
+    message = str(data.get("message") or "").strip()
+    session_id = str(data.get("session_id") or "").strip()
+    user_id = str(data.get("user_id") or "").strip()
+    context_messages = data.get("context_messages")
+    if not isinstance(context_messages, list):
+        context_messages = []
+    if not message:
+        return jsonify({"status": "error", "message": "message is required"}), 400
+    if len(message) > _CHAT_MAX_MESSAGE_CHARS:
+        return jsonify(
+            {
+                "status": "error",
+                "message": f"message too long (max {_CHAT_MAX_MESSAGE_CHARS} chars)",
+            }
+        ), 400
+
+    log_step(
+        "POST /api/chat/ask",
+        "start",
+        ip=ip,
+        session_id=session_id or "new",
+        user_id=(user_id or "anonymous"),
+    )
+    try:
+        result = handle_question(
+            message,
+            session_id=session_id,
+            user_id=user_id,
+            context_messages=context_messages,
+        )
+        log_step(
+            "POST /api/chat/ask",
+            "done",
+            ip=ip,
+            source=result.get("source"),
+            session_id=result.get("session_id"),
+        )
+        return jsonify(result)
+    except Exception as e:
+        log_exception("POST /api/chat/ask", e)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@ai_bp.route("/api/chat/feedback", methods=["POST"])
+def api_chat_feedback():
+    from luxscale.chat_service import handle_feedback
+
+    allowed, err_resp, ip = _chat_size_guard()
+    if not allowed:
+        return err_resp
+
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"status": "error", "message": "Expected JSON body"}), 400
+
+    session_id = str(data.get("session_id") or "").strip()
+    feedback = str(data.get("feedback") or "").strip()
+    if not session_id:
+        return jsonify({"status": "error", "message": "session_id is required"}), 400
+    if not feedback:
+        return jsonify({"status": "error", "message": "feedback is required"}), 400
+
+    log_step("POST /api/chat/feedback", "start", ip=ip, session_id=session_id)
+    try:
+        result = handle_feedback(session_id=session_id, feedback=feedback)
+        code = 200 if result.get("status") == "success" else 400
+        log_step(
+            "POST /api/chat/feedback",
+            "done",
+            ip=ip,
+            session_id=result.get("session_id") or session_id,
+            source=result.get("source"),
+            status=result.get("status"),
+        )
+        return jsonify(result), code
+    except Exception as e:
+        log_exception("POST /api/chat/feedback", e)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@ai_bp.route("/api/chat/fixed-responses/regenerate", methods=["POST"])
+def api_chat_fixed_responses_regenerate():
+    """
+    Regenerate fixed responses from standards + fixtures + IES index.
+    Admin-protected to avoid public abuse.
+    """
+    if not _ai_admin_ok():
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
+    from luxscale.chat_service import clear_fixed_responses_cache, chat_health
+    from luxscale.fixed_responses_builder import regenerate_fixed_responses
+
+    data = request.get_json(silent=True)
+    out = None
+    if isinstance(data, dict):
+        out = str(data.get("output_path") or "").strip() or None
+
+    log_step("POST /api/chat/fixed-responses/regenerate", "start", output_path=out or "default")
+    try:
+        doc = regenerate_fixed_responses(output_path=out)
+        clear_fixed_responses_cache()
+        return jsonify(
+            {
+                "status": "success",
+                "message": "fixed_responses.json regenerated",
+                "responses_count": len(doc.get("responses") or []),
+                "menu_items_count": len(doc.get("menu_items") or []),
+                "chat_health": chat_health(),
+            }
+        )
+    except Exception as e:
+        log_exception("POST /api/chat/fixed-responses/regenerate", e)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@ai_bp.route("/api/chat/image-proxy", methods=["GET"])
+def api_chat_image_proxy():
+    """
+    Proxy remote fixture images for frontend PDF export capture.
+    Restricts hosts for safety and returns image bytes directly.
+    """
+    raw_url = str(request.args.get("url") or "").strip()
+    if not raw_url:
+        return jsonify({"status": "error", "message": "url is required"}), 400
+
+    try:
+        p = urlparse(raw_url)
+        host = (p.hostname or "").lower().strip()
+        if p.scheme not in {"http", "https"}:
+            return jsonify({"status": "error", "message": "Invalid URL scheme"}), 400
+
+        allowed_hosts = {
+            "shortcircuit.company",
+            "www.shortcircuit.company",
+        }
+        if host not in allowed_hosts:
+            return jsonify({"status": "error", "message": "Host is not allowed"}), 400
+
+        req = Request(
+            raw_url,
+            headers={
+                "User-Agent": "LuxScaleAI-ImageProxy/1.0",
+                "Accept": "image/*,*/*;q=0.8",
+            },
+        )
+        with urlopen(req, timeout=12) as r:
+            content_type = str(r.headers.get("Content-Type") or "application/octet-stream")
+            if not content_type.lower().startswith("image/"):
+                return jsonify({"status": "error", "message": "URL is not an image"}), 400
+
+            # Soft cap 8 MB
+            max_bytes = 8 * 1024 * 1024
+            data = r.read(max_bytes + 1)
+            if len(data) > max_bytes:
+                return jsonify({"status": "error", "message": "Image too large"}), 413
+
+            resp = Response(data, status=200, mimetype=content_type)
+            resp.headers["Cache-Control"] = "public, max-age=3600"
+            return resp
+    except Exception as e:
+        log_exception("GET /api/chat/image-proxy", e)
+        return jsonify({"status": "error", "message": "Failed to fetch image"}), 502
 
 
 # ---------------------------------------------------------------------------

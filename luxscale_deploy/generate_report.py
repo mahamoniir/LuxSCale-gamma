@@ -899,6 +899,33 @@ def sec_project_info(payload, ST):
     return story
 
 
+def sec_room_drawing(payload, ST):
+    token = payload.get("token")
+    if not token:
+        return []
+
+    upload_dir = os.path.join(os.path.dirname(__file__), "luxscale", "uploads")
+    drawing_path = os.path.join(upload_dir, f"{token}_drawing.png")
+
+    if not os.path.exists(drawing_path):
+        return []
+
+    story = section_header("DRAW —", "Room Drawing (Box Studio)", ST)
+    story.append(Paragraph("Unfolded projection with fixture overlay and physical dimensions.", ST["body"]))
+    story.append(Spacer(1, 5 * mm))
+
+    try:
+        # Scale image to fit page width roughly
+        img = Image(drawing_path, width=160 * mm, height=120 * mm, kind="proportional")
+        img.hAlign = "CENTER"
+        story.append(img)
+        story.append(Spacer(1, 10 * mm))
+    except Exception as e:
+        story.append(Paragraph(f"<i>(Note: Manual drawing attached but could not be rendered: {e})</i>", ST["italic"]))
+
+    return story
+
+
 def sec_standard_requirements(payload, ST):
     story = section_header("02 —", "Standard Requirements (EN 12464-1)", ST)
     std  = payload.get("standard_lighting", {})
@@ -1190,6 +1217,7 @@ def build_full_report_pdf(payload: dict) -> bytes:
 
     story = [NextPageTemplate("Body"), PageBreak()]
     story += sec_project_info(payload, ST);          story.append(PageBreak())
+    story += sec_room_drawing(payload, ST);         story.append(PageBreak())
     story += sec_standard_requirements(payload, ST); story.append(PageBreak())
     if results:
         story += sec_all_solutions_summary(results, payload, ST)
@@ -1211,6 +1239,7 @@ def build_solution_pdf(payload: dict, sol_index: int) -> bytes:
 
     story = [NextPageTemplate("Body"), PageBreak()]
     story += sec_project_info(payload, ST);          story.append(PageBreak())
+    story += sec_room_drawing(payload, ST);         story.append(PageBreak())
     story += sec_standard_requirements(payload, ST); story.append(PageBreak())
     story += sec_solution_detail(result, sol_index, payload, ST, include_header=True)
     story.append(PageBreak())

@@ -1,0 +1,3 @@
+# Add these lines to your existing .gitignore:
+gemini_config.json
+gemini_snapshot.json

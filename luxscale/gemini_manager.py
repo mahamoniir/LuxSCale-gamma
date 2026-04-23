@@ -133,7 +133,15 @@ def _increment_usage(cfg: dict, account_name: str) -> None:
 _SKIP_KEY = object()  # sentinel: skip this key, try next
 
 
-def _call_gemini_api(api_key: str, model: str, prompt: str, timeout: int):
+def _call_gemini_api(
+    api_key: str,
+    model: str,
+    prompt: str,
+    timeout: int,
+    *,
+    temperature: float = 0.1,
+    max_output_tokens: int = 512,
+):
     """
     Call Gemini generateContent endpoint.
     Returns text string on success.
@@ -147,8 +155,8 @@ def _call_gemini_api(api_key: str, model: str, prompt: str, timeout: int):
     body = json.dumps({
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
-            "temperature": 0.1,
-            "maxOutputTokens": 512
+            "temperature": float(temperature),
+            "maxOutputTokens": int(max_output_tokens),
         }
     }).encode("utf-8")
 
@@ -435,6 +443,62 @@ def _auto_save_snapshot(result: dict) -> None:
 # ---------------------------------------------------------------------------
 # Public interface
 # ---------------------------------------------------------------------------
+
+def ask_gemini_text(
+    prompt: str,
+    *,
+    max_output_tokens: int = 260,
+    temperature: float = 0.2,
+) -> dict:
+    """
+    Lightweight Gemini text answer helper for chat.
+
+    Uses the same multi-account quota waterfall in ``gemini_config.json``.
+    Returns:
+      {"ok": bool, "text": str, "source": "gemini:<account>" | "gemini_unavailable"}
+    """
+    prompt = (prompt or "").strip()
+    if not prompt:
+        return {"ok": False, "text": "", "source": "gemini_unavailable"}
+
+    with _CONFIG_LOCK:
+        cfg = _load_config()
+
+    model = cfg.get("model", "gemini-3.1-flash-lite-preview")
+    timeout = cfg.get("timeout_seconds", 15)
+
+    for account in cfg.get("accounts") or []:
+        _reset_if_new_day(account)
+        if not _account_has_quota(account):
+            continue
+
+        log_step("gemini_manager.ask_gemini_text", "trying account", account=account.get("name"))
+        raw = _call_gemini_api(
+            account["api_key"],
+            model,
+            prompt,
+            timeout,
+            temperature=temperature,
+            max_output_tokens=max_output_tokens,
+        )
+        if raw is _SKIP_KEY or raw is None:
+            continue
+
+        text = str(raw or "").strip()
+        if not text:
+            continue
+
+        with _CONFIG_LOCK:
+            cfg2 = _load_config()
+            _increment_usage(cfg2, account["name"])
+
+        source = f"gemini:{account['name']}"
+        log_step("gemini_manager.ask_gemini_text", "success", source=source, length=len(text))
+        return {"ok": True, "text": text, "source": source}
+
+    log_step("gemini_manager.ask_gemini_text", "all accounts unavailable")
+    return {"ok": False, "text": "", "source": "gemini_unavailable"}
+
 
 def analyze_lighting_result(study_payload: dict) -> dict:
     """

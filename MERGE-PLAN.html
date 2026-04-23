@@ -1,0 +1,292 @@
+
+<style>
+  body-wrap { display: block; }
+  .plan { padding: 1.5rem 0; font-family: var(--font-sans); }
+  .hero { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; }
+  .badge { background: #eb1b26; color: #fff; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 4px; letter-spacing: .04em; }
+  .badge-gray { background: var(--color-background-secondary); color: var(--color-text-secondary); font-size: 11px; padding: 3px 10px; border-radius: 4px; border: 0.5px solid var(--color-border-tertiary); }
+  h1 { font-size: 20px; font-weight: 500; color: var(--color-text-primary); margin: 0; }
+  .subtitle { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+  .phase { margin-bottom: 1.5rem; }
+  .phase-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .phase-num { width: 26px; height: 26px; border-radius: 50%; background: #eb1b26; color: #fff; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .phase-num.done { background: var(--color-background-success); color: var(--color-text-success); }
+  .phase-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+  .phase-tag { font-size: 11px; color: var(--color-text-secondary); margin-left: auto; padding: 2px 8px; border-radius: 4px; border: 0.5px solid var(--color-border-tertiary); }
+  .tasks { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+  .task { display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; border-radius: 8px; border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); cursor: pointer; transition: border-color .15s; }
+  .task:hover { border-color: #eb1b26; }
+  .task.checked { background: var(--color-background-primary); }
+  .task-check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--color-border-secondary); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: background .15s, border-color .15s; }
+  .task.checked .task-check { background: #eb1b26; border-color: #eb1b26; }
+  .task-check svg { display: none; }
+  .task.checked .task-check svg { display: block; }
+  .task-body { flex: 1; }
+  .task-title { font-size: 13px; color: var(--color-text-primary); line-height: 1.4; }
+  .task-note { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; line-height: 1.4; }
+  .priority { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 3px; margin-left: 6px; font-weight: 500; vertical-align: middle; }
+  .p-must { background: #fde8e8; color: #a32d2d; }
+  .p-good { background: #e6f0fb; color: #185fa5; }
+  .p-nice { background: #eaf3de; color: #3b6d11; }
+  .progress-wrap { margin: 1rem 0 1.5rem; }
+  .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .progress-label { font-size: 12px; color: var(--color-text-secondary); min-width: 80px; }
+  .progress-bar { flex: 1; height: 6px; background: var(--color-border-tertiary); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #eb1b26; border-radius: 3px; transition: width .3s; }
+  .progress-count { font-size: 12px; color: var(--color-text-secondary); min-width: 36px; text-align: right; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1.5rem 0; }
+  .arch-note { background: var(--color-background-secondary); border-left: 3px solid #eb1b26; border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 1rem; font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+  .arch-note strong { color: var(--color-text-primary); font-weight: 500; }
+</style>
+
+<div class="plan">
+  <div class="hero">
+    <div>
+      <h1>draw.html × LuxScaleAI — Integration Plan</h1>
+      <div class="subtitle">SC Box Studio embedded into the lighting study workflow</div>
+    </div>
+    <span class="badge">LuxScale</span>
+  </div>
+
+  <div class="arch-note">
+    <strong>What we're doing:</strong> draw.html is a standalone room-drawing tool (unfolded projection, wall colors, dimensions). LuxScaleAI has a full lighting calc backend (Flask + IES). The goal is to make the room drawing tool <em>part of the study flow</em> — pulling real room dimensions from the calculator, overlaying fixture positions, and linking to the result page.
+  </div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-row">
+      <span class="progress-label">Overall</span>
+      <div class="progress-bar"><div class="progress-fill" id="prog-all" style="width:0%"></div></div>
+      <span class="progress-count" id="prog-all-txt">0 / 23</span>
+    </div>
+  </div>
+
+  <!-- Phase 1 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">1</div>
+      <span class="phase-title">Asset & brand alignment</span>
+      <span class="phase-tag">Foundation</span>
+    </div>
+    <ul class="tasks" id="phase1">
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Replace draw.html logo reference with LuxScaleAI brand assets<span class="priority p-must">must</span></div>
+          <div class="task-note">Use <code>assets/brand/logo-bg-dark.svg</code> from LuxScaleAI — matches SC brand from shortcircuit.company/SCbrand</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Align CSS design tokens with LuxScaleAI's <code>:root</code><span class="priority p-must">must</span></div>
+          <div class="task-note">draw.html already uses <code>--sc-red: #eb1b26</code>, <code>Anton</code>, <code>Poppins</code>, <code>IBM Plex Mono</code> — verify against index4.html and openies.html</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Add <code>assets/favicon.svg</code> to draw.html head<span class="priority p-must">must</span></div>
+          <div class="task-note">Currently missing the favicon that all other LuxScaleAI pages use</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Update page title to "SC Box Studio — LuxScale"<span class="priority p-good">good</span></div>
+          <div class="task-note">Follows same naming convention as "IES Viewer — Short Circuit" in openies.html</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">2</div>
+      <span class="phase-title">Navigation & header integration</span>
+      <span class="phase-tag">UX continuity</span>
+    </div>
+    <ul class="tasks" id="phase2">
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Add back-link to result.html in header nav<span class="priority p-must">must</span></div>
+          <div class="task-note">Match the back-button pattern in openies.html (<code>#ies-back-btn</code>) so users can return to their study</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Add "Draw" entry to the nav in result.html, index4.html<span class="priority p-must">must</span></div>
+          <div class="task-note">Link: <code>draw.html?token={token}</code> so context carries over</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Carry <code>?token</code> query param through all header nav links<span class="priority p-good">good</span></div>
+          <div class="task-note">Ensures draw.html always knows which study it belongs to</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">3</div>
+      <span class="phase-title">Data bridge — room dimensions from study</span>
+      <span class="phase-tag">Core feature</span>
+    </div>
+    <ul class="tasks" id="phase3">
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Read <code>?token</code> on page load and fetch study JSON via <code>/api/get?token=</code><span class="priority p-must">must</span></div>
+          <div class="task-note">Same fetch pattern as result.html already uses — auto-populate W, L, H inputs from study data</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Map study JSON fields → draw.html inputs<span class="priority p-must">must</span></div>
+          <div class="task-note"><code>sides[]</code> → W &amp; L, <code>height</code> → H. Show real metres, scale to canvas pixels proportionally</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Switch dimension labels from "px" to real units (m)<span class="priority p-must">must</span></div>
+          <div class="task-note">Currently shows "160px" — replace with actual metres from the study for meaningful output</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Update stats bar to show m², perimeter in m, volume in m³<span class="priority p-good">good</span></div>
+          <div class="task-note">Replace px² / px / px³ with real physical values — useful for spec sheets</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Add "Study" info strip: place name, standard, target lux from token<span class="priority p-good">good</span></div>
+          <div class="task-note">Display above canvas — reinforces context that this drawing is tied to a real study</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Phase 4 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">4</div>
+      <span class="phase-title">Fixture overlay on unfolded projection</span>
+      <span class="phase-tag">Key upgrade</span>
+    </div>
+    <ul class="tasks" id="phase4">
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Parse fixture grid from study JSON (rows × cols, spacing)<span class="priority p-must">must</span></div>
+          <div class="task-note">Study JSON contains <code>fixtures_x</code>, <code>fixtures_y</code>, <code>spacing_x</code>, <code>spacing_y</code> — use to lay out fixture dots on floor panel</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Render fixture dots as SVG circles on the floor panel<span class="priority p-must">must</span></div>
+          <div class="task-note">Scaled proportionally. Use <code>--sc-red</code> with glow for the active solution, gray for alternates</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Add solution selector (1 / 2 / 3) to switch between result options<span class="priority p-good">good</span></div>
+          <div class="task-note">Mirrors the result.html "Load More Solutions" pattern — one toggle per solution in sidebar</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Show fixture label tooltip on hover (model, wattage, lux)<span class="priority p-nice">nice</span></div>
+          <div class="task-note">Pulls from fixture name in study JSON — adds reference value for installers</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Phase 5 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">5</div>
+      <span class="phase-title">Export & report integration</span>
+      <span class="phase-tag">Output</span>
+    </div>
+    <ul class="tasks" id="phase5">
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Update export filename to include study token and date<span class="priority p-must">must</span></div>
+          <div class="task-note">e.g. <code>SC_BoxStudio_{token8}_{date}.png</code> — consistent with PDF naming in <code>generate_report.py</code></div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Add a "Copy to Report" button that POSTs the canvas PNG to Flask<span class="priority p-good">good</span></div>
+          <div class="task-note">Attach drawing as an asset to the study — <code>generate_report.py</code> already handles embedded images</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Include study metadata in watermark: token, place, standard<span class="priority p-nice">nice</span></div>
+          <div class="task-note">Replace plain "Box Studio" watermark text with token ref + date stamp for traceability</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Phase 6 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">6</div>
+      <span class="phase-title">Standalone fallback mode</span>
+      <span class="phase-tag">Resilience</span>
+    </div>
+    <ul class="tasks" id="phase6">
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Keep draw.html fully functional when no <code>?token</code> is present<span class="priority p-must">must</span></div>
+          <div class="task-note">Manual input mode (current behavior) should be preserved — the tool still works independently</div>
+        </div>
+      </li>
+      <li class="task" onclick="toggle(this)">
+        <div class="task-check"><svg width="10" height="8" viewBox="0 0 10 8"><polyline points="1,4 4,7 9,1" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="task-body">
+          <div class="task-title">Show subtle banner "No study linked — manual mode" when no token<span class="priority p-nice">nice</span></div>
+          <div class="task-note">Guides users who land on draw.html directly to either use it standalone or start a study first</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+let total = 0, checked = 0;
+function toggle(el) {
+  el.classList.toggle('checked');
+  updateProgress();
+}
+function updateProgress() {
+  const all = document.querySelectorAll('.task');
+  const done = document.querySelectorAll('.task.checked');
+  const pct = Math.round((done.length / all.length) * 100);
+  document.getElementById('prog-all').style.width = pct + '%';
+  document.getElementById('prog-all-txt').textContent = done.length + ' / ' + all.length;
+}
+updateProgress();
+</script>

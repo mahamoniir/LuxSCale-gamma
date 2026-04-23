@@ -14,7 +14,12 @@
         "plant",
         "production area",
         "production line",
-        "work bay"
+        "work bay",
+        "مصنع",
+        "مصانع",
+        "منطقة صناعية",
+        "ورشة",
+        "خط انتاج"
       ],
       "Office": [
         "office",
@@ -53,7 +58,11 @@
         "office-6",
         "office-7",
         "office-8",
-        "office-9"
+        "office-9",
+        "مكتب",
+        "مكاتب",
+        "مكان عمل",
+        "غرفة اجتماع"
       ],
       "Classroom": [
         "classroom",
@@ -65,7 +74,11 @@
         "training room",
         "training hall",
         "seminar room",
-        "tutorial room"
+        "tutorial room",
+        "فصل",
+        "فصل دراسي",
+        "قاعة دراسية",
+        "صف"
       ],
       "Corridor": [
         "corridor",
@@ -83,7 +96,10 @@
         "circulation area",
         "walkway",
         "transition zone",
-        "entrance corridor"
+        "entrance corridor",
+        "ممر",
+        "ممرات",
+        "ردهة"
       ],
       "Warehouse": [
         "warehouse",
@@ -101,7 +117,11 @@
         "picking area",
         "packing area",
         "gangway",
-        "gangways"
+        "gangways",
+        "مخزن",
+        "مستودع",
+        "مستودعات",
+        "منطقة تخزين"
       ],
       "Hospital Operating Room": [
         "operating room",
@@ -165,7 +185,11 @@
         "showroom",
         "sales area",
         "general sales area",
-        "display area"
+        "display area",
+        "متجر",
+        "محل",
+        "منطقة بيع",
+        "معرض"
       ],
       "Parking": [
         "parking",
@@ -230,6 +254,18 @@
       ]
     },
     "parameters": {
+      "standard_name": [
+        "standard",
+        "code",
+        "code name",
+        "european code",
+        "en 12464",
+        "en12464",
+        "bs en 12464",
+        "اسم الكود",
+        "اسم المعيار",
+        "المعيار الاوروبي"
+      ],
       "average_lux": [
         "average lux",
         "avg lux",
@@ -245,7 +281,10 @@
         "lighting level",
         "maintained illuminance",
         "mean illuminance",
-        "average illuminance"
+        "average illuminance",
+        "متوسط لوكس",
+        "متوسط الإضاءة",
+        "متوسط الانارة"
       ],
       "min_lux": [
         "emin",
@@ -274,7 +313,10 @@
         "emin/eavg",
         "e_min/e_avg",
         "illuminance uniformity",
-        "light uniformity"
+        "light uniformity",
+        "تجانس",
+        "توحيد",
+        "يو او"
       ],
       "glare_ugr": [
         "ugr",
@@ -299,7 +341,9 @@
         "color rendering index",
         "colour rendering index",
         "rendering index",
-        "color rendering ra"
+        "color rendering ra",
+        "مؤشر تجسيد اللون",
+        "تجسيد اللون"
       ],
       "power_w": [
         "watt",

@@ -1,0 +1,6 @@
+Add these 2 lines to app.py — AFTER "app = Flask(__name__)" and before the first route:
+
+    from luxscale.ai_routes import register_ai_routes
+    register_ai_routes(app)
+
+That's it. No other changes to app.py needed.

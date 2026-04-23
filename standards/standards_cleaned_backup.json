@@ -1,0 +1,1524 @@
+[
+  {
+    "ref_no": "6.1.1",
+    "category": "Traffic zones inside buildings",
+    "task_or_activity": "Corridors and circulation areas",
+    "Em_r_lx": 100.0,
+    "Em_u_lx": 150.0,
+    "Uo": 0.4,
+    "Ra": 40.0,
+    "RUGL": 28.0,
+    "Ez_lx": 50.0,
+    "Em_wall_lx": 50.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "R R Illuminance at floor level. a UGL and similar to adjacent areas. 150 lx if there are vehicles on the route. The lighting of exits and entrances shall provide a transition zone to avoid sudden changes in illuminance between inside and outside by day or night. Care should be taken to",
+    "category_base": "Traffic zones inside buildings",
+    "tasks": [
+      "Corridors and circulation areas"
+    ]
+  },
+  {
+    "ref_no": "6.1.2",
+    "category": "Traffic zones inside buildings",
+    "task_or_activity": "Stairs, escalators,",
+    "Em_r_lx": 100.0,
+    "Em_u_lx": 150.0,
+    "Uo": 0.4,
+    "Ra": 40.0,
+    "RUGL": 25.0,
+    "Ez_lx": 50.0,
+    "Em_wall_lx": 50.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "avoid glare to drivers and pedestrians Illuminance at floor level.",
+    "category_base": "Traffic zones inside buildings",
+    "tasks": [
+      "Stairs",
+      "escalators"
+    ]
+  },
+  {
+    "ref_no": "6.1.3",
+    "category": "Traffic zones inside buildings",
+    "task_or_activity": "travolators Elevators, lifts",
+    "Em_r_lx": 100.0,
+    "Em_u_lx": 150.0,
+    "Uo": 0.4,
+    "Ra": 40.0,
+    "RUGL": 25.0,
+    "Ez_lx": 50.0,
+    "Em_wall_lx": 50.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "Requires enhanced contrast on leading edge of the steps. Illuminance at floor level.-",
+    "category_base": "Traffic zones inside buildings",
+    "tasks": [
+      "travolators Elevators",
+      "lifts"
+    ]
+  },
+  {
+    "ref_no": "6.1.3.1",
+    "category": "Traffic zones inside buildings",
+    "task_or_activity": "Area in front of lifts,",
+    "Em_r_lx": 200.0,
+    "Em_u_lx": 300.0,
+    "Uo": 0.4,
+    "Ra": 40.0,
+    "RUGL": 25.0,
+    "Ez_lx": 75.0,
+    "Em_wall_lx": 75.0,
+    "Em_ceiling_lx": 50.0,
+    "specific_requirements": "light in front of elevator, see ref.no. 6.1.3.1 Area up to 1 m in front of lift,",
+    "category_base": "Traffic zones inside buildings",
+    "tasks": [
+      "Area in front of lifts"
+    ]
+  },
+  {
+    "ref_no": "6.2.5",
+    "category": "General areas inside buildings – Rest, sanitation and first aid rooms",
+    "task_or_activity": "Sick bay",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "T",
+    "category_base": "General areas inside buildings",
+    "category_sub": "Rest, sanitation and first aid rooms",
+    "tasks": [
+      "Sick bay"
+    ]
+  },
+  {
+    "ref_no": "6.2.6",
+    "category": "General areas inside buildings – Rest, sanitation and first aid rooms",
+    "task_or_activity": "Rooms for medical attention",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 1000.0,
+    "Uo": 0.6,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ ≤ 5 000 K",
+    "category_base": "General areas inside buildings",
+    "category_sub": "Rest, sanitation and first aid rooms",
+    "tasks": [
+      "Rooms for medical attention"
+    ],
+    "temperature_k_range": [
+      0,
+      0
+    ]
+  },
+  {
+    "ref_no": "6.5.2",
+    "category": "General areas inside buildings – Store rooms, cold stores",
+    "task_or_activity": "Gangways: manned",
+    "Em_r_lx": 150.0,
+    "Em_u_lx": 200.0,
+    "Uo": 0.4,
+    "Ra": 60.0,
+    "RUGL": 22.0,
+    "Ez_lx": 50.0,
+    "Em_wall_lx": 50.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "Illuminance at floor level.",
+    "category_base": "General areas inside buildings",
+    "category_sub": "Store rooms, cold stores",
+    "tasks": [
+      "Gangways: manned"
+    ]
+  },
+  {
+    "ref_no": "6.9.5",
+    "category": "Industrial activities and crafts – Ceramics, tiles, glass, glassware",
+    "task_or_activity": "Grinding of optical glass, crystal, hand grinding and engraving",
+    "Em_r_lx": 750.0,
+    "Em_u_lx": 1000.0,
+    "Uo": 0.7,
+    "Ra": 80.0,
+    "RUGL": 16.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "T CP",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Ceramics, tiles, glass, glassware",
+    "tasks": [
+      "Grinding of optical glass",
+      "crystal",
+      "hand grinding and engraving"
+    ]
+  },
+  {
+    "ref_no": "6.9.6",
+    "category": "Industrial activities and crafts – Ceramics, tiles, glass, glassware",
+    "task_or_activity": "Precision work e.g. decorative grinding, hand painting",
+    "Em_r_lx": 1000.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 16.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "4 000 K ≤ ≤ 6 500 K T CP",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Ceramics, tiles, glass, glassware",
+    "tasks": [
+      "Precision work e.g. decorative grinding",
+      "hand painting"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.10.6",
+    "category": "Industrial activities and crafts – Chemical, plastics and rubber industry",
+    "task_or_activity": "Tyre production",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 75.0,
+    "specific_requirements": "T",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Chemical, plastics and rubber industry",
+    "tasks": [
+      "Tyre production"
+    ]
+  },
+  {
+    "ref_no": "6.10.7",
+    "category": "Industrial activities and crafts – Chemical, plastics and rubber industry",
+    "task_or_activity": "Colour inspection",
+    "Em_r_lx": 1000.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ ≤ 6 500 K",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Chemical, plastics and rubber industry",
+    "tasks": [
+      "Colour inspection"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.12.7",
+    "category": "Industrial activities and crafts – Food stuffs and luxury food industry",
+    "task_or_activity": "Laboratories",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "T",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Food stuffs and luxury food industry",
+    "tasks": [
+      "Laboratories"
+    ]
+  },
+  {
+    "ref_no": "6.15.1",
+    "category": "Industrial activities and crafts – Jewellery manufacturing",
+    "task_or_activity": "Working with precious stones",
+    "Em_r_lx": 1500.0,
+    "Em_u_lx": 2000.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 16.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ ≤ 6 500 K",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Jewellery manufacturing",
+    "tasks": [
+      "Working with precious stones"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.17.4",
+    "category": "Industrial activities and crafts – Leather and leather goods",
+    "task_or_activity": "Sorting",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 90.0,
+    "RUGL": 22.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ ≤ 6 500 K",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Leather and leather goods",
+    "tasks": [
+      "Sorting"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.17.6",
+    "category": "Industrial activities and crafts – Leather and leather goods",
+    "task_or_activity": "Quality control",
+    "Em_r_lx": 1000.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "T",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Leather and leather goods",
+    "tasks": [
+      "Quality control"
+    ]
+  },
+  {
+    "ref_no": "6.17.7",
+    "category": "Industrial activities and crafts – Leather and leather goods",
+    "task_or_activity": "Colour inspection",
+    "Em_r_lx": 1000.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ ≤ 6 500 K",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Leather and leather goods",
+    "tasks": [
+      "Colour inspection"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.20.5",
+    "category": "Industrial activities and crafts – Paper and paper goods",
+    "task_or_activity": "condenser rooms, etc.; switchboards (inside buildings) Control rooms",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 1000.0,
+    "Uo": 0.7,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "1. Control panels are often vertical.",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Paper and paper goods",
+    "tasks": [
+      "condenser rooms",
+      "switchboards (inside buildings) Control rooms"
+    ]
+  },
+  {
+    "ref_no": "6.21.3",
+    "category": "Industrial activities and crafts – Printers",
+    "task_or_activity": "Type setting, retouching, lithography",
+    "Em_r_lx": 1000.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "T CP",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Printers",
+    "tasks": [
+      "Type setting",
+      "retouching",
+      "lithography"
+    ]
+  },
+  {
+    "ref_no": "6.21.4",
+    "category": "Industrial activities and crafts – Printers",
+    "task_or_activity": "Colour inspection in multicoloured printing",
+    "Em_r_lx": 1500.0,
+    "Em_u_lx": 2000.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 16.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "4 000 K ≤ ≤ 6 500 K",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Printers",
+    "tasks": [
+      "Colour inspection in multicoloured printing"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.22.5",
+    "category": "Industrial activities and crafts – Rolling mills, iron and steel works",
+    "task_or_activity": "Furnaces",
+    "Em_r_lx": 200.0,
+    "Em_u_lx": 300.0,
+    "Uo": 0.4,
+    "Ra": 20.0,
+    "RUGL": 25.0,
+    "Ez_lx": 75.0,
+    "Em_wall_lx": 75.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "Safety colours shall be recognizable.",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Rolling mills, iron and steel works",
+    "tasks": [
+      "Furnaces"
+    ]
+  },
+  {
+    "ref_no": "6.23.3",
+    "category": "Industrial activities and crafts – Textile manufacture and processing",
+    "task_or_activity": "Spinning, plying, reeling, winding",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 40.0,
+    "RUGL": 22.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 75.0,
+    "specific_requirements": "Prevent stroboscopic effects.",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Textile manufacture and processing",
+    "tasks": [
+      "Spinning",
+      "plying",
+      "reeling",
+      "winding"
+    ]
+  },
+  {
+    "ref_no": "6.23.4",
+    "category": "Industrial activities and crafts – Textile manufacture and processing",
+    "task_or_activity": "Warping, weaving, braiding, knitting",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 60.0,
+    "RUGL": 22.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 75.0,
+    "specific_requirements": "Prevent stroboscopic effects.",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Textile manufacture and processing",
+    "tasks": [
+      "Warping",
+      "weaving",
+      "braiding",
+      "knitting"
+    ]
+  },
+  {
+    "ref_no": "6.23.5",
+    "category": "Industrial activities and crafts – Textile manufacture and processing",
+    "task_or_activity": "Sewing, fine knitting, taking up stitches",
+    "Em_r_lx": 750.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "T",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Textile manufacture and processing",
+    "tasks": [
+      "Sewing",
+      "fine knitting",
+      "taking up stitches"
+    ]
+  },
+  {
+    "ref_no": "6.23.6",
+    "category": "Industrial activities and crafts – Textile manufacture and processing",
+    "task_or_activity": "Manual design, drawing patterns",
+    "Em_r_lx": 750.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 22.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ ≤ 6 500 K",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Textile manufacture and processing",
+    "tasks": [
+      "Manual design",
+      "drawing patterns"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.23.10",
+    "category": "Industrial activities and crafts – Textile manufacture and processing",
+    "task_or_activity": "Burling, picking, trimming",
+    "Em_r_lx": 1000.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "T",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Textile manufacture and processing",
+    "tasks": [
+      "Burling",
+      "picking",
+      "trimming"
+    ]
+  },
+  {
+    "ref_no": "6.23.11",
+    "category": "Industrial activities and crafts – Textile manufacture and processing",
+    "task_or_activity": "Colour inspection; fabric control",
+    "Em_r_lx": 1000.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ T ≤ 6 500 K",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Textile manufacture and processing",
+    "tasks": [
+      "Colour inspection",
+      "fabric control"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.23.12",
+    "category": "Industrial activities and crafts – Textile manufacture and processing",
+    "task_or_activity": "Invisible mending",
+    "Em_r_lx": 1500.0,
+    "Em_u_lx": 2000.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ ≤ 6 500 K",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Textile manufacture and processing",
+    "tasks": [
+      "Invisible mending"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.24.5",
+    "category": "Industrial activities and crafts – Vehicle construction and repair",
+    "task_or_activity": "Painting, spraying chamber, polishing chamber",
+    "Em_r_lx": 750.0,
+    "Em_u_lx": 1000.0,
+    "Uo": 0.7,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "T CP",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Vehicle construction and repair",
+    "tasks": [
+      "Painting",
+      "spraying chamber",
+      "polishing chamber"
+    ]
+  },
+  {
+    "ref_no": "6.24.6",
+    "category": "Industrial activities and crafts – Vehicle construction and repair",
+    "task_or_activity": "Painting, inspection, touch-up and polishing",
+    "Em_r_lx": 1000.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "4 000 K ≤ ≤ 6 500 K",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Vehicle construction and repair",
+    "tasks": [
+      "Painting",
+      "inspection",
+      "touch-up and polishing"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.24.9",
+    "category": "Industrial activities and crafts – Vehicle construction and repair",
+    "task_or_activity": "Detailing: - work with electronics",
+    "Em_r_lx": 750.0,
+    "Em_u_lx": 1000.0,
+    "Uo": 0.6,
+    "Ra": 90.0,
+    "RUGL": 22.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "4 000 K ≤ ≤ 6 500 K for recognition of colours",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Vehicle construction and repair",
+    "tasks": [
+      "Detailing: - work with electronics"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.25.3",
+    "category": "Industrial activities and crafts – Wood working and processing",
+    "task_or_activity": "Saw frame",
+    "Em_r_lx": 300.0,
+    "Em_u_lx": 500.0,
+    "Uo": 0.6,
+    "Ra": 60.0,
+    "RUGL": 25.0,
+    "Ez_lx": 100.0,
+    "Em_wall_lx": 100.0,
+    "Em_ceiling_lx": 50.0,
+    "specific_requirements": "Prevent stroboscopic effects.",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Wood working and processing",
+    "tasks": [
+      "Saw frame"
+    ]
+  },
+  {
+    "ref_no": "6.25.7",
+    "category": "Industrial activities and crafts – Wood working and processing",
+    "task_or_activity": "Selection of veneer woods",
+    "Em_r_lx": 750.0,
+    "Em_u_lx": 1000.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 22.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ T ≤ 6 500 K",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Wood working and processing",
+    "tasks": [
+      "Selection of veneer woods"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.25.8",
+    "category": "Industrial activities and crafts – Wood working and processing",
+    "task_or_activity": "Marquetry, inlay work",
+    "Em_r_lx": 750.0,
+    "Em_u_lx": 1000.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 22.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ T ≤ 6 500 K",
+    "category_base": "Industrial activities and crafts",
+    "category_sub": "Wood working and processing",
+    "tasks": [
+      "Marquetry",
+      "inlay work"
+    ],
+    "temperature_k_range": [
+      0,
+      500
+    ]
+  },
+  {
+    "ref_no": "6.26.2",
+    "category": "Offices",
+    "task_or_activity": "Writing, typing, reading, data processing",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 1000.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "DSE-work, see 4.9. see 5.7 room brightness",
+    "category_base": "Offices",
+    "tasks": [
+      "Writing",
+      "typing",
+      "reading",
+      "data processing"
+    ]
+  },
+  {
+    "ref_no": "6.26.3",
+    "category": "Offices",
+    "task_or_activity": "Technical drawing",
+    "Em_r_lx": 750.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 80.0,
+    "RUGL": 16.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "DSE-work, see 4.9. see 5.7 room brightness",
+    "category_base": "Offices",
+    "tasks": [
+      "Technical drawing"
+    ]
+  },
+  {
+    "ref_no": "6.26.4",
+    "category": "Offices",
+    "task_or_activity": "CAD work stations",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 1000.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "DSE-work, see 4.9.",
+    "category_base": "Offices",
+    "tasks": [
+      "CAD work stations"
+    ]
+  },
+  {
+    "ref_no": "6.26.5.1",
+    "category": "Offices",
+    "task_or_activity": "Conference and meeting rooms",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 1000.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "Lighting should be controllable.",
+    "category_base": "Offices",
+    "tasks": [
+      "Conference and meeting rooms"
+    ]
+  },
+  {
+    "ref_no": "6.26.5.2",
+    "category": "Offices",
+    "task_or_activity": "Conference table",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 1000.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "Lighting should be controllable.",
+    "category_base": "Offices",
+    "tasks": [
+      "Conference table"
+    ]
+  },
+  {
+    "ref_no": "6.27.1",
+    "category": "Offices",
+    "task_or_activity": "General sales area",
+    "Em_r_lx": 300.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.4,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 75.0,
+    "Em_wall_lx": 75.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "Ensure sufficient vertical illuminance on shelves.",
+    "category_base": "Offices",
+    "tasks": [
+      "General sales area"
+    ]
+  },
+  {
+    "ref_no": "6.28.1",
+    "category": "Places of public assembly – General areas",
+    "task_or_activity": "Entrance halls",
+    "Em_r_lx": 100.0,
+    "Em_u_lx": 200.0,
+    "Uo": 0.4,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 50.0,
+    "Em_wall_lx": 50.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "UGL only if applicable",
+    "category_base": "Places of public assembly",
+    "category_sub": "General areas",
+    "tasks": [
+      "Entrance halls"
+    ]
+  },
+  {
+    "ref_no": "6.29.7",
+    "category": "Places of public assembly – General areas",
+    "task_or_activity": "Corridors",
+    "Em_r_lx": 100.0,
+    "Em_u_lx": 200.0,
+    "Uo": 0.4,
+    "Ra": 80.0,
+    "RUGL": 25.0,
+    "Ez_lx": 50.0,
+    "Em_wall_lx": 50.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "controllable. Room brightness see 5.7. During night-time lower",
+    "category_base": "Places of public assembly",
+    "category_sub": "General areas",
+    "tasks": [
+      "Corridors"
+    ]
+  },
+  {
+    "ref_no": "6.30.3",
+    "category": "Places of public assembly – Theatres, concert halls, cinemas, places for entertainment",
+    "task_or_activity": "Seating areas – maintenance, cleaning",
+    "Em_r_lx": 200.0,
+    "Em_u_lx": 500.0,
+    "Uo": 0.5,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 75.0,
+    "Em_wall_lx": 75.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "Illuminance at floor level.",
+    "category_base": "Places of public assembly",
+    "category_sub": "Theatres, concert halls, cinemas, places for entertainment",
+    "tasks": [
+      "Seating areas – maintenance",
+      "cleaning"
+    ]
+  },
+  {
+    "ref_no": "6.33.2",
+    "category": "Places of public assembly – Libraries",
+    "task_or_activity": "Reading area",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 100.0,
+    "Em_wall_lx": 100.0,
+    "Em_ceiling_lx": 50.0,
+    "specific_requirements": "Pleasant atmosphere should",
+    "category_base": "Places of public assembly",
+    "category_sub": "Libraries",
+    "tasks": [
+      "Reading area"
+    ]
+  },
+  {
+    "ref_no": "6.34.1",
+    "category": "Places of public assembly – Libraries",
+    "task_or_activity": "Entry/exit ramps (during daylight",
+    "Em_r_lx": 300.0,
+    "Em_u_lx": 500.0,
+    "Uo": 0.4,
+    "Ra": 40.0,
+    "RUGL": 25.0,
+    "Ez_lx": 75.0,
+    "Em_wall_lx": 75.0,
+    "Em_ceiling_lx": 50.0,
+    "specific_requirements": "1. Illuminance level to extend",
+    "category_base": "Places of public assembly",
+    "category_sub": "Libraries",
+    "tasks": [
+      "Entry/exit ramps (during daylight"
+    ]
+  },
+  {
+    "ref_no": "6.34.5",
+    "category": "Places of public assembly – Libraries",
+    "task_or_activity": "Ticket office",
+    "Em_r_lx": 300.0,
+    "Em_u_lx": 500.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 75.0,
+    "Em_wall_lx": 75.0,
+    "Em_ceiling_lx": 50.0,
+    "specific_requirements": "faces and therefore the feeling of safety. 1. Reflections in the windows shall be avoided.",
+    "category_base": "Places of public assembly",
+    "category_sub": "Libraries",
+    "tasks": [
+      "Ticket office"
+    ]
+  },
+  {
+    "ref_no": "6.35.1",
+    "category": "Educational premises – Nursery school, play school",
+    "task_or_activity": "Play room",
+    "Em_r_lx": 300.0,
+    "Em_u_lx": 500.0,
+    "Uo": 0.4,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 100.0,
+    "Em_wall_lx": 100.0,
+    "Em_ceiling_lx": 75.0,
+    "specific_requirements": "High luminances should be avoided in viewing directions",
+    "category_base": "Educational premises",
+    "category_sub": "Nursery school, play school",
+    "tasks": [
+      "Play room"
+    ]
+  },
+  {
+    "ref_no": "6.35.2",
+    "category": "Educational premises – Nursery school, play school",
+    "task_or_activity": "Nursery",
+    "Em_r_lx": 300.0,
+    "Em_u_lx": 500.0,
+    "Uo": 0.4,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 100.0,
+    "Em_wall_lx": 100.0,
+    "Em_ceiling_lx": 75.0,
+    "specific_requirements": "from below by use of diffuse covers. High luminances should be avoided in viewing directions",
+    "category_base": "Educational premises",
+    "category_sub": "Nursery school, play school",
+    "tasks": [
+      "Nursery"
+    ]
+  },
+  {
+    "ref_no": "6.36.1",
+    "category": "Educational premises – Educational buildings",
+    "task_or_activity": "Classroom - General activities in primary schools",
+    "Em_r_lx": 300.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 100.0,
+    "Em_wall_lx": 100.0,
+    "Em_ceiling_lx": 75.0,
+    "specific_requirements": "If activities in a class room are not completely clear in the design phase these general activities shall be taken. Lighting should be",
+    "category_base": "Educational premises",
+    "category_sub": "Educational buildings",
+    "tasks": [
+      "Classroom - General activities in primary schools"
+    ]
+  },
+  {
+    "ref_no": "6.36.2",
+    "category": "Educational premises – Educational buildings",
+    "task_or_activity": "Classroom - General activities in secondary schools and higher",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 1000.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "controllable. Room brightness see 5.7 If activities in a class room are not completely clear in the design phase these general activities shall be taken. Lighting should be",
+    "category_base": "Educational premises",
+    "category_sub": "Educational buildings",
+    "tasks": [
+      "Classroom - General activities in secondary schools and higher"
+    ]
+  },
+  {
+    "ref_no": "6.36.3.1",
+    "category": "Educational premises – Educational buildings",
+    "task_or_activity": "Auditorium, lecture halls",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 50.0,
+    "specific_requirements": "controllable, Room brightness see 5.7 Lighting should be controllable to accomodate",
+    "category_base": "Educational premises",
+    "category_sub": "Educational buildings",
+    "tasks": [
+      "Auditorium",
+      "lecture halls"
+    ]
+  },
+  {
+    "ref_no": "6.36.3.2",
+    "category": "Educational premises – Educational buildings",
+    "task_or_activity": "Attending lecture in seating",
+    "Em_r_lx": 200.0,
+    "Em_u_lx": 300.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 75.0,
+    "Em_wall_lx": 75.0,
+    "Em_ceiling_lx": 50.0,
+    "specific_requirements": "various A/V needs, Room brightness see 5.7 Reduction by dimming. DSE-",
+    "category_base": "Educational premises",
+    "category_sub": "Educational buildings",
+    "tasks": [
+      "Attending lecture in seating"
+    ]
+  },
+  {
+    "ref_no": "6.36.4.1",
+    "category": "Educational premises – Educational buildings",
+    "task_or_activity": "areas in auditoriums and lecture halls Black, green and white boards",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.7,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "work, see 4.9. Vertical illuminances. Specular reflections shall be prevented. Presenter/teacher shall be",
+    "category_base": "Educational premises",
+    "category_sub": "Educational buildings",
+    "tasks": [
+      "areas in auditoriums and lecture halls Black",
+      "green and white boards"
+    ]
+  },
+  {
+    "ref_no": "6.37.2",
+    "category": "Health care premises – Rooms for general use",
+    "task_or_activity": "Corridors: during the day",
+    "Em_r_lx": 100.0,
+    "Em_u_lx": 200.0,
+    "Uo": 0.4,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 50.0,
+    "Em_wall_lx": 50.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "Illuminance at floor level.",
+    "category_base": "Health care premises",
+    "category_sub": "Rooms for general use",
+    "tasks": [
+      "Corridors: during the day"
+    ]
+  },
+  {
+    "ref_no": "6.37.3",
+    "category": "Health care premises – Rooms for general use",
+    "task_or_activity": "Corridors: cleaning",
+    "Em_r_lx": 100.0,
+    "Em_u_lx": 200.0,
+    "Uo": 0.4,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 50.0,
+    "Em_wall_lx": 50.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "Illuminance at floor level.",
+    "category_base": "Health care premises",
+    "category_sub": "Rooms for general use",
+    "tasks": [
+      "Corridors: cleaning"
+    ]
+  },
+  {
+    "ref_no": "6.37.5",
+    "category": "Health care premises – Rooms for general use",
+    "task_or_activity": "Corridors with multi-purpose use (e.g. preexamination of patients)",
+    "Em_r_lx": 200.0,
+    "Em_u_lx": 300.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 75.0,
+    "Em_wall_lx": 75.0,
+    "Em_ceiling_lx": 50.0,
+    "specific_requirements": "Illuminance at task/activity level.",
+    "category_base": "Health care premises",
+    "category_sub": "Rooms for general use",
+    "tasks": [
+      "Corridors with multi-purpose use (e.g. preexamination of patients)"
+    ]
+  },
+  {
+    "ref_no": "6.37.7",
+    "category": "Health care premises – Rooms for general use",
+    "task_or_activity": "Elevators, lifts for persons and visitors",
+    "Em_r_lx": 100.0,
+    "Em_u_lx": 200.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 50.0,
+    "Em_wall_lx": 50.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "Illuminance at floor level.",
+    "category_base": "Health care premises",
+    "category_sub": "Rooms for general use",
+    "tasks": [
+      "Elevators",
+      "lifts for persons and visitors"
+    ]
+  },
+  {
+    "ref_no": "6.39.1",
+    "category": "Health care premises – Wards, maternity wards",
+    "task_or_activity": "General lighting",
+    "Em_r_lx": 100.0,
+    "Em_u_lx": 200.0,
+    "Uo": 0.4,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 50.0,
+    "Em_wall_lx": 50.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "patients' visual field shall be prevented. Illuminance at floor level. Lighting for the walls should",
+    "category_base": "Health care premises",
+    "category_sub": "Wards, maternity wards",
+    "tasks": [
+      "General lighting"
+    ]
+  },
+  {
+    "ref_no": "6.39.2",
+    "category": "Health care premises – Wards, maternity wards",
+    "task_or_activity": "Reading lighting",
+    "Em_r_lx": 300.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.7,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 100.0,
+    "Em_wall_lx": 100.0,
+    "Em_ceiling_lx": 75.0,
+    "specific_requirements": "be controllable. Room brightness, see 5.7. lighting should be",
+    "category_base": "Health care premises",
+    "category_sub": "Wards, maternity wards",
+    "tasks": [
+      "Reading lighting"
+    ]
+  },
+  {
+    "ref_no": "6.39.3",
+    "category": "Health care premises – Wards, maternity wards",
+    "task_or_activity": "Wards - Simple examinations",
+    "Em_r_lx": 300.0,
+    "Em_u_lx": 500.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 100.0,
+    "Em_wall_lx": 100.0,
+    "Em_ceiling_lx": 75.0,
+    "specific_requirements": "controllable and limited to each bed For normal examination and",
+    "category_base": "Health care premises",
+    "category_sub": "Wards, maternity wards",
+    "tasks": [
+      "Wards - Simple examinations"
+    ]
+  },
+  {
+    "ref_no": "6.39.4",
+    "category": "Health care premises – Wards, maternity wards",
+    "task_or_activity": "Examination and treatment",
+    "Em_r_lx": 1000.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "special treatment see also tables 5.40-5.51. Room brightness, see 5.7, should be considered.",
+    "category_base": "Health care premises",
+    "category_sub": "Wards, maternity wards",
+    "tasks": [
+      "Examination and treatment"
+    ]
+  },
+  {
+    "ref_no": "6.39.5",
+    "category": "Health care premises – Wards, maternity wards",
+    "task_or_activity": "Night lighting, observation lighting Bathrooms and toilets for",
+    "Em_r_lx": 5200.0,
+    "Em_u_lx": 300.0,
+    "Uo": null,
+    "Ra": null,
+    "RUGL": null,
+    "Ez_lx": 75.0,
+    "Em_wall_lx": 75.0,
+    "Em_ceiling_lx": 50.0,
+    "specific_requirements": "2 200 K ≤ ≤ 3 000 K Illuminance at floor level. Lower colour temperature",
+    "data_quality_issues": [
+      "split_from_merged_ref_no",
+      "invalid_Uo_out_of_range",
+      "invalid_Ra_out_of_range",
+      "invalid_RUGL_out_of_range"
+    ],
+    "category_base": "Health care premises",
+    "category_sub": "Wards, maternity wards",
+    "tasks": [
+      "Night lighting",
+      "observation lighting Bathrooms and toilets for"
+    ],
+    "temperature_k_range": [
+      0,
+      200
+    ]
+  },
+  {
+    "ref_no": "6.39.6",
+    "category": "Health care premises – Wards, maternity wards",
+    "task_or_activity": "Night lighting, observation lighting Bathrooms and toilets for",
+    "Em_r_lx": 5200.0,
+    "Em_u_lx": 300.0,
+    "Uo": null,
+    "Ra": null,
+    "RUGL": null,
+    "Ez_lx": 75.0,
+    "Em_wall_lx": 75.0,
+    "Em_ceiling_lx": 50.0,
+    "specific_requirements": "2 200 K ≤ ≤ 3 000 K Illuminance at floor level. Lower colour temperature",
+    "data_quality_issues": [
+      "split_from_merged_ref_no",
+      "invalid_Uo_out_of_range",
+      "invalid_Ra_out_of_range",
+      "invalid_RUGL_out_of_range"
+    ],
+    "category_base": "Health care premises",
+    "category_sub": "Wards, maternity wards",
+    "tasks": [
+      "Night lighting",
+      "observation lighting Bathrooms and toilets for"
+    ],
+    "temperature_k_range": [
+      0,
+      200
+    ]
+  },
+  {
+    "ref_no": "6.40.1",
+    "category": "Health care premises – Examination rooms (general)",
+    "task_or_activity": "General lighting",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ T ≤ 5 000 K CP",
+    "category_base": "Health care premises",
+    "category_sub": "Examination rooms (general)",
+    "tasks": [
+      "General lighting"
+    ],
+    "temperature_k_range": [
+      0,
+      0
+    ]
+  },
+  {
+    "ref_no": "6.41.1",
+    "category": "Health care premises – Examination rooms (general)",
+    "task_or_activity": "General lighting",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ T ≤ 5 000 K",
+    "category_base": "Health care premises",
+    "category_sub": "Examination rooms (general)",
+    "tasks": [
+      "General lighting"
+    ],
+    "temperature_k_range": [
+      0,
+      0
+    ]
+  },
+  {
+    "ref_no": "6.42.1",
+    "category": "Health care premises – Examination rooms (general)",
+    "task_or_activity": "General lighting",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "CP 4 000 K ≤ T ≤ 5 000 K",
+    "category_base": "Health care premises",
+    "category_sub": "Examination rooms (general)",
+    "tasks": [
+      "General lighting"
+    ],
+    "temperature_k_range": [
+      0,
+      0
+    ]
+  },
+  {
+    "ref_no": "6.45.1",
+    "category": "Health care premises – Scanner rooms",
+    "task_or_activity": "Dialysis",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "Lighting should be controllable.",
+    "category_base": "Health care premises",
+    "category_sub": "Scanner rooms",
+    "tasks": [
+      "Dialysis"
+    ]
+  },
+  {
+    "ref_no": "6.47.1",
+    "category": "Health care premises – Operating areas",
+    "task_or_activity": "General lighting",
+    "Em_r_lx": 100.0,
+    "Em_u_lx": 150.0,
+    "Uo": 0.6,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 50.0,
+    "Em_wall_lx": 50.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "Illuminance at floor level.",
+    "category_base": "Health care premises",
+    "category_sub": "Operating areas",
+    "tasks": [
+      "General lighting"
+    ]
+  },
+  {
+    "ref_no": "6.47.2",
+    "category": "Health care premises – Operating areas",
+    "task_or_activity": "Simple examinations",
+    "Em_r_lx": 300.0,
+    "Em_u_lx": 500.0,
+    "Uo": 0.6,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 100.0,
+    "Em_wall_lx": 100.0,
+    "Em_ceiling_lx": 75.0,
+    "specific_requirements": "Illuminance at bed level.",
+    "category_base": "Health care premises",
+    "category_sub": "Operating areas",
+    "tasks": [
+      "Simple examinations"
+    ]
+  },
+  {
+    "ref_no": "6.47.2.2",
+    "category": "Health care premises – Operating areas",
+    "task_or_activity": "Examination and treatment",
+    "Em_r_lx": 1000.0,
+    "Em_u_lx": 1500.0,
+    "Uo": 0.7,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "Illuminance at bed level.",
+    "data_quality_issues": [
+      "duplicate_ref_no_renamed_from_6.47.2"
+    ],
+    "category_base": "Health care premises",
+    "category_sub": "Operating areas",
+    "tasks": [
+      "Examination and treatment"
+    ]
+  },
+  {
+    "ref_no": "6.48.1",
+    "category": "Health care premises – Dentists",
+    "task_or_activity": "General lighting",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 90.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "Lighting should be glare-free for the patient.",
+    "category_base": "Health care premises",
+    "category_sub": "Dentists",
+    "tasks": [
+      "General lighting"
+    ]
+  },
+  {
+    "ref_no": "6.49.1",
+    "category": "Health care premises – Dentists",
+    "task_or_activity": "General lighting",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "T",
+    "category_base": "Health care premises",
+    "category_sub": "Dentists",
+    "tasks": [
+      "General lighting"
+    ]
+  },
+  {
+    "ref_no": "6.52.3",
+    "category": "Transportation areas – Airports",
+    "task_or_activity": "Information desks, check-in desks",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.7,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "DSE-work, see 4.9.",
+    "category_base": "Transportation areas",
+    "category_sub": "Airports",
+    "tasks": [
+      "Information desks",
+      "check-in desks"
+    ]
+  },
+  {
+    "ref_no": "6.52.4",
+    "category": "Transportation areas – Airports",
+    "task_or_activity": "Customs and passport control desks",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.7,
+    "Ra": 80.0,
+    "RUGL": 19.0,
+    "Ez_lx": 150.0,
+    "Em_wall_lx": 150.0,
+    "Em_ceiling_lx": 100.0,
+    "specific_requirements": "Facial recognition has to be provided.",
+    "category_base": "Transportation areas",
+    "category_sub": "Airports",
+    "tasks": [
+      "Customs and passport control desks"
+    ]
+  },
+  {
+    "ref_no": "6.52.9",
+    "category": "Transportation areas – Airports",
+    "task_or_activity": "Tasks in hangars: - Testing and repair areas",
+    "Em_r_lx": 500.0,
+    "Em_u_lx": 750.0,
+    "Uo": 0.6,
+    "Ra": 80.0,
+    "RUGL": 22.0,
+    "Ez_lx": 50.0,
+    "Em_wall_lx": 50.0,
+    "Em_ceiling_lx": 30.0,
+    "specific_requirements": "especially at night shall be avoided.",
+    "category_base": "Transportation areas",
+    "category_sub": "Airports",
+    "tasks": [
+      "Tasks in hangars: - Testing and repair areas"
+    ]
+  }
+]

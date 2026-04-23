@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LuxSCale AI - Specialized Lighting AI Platform</title>
+  
+  <!-- External Resources -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Header Section -->
+  <nav class="navbar navbar-expand-lg header">
+    <div class="container-fluid px-3 px-lg-5 py-3 py-lg-4">
+      <!-- Logo -->
+      <div class="logo">
+        <div class="logo-images d-flex align-items-center">
+          <span class="logo-text">Lux</span>
+          <span class="logo-text text-red">SC</span>
+          <span class="logo-text">ale</span>
+          <span class="logo-text">AI</span>
+        </div>
+      </div>
+      
+      <!-- Mobile Menu Toggle -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <!-- Navigation -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" href="#home">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#about">About LuxSCale</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#docs">Documentations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contact us</a>
+          </li>
+        </ul>
+        
+        <!-- Login Button -->
+        <div class="d-flex">
+          <button class="btn btn-red ms-3">Login</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero-section">
+    <div class="container">
+      <div class="text-center">
+        <!-- Main Heading -->
+        <h1 class="hero-title anton text-uppercase fs-1 mb-5">What can i help with?</h1>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons d-flex justify-content-center gap-4 m-1">
+          <button class="btn btn-outline-dark text-white rounded-pill px-5 py-3 active" id="chatBtn" data-interface="chat">Chat with LuxSCale</button>
+          <button class="btn btn-outline-dark text-white rounded-pill px-5 py-3" id="studyBtn" data-interface="study">Make lighting study</button>
+        </div>
+
+        <!-- Interface Container -->
+        <div class="interface-container">
+          <!-- Chat Interface -->
+          <div class="interface-content d-flex flex-column active" id="chatInterface">
+            <!-- Typewriter Input Container -->
+            <div class="typewriter-container d-flex justify-content-center m-2">
+              <div class="typewriter-wrapper bg-dark rounded-pill p-4 d-flex align-items-center w-100" >
+                <div class="typewriter-input-wrapper flex-grow-1 me-3 d-flex align-items-center">
+                  <input type="text" id="typewriterInput" class="typewriter-input bg-transparent border-0 text-white fs-5 flex-grow-1" placeholder="" autocomplete="off">
+                  <span class="typewriter-cursor" id="typewriterCursor"></span>
+                </div>
+                <button class="btn btn-secondary rounded-circle" type="button">
+                  <img src="images/vector-40.svg" class="arrow-icon" alt="Go" />
+                </button>
+              </div>
+            </div>
+
+            <!-- Upload Buttons -->
+            <div class="upload-buttons d-flex justify-content-start gap-2 mb-2">
+              <button class="btn btn-light rounded-pill text-dark px-4 py-2" data-bs-toggle="modal" data-bs-target="#dialuxModal">Upload Dialux report</button>
+              <button class="btn btn-light rounded-pill text-dark px-4 py-2" data-bs-toggle="modal" data-bs-target="#imageModal">Upload image</button>
+            </div>
+          </div>
+
+          <!-- Lighting Study Interface -->
+          <div class="interface-content" id="studyInterface">
+            <!-- Step 1: Define The Area -->
+            <div class="study-step active" id="defineAreaStep">
+              <div class="study-container d-flex justify-content-center mb-5">
+                <div class="study-wrapper">
+                  <h3 class="study-title text-white mb-4">Define The Area</h3>
+                  
+                  <!-- Dimensions Input -->
+                  <div class="dimensions-grid mb-4">
+                    <div class="row g-3">
+                      <div class="col-6">
+                        <div class="dimension-input">
+                          <label class="dimension-label">Side 1</label>
+                          <div class="input-with-unit">
+                            <input type="number" class="dimension-field" placeholder="0" step="0.1">
+                            <span class="unit">m</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="dimension-input">
+                          <label class="dimension-label">Side 2</label>
+                          <div class="input-with-unit">
+                            <input type="number" class="dimension-field" placeholder="0" step="0.1">
+                            <span class="unit">m</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="dimension-input">
+                          <label class="dimension-label">Side 3</label>
+                          <div class="input-with-unit">
+                            <input type="number" class="dimension-field" placeholder="0" step="0.1">
+                            <span class="unit">m</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="dimension-input">
+                          <label class="dimension-label">Side 4</label>
+                          <div class="input-with-unit">
+                            <input type="number" class="dimension-field" placeholder="0" step="0.1">
+                            <span class="unit">m</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="dimension-input">
+                          <label class="dimension-label">Height</label>
+                          <div class="input-with-unit">
+                            <input type="number" class="dimension-field" placeholder="0" step="0.1">
+                            <span class="unit">m</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Action Button -->
+                  <div class="text-end">
+                    <button class="btn btn-secondary rounded-circle" type="button" id="continueToApplication">
+                      <img src="images/vector-40.svg" class="arrow-icon" alt="Continue" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Choose Application -->
+            <div class="study-step" id="chooseApplicationStep">
+              <div class="study-container d-flex justify-content-center mb-5">
+                <div class="study-wrapper">
+                  <h3 class="study-title text-white mb-4">Choose your application</h3>
+                  
+                  <!-- Application Dropdown -->
+                  <div class="application-selection mb-4">
+                    <div class="dropdown-wrapper">
+                      <select class="application-dropdown" id="applicationSelect">
+                        <option value="">Select application type...</option>
+                        <option value="room">Room</option>
+                        <option value="factory">Factory</option>
+                        <option value="warehouse">Warehouse</option>
+                        <option value="office">Office</option>
+                        <option value="retail">Retail Store</option>
+                        <option value="hospital">Hospital</option>
+                        <option value="school">School</option>
+                        <option value="restaurant">Restaurant</option>
+                        <option value="gym">Gym</option>
+                        <option value="parking">Parking Garage</option>
+                        <option value="outdoor">Outdoor Area</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Navigation Buttons -->
+                  <div class="d-flex justify-content-between">
+                    <button class="btn btn-outline-secondary rounded-pill px-4" type="button" id="backToArea">
+                      ← Back
+                    </button>
+                    <button class="btn btn-secondary rounded-circle" type="button" id="continueFromApplication">
+                      <img src="images/vector-40.svg" class="arrow-icon" alt="Continue" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="about" class="features-section content-section">
+    <div class="container">
+      <div class="row align-items-start">
+        <!-- Main Image -->
+        <div class="col-lg-9">
+          <div class="main-image">
+            <img src="images/rectangle-3-48.png" alt="LuxSCale AI in action" class="img-fluid rounded-4">
+          </div>
+        </div>
+        
+        <!-- Feature Cards -->
+        <div class="col-lg-3 ps-4">
+          <div class="feature-card">
+            <img src="images/rectangle-4-49.png" alt="What's New" class="img-fluid rounded-3 mb-3">
+            <h3 class="feature-title fw-bold mb-2">What's New?</h3>
+            <p class="feature-description small mb-0">Know more about the upcoming features</p>
+          </div>
+          
+          <div class="feature-card">
+            <img src="images/rectangle-5-50.png" alt="Documentation" class="img-fluid rounded-3 mb-3">
+            <h3 class="feature-title fw-bold mb-2">Documentations</h3>
+            <p class="feature-description small mb-0">How it works?</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Section Description -->
+      <div class="section-description">
+        <h2 class="section-title text-uppercase fs-2 mb-3">Luxscale, is it even possible?</h2>
+        <p class="section-subtitle fs-5">The first AI too specialized in lighting</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Get Started Section -->
+  <section id="get-started" class="get-started-section content-section">
+    <div class="container">
+      <div class="section-dark text-center">
+        <h2 class="section-title text-uppercase fs-2 mb-5">Get Started</h2>
+        
+        <!-- Login/Signup Buttons -->
+        <div class="auth-buttons d-flex justify-content-center gap-4 mb-2">
+          <button class="btn btn-dark rounded-pill px-5 py-3 active" id="loginBtn" data-form="login">Login</button>
+          <button class="btn btn-dark rounded-pill px-5 py-3" id="signupBtn" data-form="signup">Sign Up</button>
+        </div>
+        
+        <!-- Forms Container -->
+        <div class="forms-container">
+          <!-- Login Form -->
+          <div class="auth-form" id="loginForm">
+            <div class="auth-form-inner"><div class="form-dark">
+              <div class="form-group mb-4">
+                <input type="text" class="form-input" placeholder="Email or Username" required>
+              </div>
+              <div class="form-group mb-4">
+                <input type="password" class="form-input" placeholder="Password" required>
+              </div>
+              <div class="form-check text-start mb-4">
+                <input type="checkbox" class="form-check-input" id="remember">
+                <label for="remember" class="form-check-label">Remember me?</label>
+              </div>
+              <button class="btn btn-red w-100">Login</button>
+            </div></div>
+          </div>
+
+          <!-- Sign Up Form -->
+          <div class="auth-form" id="signupForm">
+            <div class="auth-form-inner"><div class="form-dark">
+              <div class="form-group mb-4">
+                <input type="text" class="form-input" placeholder="Full Name" required>
+              </div>
+              <div class="form-group mb-4">
+                <input type="email" class="form-input" placeholder="Email Address" required>
+              </div>
+              <div class="form-group mb-4">
+                <input type="password" class="form-input" placeholder="Password" required>
+              </div>
+              <div class="form-group mb-4">
+                <input type="password" class="form-input" placeholder="Confirm Password" required>
+              </div>
+              <div class="form-check text-start mb-4">
+                <input type="checkbox" class="form-check-input" id="terms">
+                <label for="terms" class="form-check-label">I agree to the Terms and Conditions</label>
+              </div>
+              <button class="btn btn-red w-100">Sign Up</button>
+            </div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact-section content-section">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="section-title text-uppercase fs-2 mb-5">Contact Us</h2>
+        
+        <div class="contact-form-wrapper"><form class="contact-form">
+          <!-- Name and Phone Row -->
+          <div class="row g-4 mb-4">
+            <div class="col-md-6">
+              <div class="form-dark">
+                <input type="text" class="form-input" placeholder="Name" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-dark">
+                <input type="tel" class="form-input" placeholder="Phone Number" required>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Email -->
+          <div class="form-dark mb-4">
+            <input type="email" class="form-input" placeholder="Email Address" required>
+          </div>
+          
+          <!-- Query Type -->
+          <div class="query-type d-flex gap-4 mb-4">
+            <div class="form-dark flex-fill d-flex align-items-center">
+              <!-- <img src="images/ellipse-1-91.svg" class="radio-icon me-2" alt="Radio button" /> -->
+              <input type="radio" class="radio-input me-2" id="general" name="query-type">
+              <label for="general"> General Enquiry</label>
+            </div>
+            <div class="form-dark flex-fill d-flex align-items-center">
+              <!-- <img src="images/ellipse-2-94.svg" class="radio-icon me-2" alt="Radio button" /> -->
+              <input type="radio" class="radio-input me-2 " id="support" name="query-type">
+              <label for="support"> Support Request</label>
+            </div>
+          </div>
+          
+          <!-- Message -->
+          <div class="form-dark mb-4">
+            <textarea rows="4" class="form-input" placeholder="Message" required></textarea>
+          </div>
+          
+          <!-- Newsletter Subscription -->
+          <div class="form-check text-start mb-4">
+            <input type="checkbox" class="form-check-input" id="subscribe">
+            <label for="subscribe" class="form-check-label small">I accept to receive emails from LuxSCale team</label>
+          </div>
+          
+          <!-- Submit Button -->
+          <button class="btn btn-red w-100">Send</button>
+        </form></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dialux Report Upload Modal -->
+  <div class="modal fade" id="dialuxModal" tabindex="-1" aria-labelledby="dialuxModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content custom-modal">
+        <div class="modal-header">
+          <h5 class="modal-title" id="dialuxModalLabel">Upload Dialux Report</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Upload Area -->
+          <div class="upload-area" id="dialuxUploadArea">
+            <div class="upload-content">
+              <div class="upload-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14,2 14,8 20,8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10,9 9,9 8,9"></polyline>
+                </svg>
+              </div>
+              <h6 class="upload-title">Drop your Dialux report here</h6>
+              <p class="upload-subtitle">or click to browse files</p>
+              <p class="upload-formats">Supported formats: PDF, DIALux (.ldt), Excel (.xlsx)</p>
+            </div>
+            <input type="file" id="dialuxFileInput" accept=".pdf,.ldt,.xlsx" style="display: none;">
+          </div>
+
+          <!-- File Information -->
+          <div class="file-info" id="dialuxFileInfo" style="display: none;">
+            <div class="file-info-header">
+              <h6 class="file-info-title">File Information</h6>
+              <div class="file-status">
+                <span class="status-badge success">✓ Ready</span>
+              </div>
+            </div>
+            <div class="file-info-content">
+              <div class="file-info-item">
+                <span class="file-info-label">File Name:</span>
+                <span class="file-info-value" id="dialuxFileName">-</span>
+              </div>
+              <div class="file-info-item">
+                <span class="file-info-label">File Size:</span>
+                <span class="file-info-value" id="dialuxFileSize">-</span>
+              </div>
+              <div class="file-info-item">
+                <span class="file-info-label">File Type:</span>
+                <span class="file-info-value" id="dialuxFileType">-</span>
+              </div>
+              <div class="file-info-item">
+                <span class="file-info-label">Upload Date:</span>
+                <span class="file-info-value" id="dialuxUploadDate">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-red" id="dialuxSubmitBtn" disabled>Process Report</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Upload Modal -->
+  <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content custom-modal">
+        <div class="modal-header">
+          <h5 class="modal-title" id="imageModalLabel">Upload Image</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Upload Area -->
+          <div class="upload-area" id="imageUploadArea">
+            <div class="upload-content">
+              <div class="upload-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21,15 16,10 5,21"></polyline>
+                </svg>
+              </div>
+              <h6 class="upload-title">Drop your image here</h6>
+              <p class="upload-subtitle">or click to browse files</p>
+              <p class="upload-formats">Supported formats: JPG, PNG, GIF, WebP</p>
+            </div>
+            <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
+          </div>
+
+          <!-- Image Preview -->
+          <div class="image-preview" id="imagePreview" style="display: none;">
+            <div class="preview-container">
+              <img id="previewImage" src="" alt="Preview" class="preview-img">
+            </div>
+          </div>
+
+          <!-- File Information -->
+          <div class="file-info" id="imageFileInfo" style="display: none;">
+            <div class="file-info-header">
+              <h6 class="file-info-title">File Information</h6>
+              <div class="file-status">
+                <span class="status-badge success">✓ Ready</span>
+              </div>
+            </div>
+            <div class="file-info-content">
+              <div class="file-info-item">
+                <span class="file-info-label">File Name:</span>
+                <span class="file-info-value" id="imageFileName">-</span>
+              </div>
+              <div class="file-info-item">
+                <span class="file-info-label">File Size:</span>
+                <span class="file-info-value" id="imageFileSize">-</span>
+              </div>
+              <div class="file-info-item">
+                <span class="file-info-label">File Type:</span>
+                <span class="file-info-value" id="imageFileType">-</span>
+              </div>
+              <div class="file-info-item">
+                <span class="file-info-label">Upload Date:</span>
+                <span class="file-info-value" id="imageUploadDate">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-red" id="imageSubmitBtn" disabled>Process Image</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <!-- Company Info Block -->
+        <div class="company-info-block">
+          <div class="company-logo-section">
+            <div class="company-logo mb-3">
+              <img src="images/logo-dark.png" class="footer-logo" alt="Short Circuit Company Logo" />
+            </div>
+            <!-- <h5 class="company-name">Short Circuit Company</h5> -->
+          </div>
+          <div class="company-description">
+            <p class="footer-text small-text">
+              LuxSCale AI is an official project owned by Short Circuit Company. All rights to the concept, design, development, and implementation of this project are exclusively reserved by Short Circuit Company.
+            </p>
+            <p class="footer-text small-text">
+              The platform has been fully designed and developed by the Technical Office team within the company. Any unauthorized use, reproduction, or distribution of this project, in whole or in part, without prior written consent from Short Circuit Company, is strictly prohibited.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Navigation Links -->
+        <div class="footer-navigation">
+          <!-- Top Row -->
+          <div class="nav-row">
+            <div class="nav-column">
+              <h5 class="footer-title">Our Projects</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">LuxSCale</a></li>
+                <li><a href="#" class="footer-link">SChools</a></li>
+                <li><a href="#" class="footer-link">eSC-AI</a></li>
+              </ul>
+            </div>
+            
+            <div class="nav-column">
+              <h5 class="footer-title">AI Platform</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">Platform Overview</a></li>
+                <li><a href="#" class="footer-link">Documentation</a></li>
+                <li><a href="#" class="footer-link">Developer Forum</a></li>
+              </ul>
+            </div>
+            
+            <div class="nav-column">
+              <h5 class="footer-title">Company</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">About Us</a></li>
+                <li><a href="#" class="footer-link">News</a></li>
+                <li><a href="#" class="footer-link">Career</a></li>
+                <li><a href="#" class="footer-link">Downloads</a></li>
+                <li><a href="#" class="footer-link">Brand</a></li>
+              </ul>
+            </div>
+            
+            <div class="nav-column">
+              <h5 class="footer-title">Terms & Policy</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">Terms of Use</a></li>
+                <li><a href="#" class="footer-link">Privacy Policy</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Bottom Row -->
+          <div class="nav-row">
+            <div class="nav-column">
+              <h5 class="footer-title">Safety</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">Safety Approach</a></li>
+                <li><a href="#" class="footer-link">Security & Privacy</a></li>
+                <li><a href="#" class="footer-link">Trust & Transparency</a></li>
+              </ul>
+            </div>
+            
+            <div class="nav-column">
+              <h5 class="footer-title">Support</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">Help Center</a></li>
+              </ul>
+            </div>
+
+            <div class="nav-column"></div>
+            <div class="nav-column"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bottom Section -->
+      <div class="footer-bottom">
+        <div class="copyright-section">
+          <p class="copyright mb-0">Short Circuit Company © 2025</p>
+        </div>
+        <div class="social-media-section">
+          <div class="social-icons">
+            <a href="#" class="social-link">
+              <img src="images/facebook-109.svg" class="social-icon" alt="Facebook" />
+            </a>
+            <a href="#" class="social-link">
+              <img src="images/instagram-111.svg" class="social-icon" alt="Instagram" />
+            </a>
+            <a href="#" class="social-link">
+              <img src="images/linkedin-113.svg" class="social-icon" alt="LinkedIn" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Typewriter Effect Script -->
+  <script src="assets/js/script.js"></script>
+    
+  </script>
+</body>
+</html>

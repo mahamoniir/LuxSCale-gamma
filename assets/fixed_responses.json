@@ -1,0 +1,799 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-04-21T11:35:28.342904+00:00",
+  "sources": {
+    "standards_cleaned": "standards/standards_cleaned.json",
+    "standards_keywords": "standards/standards_keywords_upgraded.json",
+    "fixture_map": "assets/fixture_map_SC_IES_Fixed_v3.json",
+    "ies_index": "ies-render/ies.json"
+  },
+  "menu_items": [
+    {
+      "id": "std_office_target",
+      "label": "Office Lux Target",
+      "question": "What lux and U0 do I use for office workstations?",
+      "response_id": "std_office_target"
+    },
+    {
+      "id": "std_code_name",
+      "label": "European Code Name",
+      "question": "What is the name of the European lighting code used by LuxSCale?",
+      "response_id": "std_code_name"
+    },
+    {
+      "id": "std_cad_target",
+      "label": "CAD / Technical Drawing",
+      "question": "What is the lighting target for CAD or technical drawing?",
+      "response_id": "std_cad_target"
+    },
+    {
+      "id": "std_classroom_target",
+      "label": "Classroom Lighting",
+      "question": "What are classroom lux and uniformity targets?",
+      "response_id": "std_classroom_target"
+    },
+    {
+      "id": "std_warehouse_target",
+      "label": "Warehouse Gangways",
+      "question": "What lighting level is used for warehouse gangways?",
+      "response_id": "std_warehouse_target"
+    },
+    {
+      "id": "std_factory_target",
+      "label": "Factory / Industrial Area",
+      "question": "What lux and U0 targets are used for factories or industrial areas?",
+      "response_id": "std_factory_target"
+    },
+    {
+      "id": "std_retail_target",
+      "label": "Retail Sales Area",
+      "question": "What target lux/U0 is used for general retail sales area?",
+      "response_id": "std_retail_target"
+    },
+    {
+      "id": "std_corridor_target",
+      "label": "Corridors",
+      "question": "What lux/U0 targets are typical for corridors?",
+      "response_id": "std_corridor_target"
+    },
+    {
+      "id": "fixture_catalog_overview",
+      "label": "Available Fixture Families",
+      "question": "What fixtures are available in LuxSCale?",
+      "response_id": "fixture_catalog_overview"
+    },
+    {
+      "id": "fixture_catalog_indoor",
+      "label": "Indoor / Low-Ceiling Fixture Families",
+      "question": "What indoor fixtures are in LuxSCale?",
+      "response_id": "fixture_catalog_indoor"
+    },
+    {
+      "id": "fixture_catalog_outdoor",
+      "label": "Outdoor / Tall-Space Fixture Families",
+      "question": "What outdoor fixtures are in LuxSCale?",
+      "response_id": "fixture_catalog_outdoor"
+    },
+    {
+      "id": "fixture_recommendation_baseline",
+      "label": "Fixture Recommendation Basics",
+      "question": "How does LuxSCale choose fixture recommendations?",
+      "response_id": "fixture_recommendation_baseline"
+    },
+    {
+      "id": "ies_dataset_overview",
+      "label": "IES Dataset Health",
+      "question": "How many IES files are in LuxSCale and are they parsed?",
+      "response_id": "ies_dataset_overview"
+    },
+    {
+      "id": "uniformity_reflection_behavior",
+      "label": "Uniformity and Reflection Note",
+      "question": "Do reflections change U0 in the current LuxSCale model?",
+      "response_id": "uniformity_reflection_behavior"
+    },
+    {
+      "id": "non_lighting_scope",
+      "label": "Out-of-Scope Guard",
+      "question": "Can you answer non-lighting questions?",
+      "response_id": "non_lighting_scope"
+    },
+    {
+      "id": "company_designer_info",
+      "label": "LuxSCale Team and Official Website",
+      "question": "Who designed LuxSCale and what is the official company website?",
+      "response_id": "company_designer_info"
+    }
+  ],
+  "responses": [
+    {
+      "id": "std_office_target",
+      "canonical_key": "std_office_target",
+      "label": "Office Lux Target",
+      "question": "What lux and U0 do I use for office workstations?",
+      "variants": [
+        "office lighting target",
+        "required lux for office",
+        "office workstation standard",
+        "open office lux level"
+      ],
+      "tags": [
+        "standards",
+        "office",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.26.2 for \"Writing, typing, reading, data processing\". Target maintained illuminance is about 500.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.26.2"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "std_code_name",
+      "canonical_key": "std_code_name",
+      "label": "European Code Name",
+      "question": "What is the name of the European lighting code used by LuxSCale?",
+      "variants": [
+        "what is the european code used",
+        "name of european lighting standard",
+        "which code does luxscale use",
+        "en 12464 name",
+        "bs en 12464 1",
+        "what is en12464",
+        "ايه اسم الكود الاوروبي",
+        "ما اسم المعيار الاوروبي",
+        "اسم الكود الاوروبي",
+        "اسم معيار الانارة الاوروبي",
+        "اي الكود الاوروبي بتاعك",
+        "الكود الاوروبي بتاعك ايه",
+        "شغال ب كود ايه",
+        "شغال على كود ايه",
+        "بتستخدم كود اوروبي ايه",
+        "اي معيار شغال عليه",
+        "what standard do you follow",
+        "what code are you using",
+        "which lighting standard are you based on"
+      ],
+      "tags": [
+        "standards",
+        "code-name",
+        "en12464"
+      ],
+      "generated_answer": "The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1.",
+      "answer": "The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1.",
+      "answer_variants": [
+        "The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1.",
+        "Short answer: The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1.",
+        "From LuxSCale references: The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1.",
+        "Recommended baseline: The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1.",
+        "For quick implementation: The European workplace indoor lighting standard used by LuxSCale is EN 12464-1. When users ask for the code name, respond with EN 12464-1."
+      ],
+      "source_refs": [
+        "standards/standards_cleaned.json"
+      ],
+      "localized_answers": {
+        "en": "The European workplace indoor lighting standard used by LuxSCale is EN 12464-1.",
+        "ar": "المعيار الأوروبي المستخدم في LuxSCale هو EN 12464-1."
+      }
+    },
+    {
+      "id": "std_cad_target",
+      "canonical_key": "std_cad_target",
+      "label": "CAD / Technical Drawing",
+      "question": "What is the lighting target for CAD or technical drawing?",
+      "variants": [
+        "cad lux standard",
+        "technical drawing lux",
+        "drafting workstation lux"
+      ],
+      "tags": [
+        "standards",
+        "cad",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.26.3 for \"Technical drawing\". Target maintained illuminance is about 750.0 lx with Uo >= 0.7 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.26.3"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "std_classroom_target",
+      "canonical_key": "std_classroom_target",
+      "label": "Classroom Lighting",
+      "question": "What are classroom lux and uniformity targets?",
+      "variants": [
+        "classroom lux standard",
+        "school classroom lighting",
+        "education room lux"
+      ],
+      "tags": [
+        "standards",
+        "classroom",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.36.1 for \"Classroom - General activities in primary schools\". Target maintained illuminance is about 300.0 lx with Uo >= 0.6 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.36.1"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "std_warehouse_target",
+      "canonical_key": "std_warehouse_target",
+      "label": "Warehouse Gangways",
+      "question": "What lighting level is used for warehouse gangways?",
+      "variants": [
+        "warehouse lux standard",
+        "storage gangway lighting",
+        "warehouse aisle lux",
+        "factory lighting target",
+        "industrial area lux level"
+      ],
+      "tags": [
+        "standards",
+        "warehouse",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.5.2 for \"Gangways: manned\". Target maintained illuminance is about 150.0 lx with Uo >= 0.4 and CRI (Ra) >= 60.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.5.2"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "std_factory_target",
+      "canonical_key": "std_factory_target",
+      "label": "Factory / Industrial Area",
+      "question": "What lux and U0 targets are used for factories or industrial areas?",
+      "variants": [
+        "factory lux standard",
+        "factories lux target",
+        "industrial area lux target",
+        "manufacturing area lighting target",
+        "workshop lux standard"
+      ],
+      "tags": [
+        "standards",
+        "factory",
+        "industrial",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.22.5 for \"Furnaces\". Target maintained illuminance is about 200.0 lx with Uo >= 0.4 and CRI (Ra) >= 20.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.22.5"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "std_retail_target",
+      "canonical_key": "std_retail_target",
+      "label": "Retail Sales Area",
+      "question": "What target lux/U0 is used for general retail sales area?",
+      "variants": [
+        "retail store lux",
+        "shop lighting target",
+        "sales area illuminance"
+      ],
+      "tags": [
+        "standards",
+        "retail",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.27.1 for \"General sales area\". Target maintained illuminance is about 300.0 lx with Uo >= 0.4 and CRI (Ra) >= 80.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.27.1"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "std_corridor_target",
+      "canonical_key": "std_corridor_target",
+      "label": "Corridors",
+      "question": "What lux/U0 targets are typical for corridors?",
+      "variants": [
+        "corridor lux level",
+        "circulation area illuminance",
+        "hallway lighting target"
+      ],
+      "tags": [
+        "standards",
+        "corridor",
+        "en12464"
+      ],
+      "generated_answer": "Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer": "Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+      "answer_variants": [
+        "Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Short answer: Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "From LuxSCale references: Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "Recommended baseline: Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing.",
+        "For quick implementation: Use EN 12464-1 ref 6.1.1 for \"Corridors and circulation areas\". Target maintained illuminance is about 100.0 lx with Uo >= 0.4 and CRI (Ra) >= 40.0. In LuxSCale, verify both E_avg and U0 before finalizing."
+      ],
+      "source_refs": [
+        "6.1.1"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "fixture_catalog_overview",
+      "canonical_key": "fixture_catalog_overview",
+      "label": "Available Fixture Families",
+      "question": "What fixtures are available in LuxSCale?",
+      "variants": [
+        "available luminaires",
+        "fixture families",
+        "what products can i use",
+        "catalog list",
+        "what fixtures does luxscale have",
+        "shortcircuit fixture families",
+        "full fixture list luxscale",
+        "all fixture types"
+      ],
+      "tags": [
+        "fixtures",
+        "catalog"
+      ],
+      "generated_answer": "LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options.",
+      "answer": "LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options.",
+      "answer_variants": [
+        "LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options.",
+        "Short answer: LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options.",
+        "From LuxSCale references: LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options.",
+        "Recommended baseline: LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options.",
+        "For quick implementation: LuxSCale currently includes these fixture families in the mapped catalog:\n- SC backlight: 32W, 35W\n- SC downlight: 9W, 10W\n- SC flood light exterior: 100W, 150W, 200W\n- SC highbay: 100W, 150W, 200W\n- SC street: 30W, 60W\n- SC triproof: 30W, 40W\n- SV flood: 100W, 200W, 300W\nShare room type + dimensions + target lux/U0, and I can narrow the best options."
+      ],
+      "source_refs": [
+        "assets/fixture_map_SC_IES_Fixed_v3.json"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "fixture_catalog_indoor",
+      "canonical_key": "fixture_catalog_indoor",
+      "label": "Indoor / Low-Ceiling Fixture Families",
+      "question": "What indoor fixtures are in LuxSCale?",
+      "variants": [
+        "what fixtures do you use indoors",
+        "what fixtures do u use in indoors",
+        "what fixtures do you use indoor",
+        "which fixtures are available indoors",
+        "indoor luminaire types",
+        "types of indoor fixtures",
+        "internal fixtures luxscale",
+        "ceiling fixtures office luxscale"
+      ],
+      "tags": [
+        "fixtures",
+        "catalog",
+        "interior"
+      ],
+      "generated_answer": "Indoor / low-ceiling families in the mapped LuxSCale catalog match the planning rule for ceilings below the interior height threshold (see settings; typically under 5 m): SC downlight (9W, 10W), SC triproof (30W, 40W), SC backlight / panel (32W, 35W). For taller spaces or exterior mounting, outdoor/tall-space families apply instead — ask specifically about outdoor fixtures if needed.\nShare room type, dimensions, and target lux/U0 and I can narrow options.",
+      "answer": "Indoor / low-ceiling families in the mapped LuxSCale catalog match the planning rule for ceilings below the interior height threshold (see settings; typically under 5 m):\n- SC downlight: 9W, 10W\n- SC triproof: 30W, 40W\n- SC backlight (panel): 32W, 35W\n\nFor taller ceilings or exterior applications, LuxSCale uses different families — ask about outdoor fixtures if that is your case.\nShare room type, dimensions, and target lux/U0 and I can narrow options.",
+      "answer_variants": [],
+      "source_refs": [
+        "luxscale/lighting_calc/geometry.py",
+        "assets/fixture_map_SC_IES_Fixed_v3.json"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "fixture_catalog_outdoor",
+      "canonical_key": "fixture_catalog_outdoor",
+      "label": "Outdoor / Tall-Space Fixture Families",
+      "question": "What outdoor fixtures are in LuxSCale?",
+      "variants": [
+        "what fixtures do u use outdoor",
+        "what fixtures do you use outdoors",
+        "what fixtures outdoor",
+        "outdoor luminaire types",
+        "exterior fixtures luxscale",
+        "street lighting fixtures catalog",
+        "highbay fixtures available"
+      ],
+      "tags": [
+        "fixtures",
+        "catalog",
+        "exterior"
+      ],
+      "generated_answer": "Outdoor / tall-ceiling families in the mapped LuxSCale catalog match the planning rule for ceilings at or above the interior height threshold (see settings; typically 5 m and up) and typical exterior/flood/street/high-bay use: SC highbay (100W, 150W, 200W), SC flood light exterior (100W, 150W, 200W), SV flood (100W, 200W, 300W), SC street (30W, 60W). Low indoor rooms use downlight/triproof/panel families instead — ask about indoor fixtures if needed.\nShare application, mounting height, and target lux/U0 and I can narrow options.",
+      "answer": "Outdoor / tall-ceiling families in the mapped LuxSCale catalog match the planning rule for ceilings at or above the interior height threshold (see settings; typically 5 m and up) and typical exterior / flood / street / high-bay layouts:\n- SC highbay: 100W, 150W, 200W\n- SC flood light exterior: 100W, 150W, 200W\n- SV flood: 100W, 200W, 300W\n- SC street: 30W, 60W\n\nLow indoor ceilings use downlight, triproof, and panel families — ask about indoor fixtures if that is your case.\nShare application, mounting height, and target lux/U0 and I can narrow options.",
+      "answer_variants": [],
+      "source_refs": [
+        "luxscale/lighting_calc/geometry.py",
+        "assets/fixture_map_SC_IES_Fixed_v3.json"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "fixture_recommendation_baseline",
+      "canonical_key": "fixture_recommendation_baseline",
+      "label": "Fixture Recommendation Basics",
+      "question": "How does LuxSCale choose fixture recommendations?",
+      "variants": [
+        "how do you recommend fixtures",
+        "fixture recommendation logic",
+        "choose luminaire",
+        "best fixture selection"
+      ],
+      "tags": [
+        "fixtures",
+        "recommendation"
+      ],
+      "generated_answer": "Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power.",
+      "answer": "Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power.",
+      "answer_variants": [
+        "Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power.",
+        "Short answer: Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power.",
+        "From LuxSCale references: Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power.",
+        "Recommended baseline: Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power.",
+        "For quick implementation: Recommendation starts from task targets (lux/U0), then checks beam behavior and layout spacing.\nCommon starting families in this catalog are:\n- SC highbay (100W, 150W, 200W)\n- SC flood light exterior (100W, 150W, 200W)\n- SC street (30W, 60W)\nFinal selection should be validated with E_avg, U0, and total power."
+      ],
+      "source_refs": [
+        "assets/fixture_map_SC_IES_Fixed_v3.json",
+        "ies-render/ies.json"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "ies_dataset_overview",
+      "canonical_key": "ies_dataset_overview",
+      "label": "IES Dataset Health",
+      "question": "How many IES files are in LuxSCale and are they parsed?",
+      "variants": [
+        "ies dataset status",
+        "ies files count",
+        "photometry database status",
+        "ies parsing health"
+      ],
+      "tags": [
+        "ies",
+        "dataset"
+      ],
+      "generated_answer": "The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows.",
+      "answer": "The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows.",
+      "answer_variants": [
+        "The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows.",
+        "Short answer: The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows.",
+        "From LuxSCale references: The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows.",
+        "Recommended baseline: The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows.",
+        "For quick implementation: The current IES index reports 536 files, with 536 parsed and 0 failed. LuxSCale uses this indexed photometry for layout and comparator workflows."
+      ],
+      "source_refs": [
+        "ies-render/ies.json"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "uniformity_reflection_behavior",
+      "canonical_key": "uniformity_reflection_behavior",
+      "label": "Uniformity and Reflection Note",
+      "question": "Do reflections change U0 in the current LuxSCale model?",
+      "variants": [
+        "does reflectance affect u0",
+        "reflection effect on uniformity",
+        "u0 with inter reflection",
+        "uniformity and reflected light"
+      ],
+      "tags": [
+        "uniformity",
+        "reflection",
+        "model-limit"
+      ],
+      "generated_answer": "In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios.",
+      "answer": "In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios.",
+      "answer_variants": [
+        "In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios.",
+        "Short answer: In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios.",
+        "From LuxSCale references: In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios.",
+        "Recommended baseline: In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios.",
+        "For quick implementation: In the current model, inter-reflection is applied as a uniform E boost (direct E × (1+f)). That changes absolute E_avg but does not change U0/U1 ratios."
+      ],
+      "source_refs": [
+        "luxscale/uniformity_calculator.py",
+        "luxscale/app_settings.py"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "non_lighting_scope",
+      "canonical_key": "non_lighting_scope",
+      "label": "Out-of-Scope Guard",
+      "question": "Can you answer non-lighting questions?",
+      "variants": [
+        "tell me about cooking",
+        "write me a poem",
+        "general knowledge question",
+        "not about lighting"
+      ],
+      "tags": [
+        "policy",
+        "scope"
+      ],
+      "generated_answer": "This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question.",
+      "answer": "This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question.",
+      "answer_variants": [
+        "This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question.",
+        "Short answer: This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question.",
+        "From LuxSCale references: This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question.",
+        "Recommended baseline: This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question.",
+        "For quick implementation: This assistant is optimized for lighting engineering in LuxSCale. For non-lighting topics, it will avoid AI token usage and ask you to provide a lighting-related question."
+      ],
+      "source_refs": [
+        "chat-topic-gate"
+      ],
+      "localized_answers": {}
+    },
+    {
+      "id": "company_designer_info",
+      "canonical_key": "company_designer_info",
+      "label": "LuxSCale Team and Official Website",
+      "question": "Who designed LuxSCale and what is the official company website?",
+      "variants": [
+        "who designed luxscale",
+        "who built luxscale",
+        "luxscale company website",
+        "official website of luxscale company",
+        "who made you luxscale",
+        "who developed this tool",
+        "who owns luxscale",
+        "who operates luxscale",
+        "what is your company website",
+        "main website of short circuit",
+        "who created this system",
+        "ايه موقع الشركة الرئيسي",
+        "ما هو الموقع الرسمي للشركة",
+        "الشركة اللي صممتك",
+        "مين صممك يا luxscale",
+        "من صمم luxscale",
+        "من طور هذه الاداة",
+        "مين عملك",
+        "مين عمل التول دي",
+        "مين اللي عمل السيستم ده",
+        "الشركة المطورة ليك",
+        "ايه موقع شورت سيركت"
+      ],
+      "tags": [
+        "company",
+        "about",
+        "shortcircuit"
+      ],
+      "generated_answer": "LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+      "answer": "LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+      "answer_variants": [
+        "LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+        "Short answer: LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+        "From LuxSCale references: LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+        "Recommended baseline: LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+        "For quick implementation: LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company"
+      ],
+      "source_refs": [
+        "company-profile"
+      ],
+      "localized_answers": {
+        "en": "LuxSCale is designed by the R&D team of Short Circuit Company for lighting solutions in Egypt and UAE. Official website: https://shortcircuit.company",
+        "ar": "تم تصميم LuxSCale بواسطة فريق البحث والتطوير في شركة Short Circuit لحلول الإضاءة في مصر والإمارات. الموقع الرسمي: https://shortcircuit.company"
+      }
+    }
+  ],
+  "static_intents": [
+    {
+      "intent_key": "standard_name",
+      "response_id": "std_code_name",
+      "answers": {
+        "en": "The European workplace indoor lighting standard used by LuxSCale is EN 12464-1.",
+        "ar": "المعيار الأوروبي المستخدم في LuxSCale هو EN 12464-1."
+      },
+      "patterns_en": [
+        "\\b(what|which)\\s+(is\\s+)?(the\\s+)?(european|eu|en)\\s+(lighting\\s+)?(code|standard)\\b",
+        "\\b(name\\s+of\\s+the\\s+standard|code\\s+name)\\b",
+        "\\bname\\s+of\\s+the\\s+standard\\b",
+        "\\b(?:what|which|tell me|give me).*(?:code|standard).*(?:used|use|using)\\b",
+        "\\bwhat\\s+standard\\s+do\\s+you\\s+follow\\b",
+        "\\bwhat\\s+code\\s+are\\s+you\\s+using\\b"
+      ],
+      "patterns_ar": [
+        "اسم\\s+الكود\\s+الاوروبي",
+        "اسم\\s+المعيار\\s+الاوروبي",
+        "ايه\\s+اسم\\s+الكود\\s+الاوروبي",
+        "ما\\s+اسم\\s+المعيار",
+        "(?:ايه|اي|ما)\\s*(?:هو\\s*)?(?:الكود|المعيار)\\s+الاوروبي",
+        "الكود\\s+الاوروبي\\s+(?:بتاعك|المستخدم|اللي\\s+شغال\\s+بيه)",
+        "شغال\\s*(?:ب|على)\\s*كود\\s*(?:ايه|اي)",
+        "بتستخدم\\s+كود\\s+اوروبي\\s+ايه",
+        "(?:اي|ايه)\\s+(?:الكود|كود)\\s+الاوروبي",
+        "(?:الكود|كود)\\s+(?:اللي|الذي)\\s+(?:شغال|بتشتغل|تستخدم)",
+        "(?:بتستخدم|بتشتغل\\s+ب|تعتمد\\s+على)\\s+(?:كود|معيار)",
+        "ان\\s*12464",
+        "(?:اي|ايه)\\s*معيار\\s*(?:شغال|مستخدم)",
+        "المعيار\\s+اللي\\s+بتستخدمه"
+      ]
+    },
+    {
+      "intent_key": "company_identity",
+      "response_id": "company_designer_info",
+      "patterns_en": [
+        "\\bwho\\s+(?:designed|built|made|developed)\\s+(?:you|luxscale)\\b",
+        "\\b(?:official|main)\\s+website\\b",
+        "\\bluxscale\\s+company\\s+website\\b",
+        "\\bwho\\s+(?:owns|operates|runs)\\s+luxscale\\b",
+        "\\bwhat\\s+is\\s+your\\s+company\\s+website\\b",
+        "\\bshort[\\s-]*circuit\\s+(?:company|co\\.?|ltd|inc)?\\b",
+        "\\babout\\s+(?:the\\s+)?(?:short[\\s-]*circuit|shortcircuit|company)\\b",
+        "\\b(tell|talk)\\s+me\\s+about\\s+.*\\bshort[\\s-]*circuit\\b",
+        "\\bshortcircuit\\.company\\b",
+        "\\bwhat\\s+is\\s+short[\\s-]*circuit\\b",
+        "\\bwho\\s+(is|are)\\s+short[\\s-]*circuit\\b"
+      ],
+      "patterns_ar": [
+        "ايه\\s+موقع\\s+الشركة\\s+الرئيسي",
+        "ما\\s+هو\\s+الموقع\\s+الرسمي\\s+للشركة",
+        "الشركة\\s+اللي\\s+صممتك",
+        "مين\\s+صممك",
+        "من\\s+صمم\\s+luxscale",
+        "من\\s+طور\\s+هذه\\s+الاداة",
+        "مين\\s+عملك",
+        "مين\\s+عمل\\s+التول\\s+دي",
+        "الشركة\\s+المطوره\\s+ليك",
+        "ايه\\s+موقع\\s+شورت\\s+سيركت"
+      ]
+    }
+  ],
+  "match_hints": {
+    "lighting_positive": [
+      "lux",
+      "illuminance",
+      "luxscale",
+      "luxSCale",
+      "luxscale ai",
+      "luxscale AI",
+      "luxSCale AI",
+      "luxSCale AI assistant",
+      "luxSCale AI assistant tool",
+      "luxSCale AI assistant software",
+      "luxSCale AI assistant app",
+      "luxSCale AI assistant app software",
+      "luxSCale AI assistant app tool",
+      "luxSCale AI assistant app software",
+      "luxscale ai assistant",
+      "luxscale ai assistant tool",
+      "luxscale ai assistant software",
+      "luxscale ai assistant app",
+      "luxscale ai assistant app software",
+      "luxscale ai assistant app tool",
+      "luxscale ai assistant app software",
+      "luxscale ai assistant app tool",
+      "luxscale ai assistant app software",
+      "luxscale ai assistant app tool",
+      "shortcircuit",
+      "short circuit",
+      "luminaire",
+      "fixture",
+      "fixtures",
+      "catalog",
+      "beam",
+      "uniformity",
+      "u0",
+      "u1",
+      "ies",
+      "lighting",
+      "en 12464",
+      "office lighting",
+      "highbay",
+      "flood light",
+      "street light",
+      "downlight",
+      "triproof",
+      "reflectance",
+      "en12464",
+      "bs en",
+      "cct",
+      "cri",
+      "ra"
+    ],
+    "lighting_positive_ar": [
+      "اضاءة",
+      "إضاءة",
+      "انارة",
+      "إنارة",
+      "لوكس",
+      "تجانس",
+      "معيار",
+      "كود",
+      "مصباح",
+      "تركيبة",
+      "ies",
+      "يو او"
+    ],
+    "recommendation_intent": [
+      "recommend",
+      "best fixture",
+      "best luminaire",
+      "which fixture",
+      "choose fixture",
+      "compare fixtures",
+      "suggest fixture"
+    ],
+    "recommendation_intent_ar": [
+      "اقترح",
+      "ترشيح",
+      "انسب تركيبه",
+      "افضل تركيبه",
+      "افضل مصباح",
+      "اي تركيبه",
+      "اختار تركيبه"
+    ],
+    "negative_scope": [
+      "weather",
+      "football",
+      "movie",
+      "music",
+      "recipe",
+      "politics",
+      "stock market",
+      "travel",
+      "poem",
+      "joke"
+    ],
+    "negative_scope_ar": [
+      "طقس",
+      "كرة قدم",
+      "فيلم",
+      "اغنية",
+      "وصفة",
+      "سياسة",
+      "بورصة",
+      "سفر",
+      "نكتة"
+    ]
+  },
+  "updated_at": "2026-04-21T11:35:28.344065+00:00"
+}

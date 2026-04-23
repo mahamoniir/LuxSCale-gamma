@@ -7,16 +7,16 @@
   <link rel="icon" type="image/x-icon" href="assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     :root {
       --fm-heading: "Anton", sans-serif;
       --fm-body: "IBM Plex Sans Arabic", sans-serif;
-      --bg-dark: #111111;
+      --bg-dark: #1D1D1D;
       --white: #ffffff;
-      --muted: #d8d8d8;
-      --accent: #e51d2f;
+      --muted: #999999;
+      --accent: #EB1B26;
       --glass: rgba(255, 255, 255, 0.1);
       --glass-strong: rgba(0, 0, 0, 0.35);
       --border: rgba(255, 255, 255, 0.2);
@@ -45,7 +45,7 @@
       position: fixed;
       inset: 0;
       z-index: -1;
-      background: linear-gradient(180deg, rgba(17,17,17,0.92) 5%, rgba(17,17,17,0.68) 45%, rgba(17,17,17,0.85) 100%);
+      background: linear-gradient(180deg, rgba(29, 29, 29, 0.8) 0%, rgba(29, 29, 29, 0.4) 50%, rgba(29, 29, 29, 0.7) 100%);
     }
 
     .page-shell {
@@ -281,7 +281,10 @@
       <a href="index2.html" aria-label="Go to homepage">
         <img class="logo" src="assets/logo.svg" alt="Short Circuit Logo">
       </a>
-      <a class="btn btn-outline-primary" href="index2.html">New Study</a>
+      <div class="d-flex gap-2">
+        <a id="draw-link" class="btn btn-outline-light" href="draw.html">Box Studio</a>
+        <a class="btn btn-outline-primary" href="index2.html">New Study</a>
+      </div>
     </div>
   </header>
 
@@ -1301,6 +1304,11 @@ document.getElementById("viewMoreBtn")?.addEventListener("click", () => {
 /* ================================================================
    INIT
 ================================================================ */
+const token = getToken();
+if (token) {
+  const drawLink = document.getElementById("draw-link");
+  if (drawLink) drawLink.href = "draw.html?token=" + encodeURIComponent(token);
+}
 saveCurrentResultLink();
 loadResults();
 </script>

@@ -23,6 +23,9 @@ from luxscale.app_settings import (
     validate_ceiling_height_m,
 )
 from luxscale.lighting_calc import calculate_lighting, draw_heatmap, define_places
+from luxscale.reflectance import reflectance_from_hex_surfaces, room_indirect_fraction
+import urllib.request
+import urllib.parse
 
 _ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 try:
@@ -204,6 +207,122 @@ def _want_fast_calculate(data: dict) -> bool:
     return q in ("1", "true", "yes", "fast")
 
 
+# ── Phase 2: Reflectance API ──────────────────────────────────────────────
+@app.route("/api/reflectance", methods=["POST"])
+def api_reflectance():
+    """
+    Accept three HEX surface colors, return ρ per surface + IRF.
+    Body: { "ceiling": "#hex", "walls": "#hex", "floor": "#hex" }
+    """
+    data = request.get_json(force=True, silent=True) or {}
+    try:
+        ceiling_hex = str(data.get("ceiling", "#F0F0F0"))
+        walls_hex   = str(data.get("walls",   "#C2A86A"))
+        floor_hex   = str(data.get("floor",   "#8B5E2A"))
+        result = reflectance_from_hex_surfaces(ceiling_hex, walls_hex, floor_hex)
+        return jsonify({"ok": True, **result})
+    except ValueError as e:
+        return jsonify({"ok": False, "error": str(e)}), 400
+    except Exception as e:
+        log_exception("POST /api/reflectance", e)
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+# ── Phase 2: AmbientCG CORS Proxies ──────────────────────────────────────
+# The browser cannot fetch ambientcg.com directly from localhost (CORS blocked).
+# These two routes proxy through Flask so the browser never touches ACG directly.
+
+@app.route("/proxy/acg-search")
+def proxy_acg_search():
+    """
+    Proxy for AmbientCG v3 /assets search API.
+    Forwards all query parameters, returns JSON.
+    Usage: GET /proxy/acg-search?type=material&sort=popular&limit=12&offset=0&include=previews,tags&q=wood
+    """
+    allowed_params = {"type", "sort", "limit", "offset", "include", "q"}
+    params = {k: v for k, v in request.args.items() if k in allowed_params}
+    qs = urllib.parse.urlencode(params)
+    url = f"https://ambientcg.com/api/v3/assets?{qs}"
+    try:
+        req = urllib.request.Request(url, headers={
+            "User-Agent": "LuxScaleAI/1.0 (lighting design tool; proxy)",
+            "Accept": "application/json",
+        })
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            body = resp.read()
+        response = jsonify(json.loads(body))
+        response.headers["Cache-Control"] = "public, max-age=300"
+        return response
+    except Exception as e:
+        log_step("proxy_acg_search: error", str(e), url=url)
+        return jsonify({"error": str(e), "foundAssets": [], "numberOfResults": 0}), 502
+
+
+@app.route("/proxy/acg-img")
+def proxy_acg_img():
+    """
+    Proxy for AmbientCG CDN images (Color, Roughness, thumbnails).
+    Usage: GET /proxy/acg-img?url=https://cdn.ambientcg.com/...
+    """
+    from flask import Response
+    raw_url = request.args.get("url", "")
+    if not raw_url.startswith(("https://cdn.ambientcg.com/", "https://ambientcg.com/", "https://dl.polyhaven.org/")):
+        return jsonify({"error": "URL not allowed"}), 403
+    try:
+        req = urllib.request.Request(raw_url, headers={
+            "User-Agent": "LuxScaleAI/1.0 (lighting design tool; proxy)"
+        })
+        with urllib.request.urlopen(req, timeout=12) as resp:
+            content_type = resp.headers.get("Content-Type", "image/jpeg")
+            body = resp.read()
+        r = Response(body, content_type=content_type)
+        r.headers["Cache-Control"] = "public, max-age=86400"
+        r.headers["Access-Control-Allow-Origin"] = "*"
+        return r
+    except Exception as e:
+        log_step("proxy_acg_img: error", str(e), url=raw_url)
+        return jsonify({"error": str(e)}), 502
+
+
+def _extract_irf_from_request(data: dict) -> tuple:
+    """
+    Read material_physics (from full picker) or HEX fields (legacy) from the
+    request body and return (irf: float, label: str).
+
+    Priority:
+      1. data["material_physics"]["irf"]  — computed by JS with roughness correction
+      2. data["ceiling_hex"] / walls_hex / floor_hex  — server-side HEX→ρ
+      3. None, None  — caller uses app_settings default
+    """
+    # Priority 1: pre-computed from JS picker (roughness-corrected)
+    mp = data.get("material_physics")
+    if isinstance(mp, dict):
+        try:
+            irf = float(mp["irf"])
+            label = str(mp.get("label", "material_physics"))
+            irf = max(0.0, min(0.40, irf))
+            log_step("material_physics: using JS-computed IRF", None,
+                     irf=round(irf, 4), label=label)
+            return irf, label
+        except (KeyError, TypeError, ValueError):
+            pass
+
+    # Priority 2: HEX fields sent directly
+    ch = data.get("ceiling_hex")
+    wh = data.get("walls_hex")
+    fh = data.get("floor_hex")
+    if ch and wh and fh:
+        try:
+            result = reflectance_from_hex_surfaces(str(ch), str(wh), str(fh))
+            log_step("material_physics: server HEX→ρ", None,
+                     irf=result["irf"], label=result["label"])
+            return result["irf"], result["label"]
+        except Exception as ex:
+            log_step("material_physics: HEX parse failed, using default", str(ex))
+
+    return None, None
+
+
 @app.route("/calculate", methods=["POST"])
 def api_calculate():
     data = request.get_json(silent=True)
@@ -252,6 +371,26 @@ def api_calculate():
                 }
             ), 400
 
+        # ── Phase 2: apply material reflectance to session settings ──────
+        custom_irf, irf_label = _extract_irf_from_request(data)
+        if custom_irf is not None:
+            from luxscale.app_settings import load_app_settings, save_app_settings, ROOM_REFLECTANCE_PRESETS
+            settings = load_app_settings()
+            # Temporarily write a custom preset so the calculation engine picks it up
+            ROOM_REFLECTANCE_PRESETS["_request"] = {
+                "label": irf_label,
+                "indirect_fraction": custom_irf,
+            }
+            settings.setdefault("calc", {})["room_reflectance_preset"] = "_request"
+            save_app_settings(settings)
+            # Bust lru_cache so the new value is seen immediately
+            try:
+                from luxscale.app_settings import load_app_settings as _lru_fn
+                _lru_fn.cache_clear()
+            except Exception:
+                pass
+        # ── End Phase 2 ──────────────────────────────────────────────────
+
         calc_fast = _want_fast_calculate(data)
         trace = CalculationTrace("POST /calculate")
         trace.step(
@@ -262,6 +401,7 @@ def api_calculate():
             has_standard_row=standard_row is not None,
             place=place,
             fast=bool(calc_fast),
+            custom_irf=round(custom_irf, 4) if custom_irf is not None else None,
         )
         if standard_row:
             results, length, width, calc_meta = calculate_lighting(
@@ -276,6 +416,19 @@ def api_calculate():
             results, length, width, calc_meta = calculate_lighting(
                 place, sides, height, trace=trace, fast=calc_fast
             )
+
+        # ── Restore default preset after calculation ──────────────────────
+        if custom_irf is not None:
+            try:
+                from luxscale.app_settings import load_app_settings as _lru_fn2
+                settings2 = load_app_settings()
+                settings2.setdefault("calc", {})["room_reflectance_preset"] = "medium"
+                save_app_settings(settings2)
+                _lru_fn2.cache_clear()
+                ROOM_REFLECTANCE_PRESETS.pop("_request", None)
+            except Exception:
+                pass
+        # ── End restore ───────────────────────────────────────────────────
 
         trace.step("api_01_calculate_lighting_returned", result_rows=len(results))
 
@@ -300,6 +453,8 @@ def api_calculate():
             "calculation_meta": calc_meta,
             "ui_settings": get_ui_config(),
         }
+        if custom_irf is not None:
+            out["material_physics"] = data.get("material_physics") or {"irf": custom_irf, "label": irf_label}
         if standard_row:
             out["standard_row"] = standard_row
             merged_pi = dict(project_info)
@@ -531,6 +686,24 @@ def api_study_submit():
 
     log_step("api_study_submit", "saved", token_prefix=token[:8])
     return jsonify({"status": "success", "token": token})
+
+
+@app.route("/api/upload-drawing", methods=["POST"])
+def upload_drawing():
+    token = request.form.get("token")
+    file = request.files.get("file")
+    if not token or not file:
+        return jsonify({"status": "error", "message": "Missing token or file"}), 400
+
+    upload_dir = os.path.join("luxscale", "uploads")
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
+
+    filename = f"{token}_drawing.png"
+    filepath = os.path.join(upload_dir, filename)
+    file.save(filepath)
+
+    return jsonify({"status": "success", "message": "Drawing uploaded", "path": filepath})
 
 
 @app.route("/api/get", methods=["GET"])

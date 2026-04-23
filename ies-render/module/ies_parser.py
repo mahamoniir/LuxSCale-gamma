@@ -1,6 +1,5 @@
 import os
-from collections import deque, namedtuple
-import math
+from collections import namedtuple
 import platform
 
 
@@ -37,8 +36,17 @@ def get_next_numbers(f, count):
         line = next(f, None)
         if line is None:
             raise BrokenIESFileError("Unexpected end of file while reading numbers")
-        numbers.extend(line.split())
+        numbers.extend(line.replace(",", " ").split())
     return numbers[:count]
+
+
+# LM-63 photometric type codes:
+#   1 = Type C (gamma + C-plane azimuth)
+#   2 = Type B (beta + B-plane)
+#   3 = Type A (alpha + A-plane)
+PHOTOMETRIC_TYPE_NAMES = {1: "C", 2: "B", 3: "A"}
+VERTICAL_ANGLE_LABELS = {1: "gamma", 2: "beta", 3: "alpha"}
+HORIZONTAL_ANGLE_LABELS = {1: "C", 2: "B", 3: "A"}
 
 
 IESData = namedtuple(
@@ -55,7 +63,12 @@ IESData = namedtuple(
         "length",  # length (float)
         "height",  # height (float)
         "shape",  # shape (str)
+        "photometric_type",  # LM-63 code: 1=C, 2=B, 3=A
+        "photometric_type_name",  # "C" / "B" / "A"
+        "vertical_angle_label",  # gamma / beta / alpha
+        "horizontal_angle_label",  # C / B / A
     ],
+    defaults=(1, "C", "gamma", "C"),
 )
 
 
@@ -73,87 +86,91 @@ class IES_Parser:
             raise FileNotFoundError("IES file not found")
 
     def _parse(self) -> IESData:
-        def _parse_line(line: str) -> deque:
-            cleaned_line = line.replace(",", " ")
-            return deque(map(float, cleaned_line.split()))
-
         with open(
             self._ies_path,
             "r",
             encoding="Windows-1252" if platform.system() != "Windows" else None,
+            errors="replace",
         ) as f:
+            tilt_value = None
             for line in f:
-                if line.strip() == "TILT=NONE":
+                stripped = line.strip()
+                if stripped.startswith("TILT="):
+                    tilt_value = stripped
                     break
+            if tilt_value is None:
+                raise BrokenIESFileError("TILT= line not found")
+            if tilt_value != "TILT=NONE":
+                raise BrokenIESFileError(
+                    f"Unsupported TILT value: {tilt_value} (only TILT=NONE is handled)"
+                )
 
             # * Get sizes and other data (13 numbers)
-            light_data = get_next_numbers(f, 13)  # f.readline().split()
-            num_lamps = int(light_data[0])
-            lumens_per_lamp = float(light_data[1])
-            multiplier = float(light_data[2])
-            num_vertical_angles = int(light_data[3])
-            num_horizontal_angles = int(light_data[4])
-            unit = int(light_data[6])  # 1 - feet, 2 - meters
-            k = 1 if unit == 2 else 0.3048
-            width = float(light_data[7]) * k
-            length = float(light_data[8]) * k
-            height = float(light_data[9]) * k
+            light_data = get_next_numbers(f, 13)
+            try:
+                num_lamps = int(float(light_data[0]))
+                lumens_per_lamp = float(light_data[1])
+                multiplier = float(light_data[2])
+                num_vertical_angles = int(float(light_data[3]))
+                num_horizontal_angles = int(float(light_data[4]))
+                photometric_type = int(float(light_data[5]))
+                unit = int(float(light_data[6]))  # 1 - feet, 2 - meters
+                raw_width = float(light_data[7])
+                raw_length = float(light_data[8])
+                raw_height = float(light_data[9])
+            except (TypeError, ValueError):
+                raise BrokenIESFileError("Malformed photometric header values")
+
+            if photometric_type not in (1, 2, 3):
+                photometric_type = 1
+            photometric_type_name = PHOTOMETRIC_TYPE_NAMES.get(photometric_type, "C")
+            vertical_angle_label = VERTICAL_ANGLE_LABELS.get(photometric_type, "gamma")
+            horizontal_angle_label = HORIZONTAL_ANGLE_LABELS.get(photometric_type, "C")
+
+            k = 1.0 if unit == 2 else 0.3048
+            width = abs(raw_width) * k
+            length = abs(raw_length) * k
+            height = abs(raw_height) * k
             # TODO (all types of shapes)
-            if all(i == 0 for i in [width, length, height]):
+            if all(i == 0 for i in [raw_width, raw_length, raw_height]):
                 shape = "point"
-            elif height == 0 and width < 0 and width == length:
+            elif raw_height == 0 and raw_width < 0 and raw_width == raw_length:
                 shape = "circular"
-            elif height == 0 and width < 0 and width != length:
+            elif raw_height == 0 and raw_width < 0 and raw_width != raw_length:
                 shape = "ellipse"
-            elif height != 0 and width < 0 and width == length:
+            elif raw_height != 0 and raw_width < 0 and raw_width == raw_length:
                 shape = "vertical cylinder"
-            elif height != 0 and width != length and length < 0:
+            elif raw_height != 0 and raw_width != raw_length and raw_length < 0:
                 shape = "vertical ellipsoidal cylinder"
-            elif height < 0 and width == length == height:
+            elif raw_height < 0 and raw_width == raw_length == raw_height:
                 shape = "sphere"
-            elif height < 0 and width < 0 and length < 0:
+            elif raw_height < 0 and raw_width < 0 and raw_length < 0:
                 shape = "ellipsoidal spheroid"
-            elif height == 0:
+            elif raw_height == 0:
                 shape = "rectangular"
             else:
                 shape = "rectangular with luminous sides"
 
             # * Read vertical angles
-            vertical_angles, horizontal_angles, candela_values = (
-                deque(),
-                deque(),
-                deque(),
-            )
-
-            while True:
-                vertical_angles.extend(_parse_line(f.readline()))
-                if len(vertical_angles) == num_vertical_angles:
-                    break
-            vertical_angles = list(vertical_angles)
-            if int(vertical_angles[0]) not in [0, 90, -90] or int(
-                vertical_angles[-1]
-            ) not in [90, 180]:
-                raise BrokenIESFileError()
+            vertical_angles = [float(v) for v in get_next_numbers(f, num_vertical_angles)]
+            if len(vertical_angles) != num_vertical_angles:
+                raise BrokenIESFileError("Unexpected vertical angle count")
 
             # * Read horizontal angles
-            while True:
-                horizontal_angles.extend(_parse_line(f.readline()))
-                if len(horizontal_angles) == num_horizontal_angles:
-                    break
-            horizontal_angles = list(horizontal_angles)
-            if int(horizontal_angles[0]) not in [0, -90] or int(
-                horizontal_angles[-1]
-            ) not in [0, 90, 180, 360]:
-                raise BrokenIESFileError()
+            horizontal_angles = [float(h) for h in get_next_numbers(f, num_horizontal_angles)]
+            if len(horizontal_angles) != num_horizontal_angles:
+                raise BrokenIESFileError("Unexpected horizontal angle count")
 
             # * Read candela values
-            while True:
-                candela_values.extend(_parse_line(f.readline()))
-                if len(candela_values) == num_vertical_angles * num_horizontal_angles:
-                    break
+            expected_candela_count = num_vertical_angles * num_horizontal_angles
+            candela_values = [float(c) for c in get_next_numbers(f, expected_candela_count)]
+            if len(candela_values) != expected_candela_count:
+                raise BrokenIESFileError("Unexpected candela value count")
 
-            candela_values = list(candela_values)
-            max_value = max(candela_values)
+            # Apply multiplier to candela values per IES LM-63.
+            if abs(multiplier - 1.0) > 1e-9:
+                candela_values = [c * multiplier for c in candela_values]
+            max_value = max(candela_values) if candela_values else 0.0
 
             # * assert len(vert_angles)*len(horizontal_angles) == len(candelas)
             if len(vertical_angles) * len(horizontal_angles) != len(candela_values):
@@ -173,10 +190,14 @@ class IES_Parser:
                 num_lamps,
                 lumens_per_lamp,
                 multiplier,
-                math.fabs(width),
-                math.fabs(length),
-                math.fabs(height),
+                float(width),
+                float(length),
+                float(height),
                 shape,
+                int(photometric_type),
+                str(photometric_type_name),
+                str(vertical_angle_label),
+                str(horizontal_angle_label),
             )
 
     @property
@@ -196,14 +217,20 @@ class IES_Parser:
         reset = "\033[0m"
         message = f"IES file: {underline}{blue}{self._ies_path}{reset}\n"
         message += f"{bold}Shape:\t{self._ies_data.shape}, L={self._ies_data.length}m, H={self._ies_data.height}m{reset}\n"
+        message += (
+            f"{bold}Photometric type:\t"
+            f"{self._ies_data.photometric_type_name} "
+            f"(code {self._ies_data.photometric_type}){reset}\n"
+        )
         vert_str = f"{self._ies_data.vertical_angles[0]}, {self._ies_data.vertical_angles[1]}, ... {self._ies_data.vertical_angles[-1]} [{len(self.ies_data.vertical_angles)} values]\n"
         message += f"{bold}{underline}{green}Vertical:{reset}\n\t" + vert_str
 
         if len(self._ies_data.horizontal_angles) == 1:
             hor_str = f"{self._ies_data.horizontal_angles[0]}\n"
             message += f"{bold}{underline}{green}Horizontal:{reset}\n\t" + hor_str
+            start_h = self._ies_data.horizontal_angles[0]
             message += f"{bold}{underline}{green}Candela:{reset}\n\t" + ", ".join(
-                map(str, self._ies_data.candela_values[0.0])
+                map(str, self._ies_data.candela_values[start_h])
             )
         else:
             hor_str = f"{self._ies_data.horizontal_angles[0]}, {self._ies_data.horizontal_angles[1]}, ... {self._ies_data.horizontal_angles[-1]} [{len(self.ies_data.horizontal_angles)} values]\n"
