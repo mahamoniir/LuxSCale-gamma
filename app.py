@@ -70,30 +70,107 @@ else:
         "https://www.shortcircuit.company",
         "https://web-production-8d09d.up.railway.app",
     ]
-CORS(
-    app,
-    supports_credentials=True,
-    origins=_cors_origins,
-    allow_headers=["Content-Type", "X-Admin-Token"],
-    methods=["GET", "POST", "PUT", "OPTIONS", "DELETE"],
+_CORS_RAILWAY = re.compile(
+    r"^https://[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.up\.railway\.app(?::\d+)?$",
+    re.IGNORECASE,
 )
 
 
-# Ensure OPTIONS preflight always returns 200 (some Flask+gunicorn setups
-# return 404 on OPTIONS before the CORS middleware can attach headers).
-@app.before_request
-def handle_preflight():
-    if request.method == "OPTIONS":
-        from flask import make_response
+def _cors_effective_origin_to_echo(request_origin: str) -> str | None:
+    """
+    Return the Origin value to echo in Access-Control-Allow-Origin, or None if not allowed.
+    Browsers do not use script-supplied 'Origin' on fetch; they send the real document origin
+    (e.g. any *.up.railway.app, http://localhost:PORT). The allowlist is exact in _cors_origins
+    plus: any host on *.up.railway.app, and localhost/127.0.0.1 with any port when a no-port
+    form appears in the list.
+    """
+    o = (request_origin or "").strip()
+    if not o or o.lower() == "null":
+        return None
+    o = o.rstrip("/")
+    for a in _cors_origins:
+        aa = a.strip().rstrip("/")
+        if o == aa or o.lower() == aa.lower():
+            return o  # echo client casing; browsers send canonical
+    if _CORS_RAILWAY.match(o):
+        return o
+    u = urllib.parse.urlparse(o)
+    if not u.scheme or not (u.netloc or u.path):
+        return None
+    host = (u.hostname or "").lower()
+    port = u.port
+    if not host:
+        return None
+    for a in _cors_origins:
+        a = a.strip()
+        v = urllib.parse.urlparse(a)
+        h2 = (v.hostname or "").lower()
+        p2 = v.port
+        if h2 != host:
+            continue
+        if p2 is not None and port is not None and p2 == port:
+            return o
+        if p2 is not None and port is None and h2 in ("localhost", "127.0.0.1") and a.count(":") <= 2:
+            # e.g. http://127.0.0.1:80 — rare
+            continue
+        if p2 is None and h2 in ("localhost", "127.0.0.1") and a.rstrip("/").endswith(
+            f"//{h2}" if "://" in a else h2
+        ):
+            if h2 == "localhost" and a.startswith("http://localhost/"):
+                if port in (None, 80) or a == "http://localhost":
+                    return o
+    # localhost / 127.0.0.1 with any port if list has bare http://host (no :port) forms
+    if host in ("localhost", "127.0.0.1"):
+        for a in _cors_origins:
+            a = a.strip()
+            v = urllib.parse.urlparse(a)
+            h2 = (v.hostname or "").lower()
+            if h2 != host:
+                continue
+            if v.port is None and not re.search(
+                r":\d+(\D|$)", a.split("://", 1)[-1] if "://" in a else ""
+            ):
+                return o
+    return None
 
-        resp = make_response("", 204)
-        origin = request.headers.get("Origin", "")
-        if any(origin == o for o in _cors_origins):
-            resp.headers["Access-Control-Allow-Origin"] = origin
-        resp.headers["Access-Control-Allow-Headers"] = "Content-Type, X-Admin-Token"
-        resp.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, OPTIONS, DELETE"
-        resp.headers["Access-Control-Allow-Credentials"] = "true"
-        return resp
+
+def _cors_flex_localhost_regexes_enabled() -> bool:
+    """If the allowlist includes bare http(s)://localhost or 127.0.0.1 (no :port), allow any port via regex."""
+    for a in _cors_origins:
+        a = a.strip()
+        v = urllib.parse.urlparse(a)
+        h2 = (v.hostname or "").lower()
+        if h2 not in ("localhost", "127.0.0.1"):
+            continue
+        if v.port is not None:
+            continue
+        rest = a.split("://", 1)[-1] if "://" in a else ""
+        if re.search(r":\d+(\D|$)", rest):
+            continue
+        return True
+    return False
+
+
+# flask-cors only supports static strings and regexes in `origins` (no callables; unknown kwargs are ignored).
+# With supports_credentials=True, the default origin wildcard + always_send can yield *no* ACAO when
+# Origin is missing, or no echo for credentialed cross-origin. Use an explicit list + always_send=False.
+_cors_flask_origins: list = list(_cors_origins) + [_CORS_RAILWAY]
+if _cors_flex_localhost_regexes_enabled():
+    _cors_flask_origins.extend(
+        [
+            re.compile(r"^https?://localhost(:\d+)?$", re.IGNORECASE),
+            re.compile(r"^https?://127\.0\.0\.1(:\d+)?$", re.IGNORECASE),
+        ]
+    )
+
+CORS(
+    app,
+    supports_credentials=True,
+    origins=_cors_flask_origins,
+    always_send=False,
+    allow_headers=["Content-Type", "X-Admin-Token"],
+    methods=["GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"],
+)
 
 
 _ADMIN_TOKEN_LOCK = threading.Lock()
@@ -346,8 +423,10 @@ def _extract_irf_from_request(data: dict) -> tuple:
     return None, None
 
 
-@app.route("/calculate", methods=["POST"])
+@app.route("/calculate", methods=["POST", "OPTIONS"])
 def api_calculate():
+    if request.method == "OPTIONS":
+        return Response(status=204)
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
         log_step("POST /calculate", "reject: not JSON object")
