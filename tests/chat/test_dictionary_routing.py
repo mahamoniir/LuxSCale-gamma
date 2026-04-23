@@ -56,6 +56,22 @@ class DictionaryRoutingTests(unittest.TestCase):
         self.assertEqual("calculate_lighting_fast", out.get("engine"))
         self.assertTrue(str(out.get("answer") or "").strip().startswith("📐 Inferred Inputs"))
 
+    def test_hospital_resolves_planner_place(self) -> None:
+        question = (
+            "if i have a room with dimensions (8 * 7 * 2) in a hospital patient ward "
+            "and how many fixtures i need"
+        )
+        with patch.object(chat_service, "ask_gemini_text", side_effect=AssertionError("Gemini should not be called")):
+            out = chat_service.handle_question(
+                question,
+                session_id=self._session("planning-hosp"),
+                context_messages=[],
+            )
+        self.assertEqual("planning_local", out.get("source"))
+        a = str(out.get("answer") or "")
+        self.assertIn("Hospital", a)
+        self.assertIn("6.39", a)
+
     def test_planning_local_arabic_question(self) -> None:
         question = "لو عندي مصنع ورق ابعاده (90*80*4) ايه الستاندارد بتاعه وايه الكشافات اللي هحتاجها"
         with patch.object(chat_service, "ask_gemini_text", side_effect=AssertionError("Gemini should not be called")):
@@ -84,6 +100,17 @@ class DictionaryRoutingTests(unittest.TestCase):
             )
         self.assertEqual("planning_local", out.get("source"))
         self.assertTrue(str(out.get("answer") or "").strip().startswith("📐 Inferred Inputs"))
+
+    def test_tool_usage_static_no_gate(self) -> None:
+        with patch.object(chat_service, "ask_gemini_text", side_effect=AssertionError("Gemini should not be called")):
+            out = chat_service.handle_question(
+                "How do I use LuxSCale?",
+                session_id=self._session("tool-usage"),
+                context_messages=[],
+            )
+        self.assertEqual("static_local", out.get("source"))
+        self.assertEqual("tool_usage", out.get("intent_key"))
+        self.assertIn("EN 12464", str(out.get("answer") or ""))
 
     def test_company_identity_static_no_gate(self) -> None:
         with patch.object(chat_service, "ask_gemini_text", side_effect=AssertionError("Gemini should not be called")):
@@ -139,6 +166,20 @@ class DictionaryRoutingTests(unittest.TestCase):
                 context_messages=[],
             )
         self.assertEqual("planning_local", out.get("source"))
+
+    def test_yes_no_requires_standalone(self) -> None:
+        self.assertIsNone(chat_service._yes_no_value("yes, please add more u0 detail"))
+        self.assertTrue(chat_service._yes_no_value("yes") is True)
+
+    def test_reconcile_flags_competitor(self) -> None:
+        r = chat_service._reconcile_gemini_answer(
+            "Try Philips BVP for this factory layout. EN 9999 applies.",
+            "What lux for a factory 10m x 10m?",
+            "en",
+        )
+        notes = r.get("notes") or []
+        self.assertIn("competitor_brand_note", notes)
+        self.assertIn("not endorsed", (r.get("answer") or "").lower())
 
     def test_format_local_calc_warns_when_u0_non_compliant(self) -> None:
         opts = [

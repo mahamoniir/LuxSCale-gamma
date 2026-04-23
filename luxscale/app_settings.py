@@ -19,6 +19,11 @@ DEFAULT_SETTINGS: Dict[str, Any] = {
         "results_batch_size": 3,
         "show_compliance_margin_fields": True,
     },
+    "chat": {
+        # If True, only call Gemini when the question has a domain signal
+        # (standards, quantities, or lighting vocabulary from match_hints).
+        "strict_lighting_for_gemini": False,
+    },
     "calc": {
         "max_solutions_total": 80,
         "interior_height_min_m": 2.0,

@@ -4,28 +4,28 @@ overview: Tighten the chat so factual answers come from your JSONs, fixture map,
 todos:
   - id: json-tool-usage-intent
     content: Add tool_usage (and answers) to fixed_responses.json static_intents only; EN+AR localized to avoid translate path
-    status: in_progress
+    status: completed
   - id: hospital-canonical-standards
     content: Register Hospital + sub-types in heuristics/keywords; map EN 12464-1 rows (e.g. 5.3 zone) in standards_cleaned + keywords before mixed-place rules
-    status: pending
+    status: completed
   - id: planning-disambiguation
     content: After hospital has a home, add conflict rules for hospital vs factory in one message
-    status: pending
+    status: completed
   - id: reconcile-fixture-brands
     content: Extend _reconcile_gemini_answer with non-catalog fixture/brand audit + correction note
-    status: pending
+    status: completed
   - id: yesno-standalone
     content: Tighten _yes_no_value to standalone tokens only (feedback hijack)
-    status: pending
+    status: completed
   - id: cache-reload-dicts
     content: Admin reload endpoint or mtime-based invalidation for lru_cache loaders
-    status: pending
+    status: completed
   - id: gemini-prompt-allowlist
     content: Expand _chat_prompt with full allowlist + standard line; optional strict_lighting_for_gemini
-    status: pending
+    status: completed
   - id: tests-routing
     content: tests/chat for tool intent, hospital planning, yes/no, reconcile
-    status: pending
+    status: completed
 isProject: false
 ---
 

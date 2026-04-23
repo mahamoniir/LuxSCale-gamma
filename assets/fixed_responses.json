@@ -99,6 +99,18 @@
       "response_id": "non_lighting_scope"
     },
     {
+      "id": "tool_usage_menu",
+      "label": "How to use LuxSCale",
+      "question": "How do I use LuxSCale and what does it do?",
+      "response_id": "tool_usage_overview"
+    },
+    {
+      "id": "std_hospital_menu",
+      "label": "Hospital / healthcare lighting targets",
+      "question": "What are typical lux and U0 for hospital ward areas?",
+      "response_id": "std_hospital_general"
+    },
+    {
       "id": "company_designer_info",
       "label": "LuxSCale Team and Official Website",
       "question": "Who designed LuxSCale and what is the official company website?",
@@ -106,6 +118,62 @@
     }
   ],
   "responses": [
+    {
+      "id": "tool_usage_overview",
+      "canonical_key": "tool_usage_overview",
+      "label": "What LuxSCale Does and How to Use It",
+      "question": "What does LuxSCale do and how do I use the tool?",
+      "variants": [
+        "how do i use luxscale",
+        "what does this tool do",
+        "how to get a lux recommendation",
+        "ايه فايدة الاداة"
+      ],
+      "tags": [
+        "product",
+        "onboarding"
+      ],
+      "generated_answer": "LuxSCale is a web assistant for early-stage lighting design: you enter or draw room size and use context (space type) to obtain EN 12464-1 aligned target lux, uniformity (U0), and photometric checks using the Short Circuit fixture/IES library. Open the main LuxSCale app, set room dimensions, confirm height and place type, then read lux/U0 and suggested catalog fixtures with linked IES where available.",
+      "answer": "LuxSCale is a web assistant for early-stage lighting design: you enter or draw room size and use context (space type) to obtain EN 12464-1 aligned target lux, uniformity (U0), and photometric checks using the Short Circuit fixture/IES library. Open the main LuxSCale app, set room dimensions, confirm height and place type, then read lux/U0 and suggested catalog fixtures with linked IES where available.",
+      "answer_variants": [
+        "LuxSCale is a web assistant for early-stage lighting design: you enter or draw room size and use context (space type) to obtain EN 12464-1 aligned target lux, uniformity (U0), and photometric checks using the Short Circuit fixture/IES library. Open the main LuxSCale app, set room dimensions, confirm height and place type, then read lux/U0 and suggested catalog fixtures with linked IES where available."
+      ],
+      "source_refs": [
+        "product"
+      ],
+      "localized_answers": {
+        "en": "LuxSCale is a web assistant for early-stage lighting design: you enter or draw room size and use context (space type) to obtain EN 12464-1 aligned target lux, uniformity (U0), and photometric checks using the Short Circuit fixture/IES library. Open the main LuxSCale app, set room dimensions, confirm height and place type, then read lux/U0 and suggested catalog fixtures with linked IES where available.",
+        "ar": "LuxSCale أداة ويب للتصميم المبدئي للإضاءة: تدخل أبعاد الغرفة (أو ترسمها) وتبين نوع المكان لتحصل على أهداف lux وU0 متماشية مع EN 12464-1 وتحققات فوتومترية مبنية على مكتبة Short Circuit (تركيبات وIES). افتح تطبيق LuxSCale، حدد أبعاد الغرفة وارتفاع التركيب ونوع المكان، ثم اطّلع على lux وU0 وتركيبات الكتالوج المرتبطة بIES عند توفرها."
+      }
+    },
+    {
+      "id": "std_hospital_general",
+      "canonical_key": "std_hospital_general",
+      "label": "Hospital / healthcare general ward targets",
+      "question": "What are typical lux and U0 for hospital ward areas?",
+      "variants": [
+        "hospital ward lighting",
+        "health care premises lighting",
+        "examination room hospital lux"
+      ],
+      "tags": [
+        "standards",
+        "hospital",
+        "en12464"
+      ],
+      "generated_answer": "For general ward lighting in health care premises, EN 12464-1 table 6.39 (ref 6.39.1) gives maintained illuminance about 100 lx on the reference surface with U0 >= 0.4 and CRI (Ra) >= 80 for general lighting. More demanding tasks (reading, examination) use higher rows in the same table. Always confirm the exact task row in the standard.",
+      "answer": "For general ward lighting in health care premises, EN 12464-1 table 6.39 (ref 6.39.1) gives maintained illuminance about 100 lx on the reference surface with U0 >= 0.4 and CRI (Ra) >= 80 for general lighting. More demanding tasks (reading, examination) use higher rows in the same table. Always confirm the exact task row in the standard.",
+      "answer_variants": [
+        "For general ward lighting in health care premises, EN 12464-1 table 6.39 (ref 6.39.1) gives maintained illuminance about 100 lx on the reference surface with U0 >= 0.4 and CRI (Ra) >= 80 for general lighting. More demanding tasks (reading, examination) use higher rows in the same table. Always confirm the exact task row in the standard."
+      ],
+      "source_refs": [
+        "6.39.1"
+      ],
+      "localized_answers": {
+        "en": "For general ward lighting in health care premises, EN 12464-1 table 6.39 (ref 6.39.1) gives about 100 lx on the reference surface with U0 >= 0.4 and Ra >= 80. Higher tasks (reading, examination) use stricter rows in table 6.39.",
+        "ar": "للإنارة العامة في المستشفى (أجنحة المرضى) يشير EN 12464-1، جدول 6.39 (مرجع 6.39.1) إلى نحو 100 lux على سطح المرجع مع U0 >= 0.4 وRa >= 80. لمهمات أدق (قراءة، فحوص) تُستخدم صفوف أعلى داخل نفس الجدول."
+      }
+    },
     {
       "id": "std_office_target",
       "canonical_key": "std_office_target",
@@ -655,6 +723,41 @@
         "ان\\s*12464",
         "(?:اي|ايه)\\s*معيار\\s*(?:شغال|مستخدم)",
         "المعيار\\s+اللي\\s+بتستخدمه"
+      ]
+    },
+    {
+      "intent_key": "tool_usage",
+      "response_id": "tool_usage_overview",
+      "answers": {
+        "en": "LuxSCale is a web assistant for early-stage lighting design: you enter or draw room size and use context (space type) to obtain EN 12464-1 aligned target lux, uniformity (U0), and photometric checks using the Short Circuit fixture/IES library. Open the main LuxSCale app, set room dimensions, confirm height and place type, then read lux/U0 and suggested catalog fixtures with linked IES where available.",
+        "ar": "LuxSCale أداة ويب للتصميم المبدئي للإضاءة: تدخل أبعاد الغرفة (أو ترسمها) وتبين نوع المكان لتحصل على أهداف lux وU0 متماشية مع EN 12464-1 وتحققات فوتومترية مبنية على مكتبة Short Circuit (تركيبات وIES). افتح تطبيق LuxSCale، حدد أبعاد الغرفة وارتفاع التركيب ونوع المكان، ثم اطّلع على lux وU0 وتركيبات الكتالوج المرتبطة بIES عند توفرها."
+      },
+      "patterns_en": [
+        "\\bwhat\\s+(?:is|does)\\s+luxscale\\b(?!\\s+.*\\b(?:code|standard|en\\s*12464|12464|lux\\s+target|u0)\\b)",
+        "\\bhow\\s+do\\s+i\\s+use\\s+(?:luxscale|this|the\\s+(?:tool|app|software|assistant|program))\\b",
+        "\\bhow\\s+to\\s+use\\s+luxscale\\b",
+        "\\bwhat\\s+does\\s+this\\s+(?:tool|app|software|program|assistant)\\s+do\\b",
+        "\\bwhat\\s+can\\s+luxscale\\s+do\\b",
+        "\\bhow\\s+does\\s+luxscale\\s+work\\b",
+        "\\b(?:describe|explain)\\s+luxscale\\b",
+        "\\bhow\\s+to\\s+get\\s+(?:a\\s+)?(?:lux|lighting|fixture)\\s*(?:recommendation|suggestion|count)?\\b"
+      ],
+      "patterns_ar": [
+        "ايه\\s+فايد[ةه]\\s+الادا[ةه]",
+        "ايه\\s+فايد[ةه]\\s+الاداه",
+        "ايه\\s+الادا[ةه]\\s+دي",
+        "ما\\s+ه[يى]\\s+الادا[ةه]",
+        "ايه\\s+بيعمل[هه]\\s+الادا[ةه]",
+        "ايه\\s+بيعمل[هه]\\s+البرنامج",
+        "ازا[يى]\\s+استخدم\\s+luxscale",
+        "كيف\\s+استخدم\\s+luxscale",
+        "ازا[يى]\\s+اعمل\\s+تصميم",
+        "ايه\\s+ميز[ةه]\\s+الادا[ةه]"
+      ],
+      "patterns_norm": [
+        "what is luxscale",
+        "how to use luxscale",
+        "ايه فايدة الاداة"
       ]
     },
     {

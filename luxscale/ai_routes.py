@@ -261,6 +261,31 @@ def api_chat_feedback():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
+@ai_bp.route("/api/chat/reload-dicts", methods=["POST"])
+def api_chat_reload_dicts():
+    """
+    Clear LRU-backed loaders for fixed responses, standards, aliases, and catalog.
+    No regeneration — use for edited JSON/standards to apply without app restart.
+    """
+    if not _ai_admin_ok():
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+    from luxscale.chat_service import clear_all_chat_dict_caches, chat_health
+
+    log_step("POST /api/chat/reload-dicts", "start")
+    try:
+        clear_all_chat_dict_caches()
+        return jsonify(
+            {
+                "status": "success",
+                "message": "Dictionaries and fixture map caches cleared; next request reloads from disk",
+                "chat_health": chat_health(),
+            }
+        )
+    except Exception as e:
+        log_exception("POST /api/chat/reload-dicts", e)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
 @ai_bp.route("/api/chat/fixed-responses/regenerate", methods=["POST"])
 def api_chat_fixed_responses_regenerate():
     """

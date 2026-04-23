@@ -22,7 +22,7 @@ from functools import lru_cache
 from typing import Any, Dict, List, Optional, Tuple
 
 from luxscale.app_logging import log_step, log_exception
-from luxscale.app_settings import get_maintenance_factor
+from luxscale.app_settings import get_maintenance_factor, load_app_settings
 from luxscale.fixture_catalog import load_fixture_map_document
 from luxscale.gemini_manager import ask_gemini_text
 from luxscale.lighting_calc import calculate_lighting
@@ -49,13 +49,22 @@ _CLARIFY_LOCK = threading.Lock()
 _CLARIFY_STATE: Dict[str, Dict[str, Any]] = {}
 _CLARIFY_TTL_SECONDS = 12 * 60
 
+# Non-Short-Circuit / competitor luminaire name markers (advisory in Gemini reconcile).
+_KNOWN_COMPETITOR_LUMINAIRE_RE = re.compile(
+    r"\b(?:philips|osram|ledvance|trilux|zumtobel|erco|bega|siteco|sitel|cooper|dial|fagerhult|meanwell|mean\s*well|lithonia|acuity|hubbell)\b",
+    re.IGNORECASE,
+)
+_SC_CATALOG_TOKEN = re.compile(
+    r"(?i)\b(SC|SV|SP|BL)(?:\s*[-/]\s*|\s+)([A-Za-z0-9-]{2,})\b",
+)
 _IDENTITY_PLACE_EN = re.compile(
     r"\b(?:i(?:'m| am| work in| have a| run a| own a|'ve got a)|"
     r"this is a|it(?:'s| is) a|we(?:'re| are) a|for a)\b",
     re.IGNORECASE,
 )
 _IDENTITY_PLACE_AR = re.compile(
-    r"(?:أنا|انا|عندي|عندنا|لدي|لدينا|هذا|ده|احنا|نحن)\s+(?:مصنع|مكتب|مخزن|مدرسة|محل|متجر|ممر|ورشة)",
+    r"(?:أنا|انا|عندي|عندنا|لدي|لدينا|هذا|ده|احنا|نحن)\s+"
+    r"(?:مصنع|مكتب|مخزن|مدرسة|محل|متجر|ممر|ورشة|مستشفى|مستوصف|عيادة|جناح)",
     re.UNICODE,
 )
 
@@ -491,21 +500,6 @@ def _translate_answer_if_needed(answer: str, reply_language: str) -> str:
     return text
 
 
-@lru_cache(maxsize=1)
-def load_aliases_doc() -> Dict[str, Any]:
-    for path in ALIASES_PATHS:
-        if not os.path.isfile(path):
-            continue
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            if isinstance(data, dict):
-                return data
-        except Exception as e:
-            log_exception("chat_service.load_aliases_doc", e)
-    return {"places": {}, "parameters": {}}
-
-
 def _alias_query_patterns() -> Tuple[re.Pattern[str], ...]:
     return (
         re.compile(r"\balias(?:es)?\s+(?:of|for)\s+([\w\u0600-\u06FF/\-\s]+)\??$", re.IGNORECASE),
@@ -522,6 +516,152 @@ def _is_alias_query(question: str) -> bool:
         return False
     markers = ("alias", "aliases", "synonym", "synonyms", "مرادف", "مرادفات")
     return any(m in qn for m in markers)
+
+
+def _heuristic_place_tuples() -> List[Tuple[str, Tuple[str, ...]]]:
+    return [
+        (
+            "Hospital",
+            (
+                "hospital",
+                "hospitals",
+                "healthcare",
+                "health care",
+                "clinic",
+                "clinics",
+                "medical center",
+                "maternity",
+                "ward",
+                "wards",
+                "patient room",
+                "examination room",
+                "icu",
+                "مستشفى",
+                "مستشفيات",
+                "مريض",
+                "مرضى",
+                "مريضة",
+                "عيادة",
+                "عيادات",
+                "رعاية",
+                "غرفة مريض",
+            ),
+        ),
+        (
+            "Classroom",
+            (
+                "school",
+                "schools",
+                "classroom",
+                "class room",
+                "lecture",
+                "training room",
+                "فصل",
+                "مدرسة",
+                "قاعة دراسية",
+            ),
+        ),
+        (
+            "Office",
+            (
+                "office",
+                "offices",
+                "workspace",
+                "workstation",
+                "meeting room",
+                "مكتب",
+                "مكاتب",
+                "غرفة اجتماع",
+            ),
+        ),
+        (
+            "Factory",
+            (
+                "factory",
+                "factories",
+                "industrial",
+                "manufacturing",
+                "workshop",
+                "plant",
+                "مصنع",
+                "مصانع",
+                "ورشة",
+            ),
+        ),
+        (
+            "Warehouse",
+            (
+                "warehouse",
+                "warehouses",
+                "storage",
+                "stockroom",
+                "gangway",
+                "مخزن",
+                "مستودع",
+                "مستودعات",
+            ),
+        ),
+        (
+            "Corridor",
+            (
+                "corridor",
+                "corridors",
+                "hallway",
+                "passageway",
+                "ممر",
+                "ممرات",
+            ),
+        ),
+        (
+            "Retail",
+            (
+                "retail",
+                "shop",
+                "shops",
+                "store",
+                "stores",
+                "sales area",
+                "showroom",
+                "متجر",
+                "محل",
+                "منطقة بيع",
+            ),
+        ),
+    ]
+
+
+def _best_canonical_from_heuristics(
+    base: str,
+    token_forms: set,
+) -> Optional[str]:
+    hits: List[Tuple[str, int]] = []
+    for canonical, kws in _heuristic_place_tuples():
+        for kw in kws:
+            kn = _normalize_text(kw)
+            if not kn:
+                continue
+            if kn in token_forms:
+                pos = int(base.find(kn))
+                if pos < 0:
+                    pos = 0
+                hits.append((canonical, pos))
+            else:
+                try:
+                    m = re.search(r"\b" + re.escape(kn) + r"\b", base)
+                except re.error:
+                    m = None
+                if m:
+                    hits.append((canonical, int(m.end())))
+    if not hits:
+        return None
+    by_c: Dict[str, int] = {}
+    for c, endpos in hits:
+        by_c[c] = max(by_c.get(c, -1), int(endpos))
+    if len(by_c) == 1:
+        return next(iter(by_c))
+    if "Hospital" in by_c and "Factory" in by_c:
+        return "Hospital"
+    return str(max(by_c.items(), key=lambda x: int(x[1]))[0])
 
 
 def _extract_alias_target(question: str) -> str:
@@ -997,22 +1137,9 @@ def _detect_place_canonical(text: str) -> Optional[str]:
         if tok.startswith("بال") and len(tok) > 4:
             token_forms.add(tok[3:])
 
-    # Fast heuristics for common user wording (including plural forms).
-    heuristic_place_keywords = [
-        ("Classroom", ("school", "schools", "classroom", "class room", "lecture", "training room", "فصل", "مدرسة", "قاعة دراسية")),
-        ("Office", ("office", "offices", "workspace", "workstation", "meeting room", "مكتب", "مكاتب", "غرفة اجتماع")),
-        ("Factory", ("factory", "factories", "industrial", "manufacturing", "workshop", "plant", "مصنع", "مصانع", "ورشة")),
-        ("Warehouse", ("warehouse", "warehouses", "storage", "stockroom", "gangway", "مخزن", "مستودع", "مستودعات")),
-        ("Corridor", ("corridor", "corridors", "hallway", "passageway", "ممر", "ممرات")),
-        ("Retail", ("retail", "shop", "shops", "store", "stores", "sales area", "showroom", "متجر", "محل", "منطقة بيع")),
-    ]
-    for canonical, kws in heuristic_place_keywords:
-        for kw in kws:
-            kw_norm = _normalize_text(kw)
-            if kw_norm and kw_norm in token_forms:
-                return canonical
-            if kw_norm and re.search(r"\b" + re.escape(kw_norm) + r"\b", base):
-                return canonical
+    heur = _best_canonical_from_heuristics(base, token_forms)
+    if heur is not None:
+        return heur
 
     target_forms = {base}
     if base.endswith("ies") and len(base) > 3:
@@ -1094,6 +1221,7 @@ def _place_tag_candidates(place_name: str) -> set[str]:
     mapping = {
         "classroom": {"classroom", "school", "education"},
         "office": {"office", "workstation", "meeting"},
+        "hospital": {"hospital", "health", "clinic", "ward", "health care", "patient", "maternity"},
         "factory": {"factory", "industrial", "manufacturing", "workshop"},
         "warehouse": {"warehouse", "storage", "gangway"},
         "corridor": {"corridor", "circulation", "hallway"},
@@ -1239,8 +1367,22 @@ def _extract_rectangle_sides(
     return None
 
 
-@lru_cache(maxsize=1)
-def _load_standards_cleaned() -> List[Dict[str, Any]]:
+def _mtime_key(path: str) -> float:
+    try:
+        return float(os.path.getmtime(path)) if os.path.isfile(path) else 0.0
+    except OSError:
+        return 0.0
+
+
+def _aliases_mkey() -> float:
+    t = 0.0
+    for p in ALIASES_PATHS:
+        t = max(t, _mtime_key(p))
+    return t
+
+
+@lru_cache(maxsize=4)
+def _load_standards_cleaned_stamped(mtime_key: float) -> List[Dict[str, Any]]:
     if not os.path.isfile(STANDARDS_CLEANED_PATH):
         return []
     try:
@@ -1252,10 +1394,14 @@ def _load_standards_cleaned() -> List[Dict[str, Any]]:
         return []
 
 
-@lru_cache(maxsize=1)
-def _standards_row_by_ref_map() -> Dict[str, Dict[str, Any]]:
+def _load_standards_cleaned() -> List[Dict[str, Any]]:
+    return _load_standards_cleaned_stamped(_mtime_key(STANDARDS_CLEANED_PATH))
+
+
+@lru_cache(maxsize=4)
+def _standards_row_by_ref_map_stamped(mtime_key: float) -> Dict[str, Dict[str, Any]]:
     out: Dict[str, Dict[str, Any]] = {}
-    for row in _load_standards_cleaned():
+    for row in _load_standards_cleaned_stamped(mtime_key):
         if not isinstance(row, dict):
             continue
         ref = str(row.get("ref_no") or "").strip()
@@ -1264,12 +1410,16 @@ def _standards_row_by_ref_map() -> Dict[str, Dict[str, Any]]:
     return out
 
 
+def _standards_row_by_ref_map() -> Dict[str, Dict[str, Any]]:
+    return _standards_row_by_ref_map_stamped(_mtime_key(STANDARDS_CLEANED_PATH))
+
+
 def _standard_row_by_ref(ref_no: str) -> Optional[Dict[str, Any]]:
     return _standards_row_by_ref_map().get(str(ref_no or "").strip())
 
 
-@lru_cache(maxsize=1)
-def _load_standards_keywords() -> Dict[str, Any]:
+@lru_cache(maxsize=4)
+def _load_standards_keywords_stamped(mtime_key: float) -> Dict[str, Any]:
     if not os.path.isfile(STANDARDS_KEYWORDS_PATH):
         return {}
     try:
@@ -1279,6 +1429,10 @@ def _load_standards_keywords() -> Dict[str, Any]:
     except Exception as e:
         log_exception("chat_service._load_standards_keywords", e)
         return {}
+
+
+def _load_standards_keywords() -> Dict[str, Any]:
+    return _load_standards_keywords_stamped(_mtime_key(STANDARDS_KEYWORDS_PATH))
 
 
 def _extract_standard_ref_no(question: str) -> Optional[str]:
@@ -1339,9 +1493,12 @@ def _resolve_fixture_planning_inputs(question: str) -> Dict[str, Any]:
     standard_ref_no = _extract_standard_ref_no(question)
     standard_row = _standard_row_by_ref(standard_ref_no or "")
     if standard_row is None:
-        standard_row = _best_standard_row_by_keywords(question)
-    if standard_row is None:
+        # Prefer a row mapped to the resolved canonical place (fixed_responses) before
+        # keyword hits, so e.g. "hospital" + the word "ward" does not jump to 6.37.2
+        # hospital-corridor rows in standards_keywords.
         standard_row = _standard_row_for_place(place_name)
+    if standard_row is None:
+        standard_row = _best_standard_row_by_keywords(question)
     if standard_row is not None:
         standard_ref_no = str(standard_row.get("ref_no") or standard_ref_no or "").strip() or None
 
@@ -1374,6 +1531,7 @@ def _missing_required_fields_for_planning(params: Dict[str, Any]) -> List[str]:
 
 _PLACE_STANDARD_TARGETS: Dict[str, Tuple[float, float, float]] = {
     "Factory": (200.0, 0.4, 20.0),
+    "Hospital": (200.0, 0.4, 80.0),
     "Warehouse": (100.0, 0.4, 20.0),
     "Office": (500.0, 0.6, 80.0),
     "Classroom": (300.0, 0.6, 80.0),
@@ -2421,8 +2579,8 @@ def _local_fixture_count_guidance(
     }
 
 
-@lru_cache(maxsize=1)
-def load_fixed_responses_doc() -> Dict[str, Any]:
+@lru_cache(maxsize=4)
+def _load_fixed_responses_doc_stamped(mtime_key: float) -> Dict[str, Any]:
     if not os.path.isfile(FIXED_RESPONSES_PATH):
         return {"responses": [], "menu_items": [], "match_hints": {}}
     try:
@@ -2435,8 +2593,46 @@ def load_fixed_responses_doc() -> Dict[str, Any]:
     return {"responses": [], "menu_items": [], "match_hints": {}}
 
 
+def load_fixed_responses_doc() -> Dict[str, Any]:
+    return _load_fixed_responses_doc_stamped(_mtime_key(FIXED_RESPONSES_PATH))
+
+
+@lru_cache(maxsize=4)
+def _load_aliases_doc_stamped(mtime_key: float) -> Dict[str, Any]:
+    for path in ALIASES_PATHS:
+        if not os.path.isfile(path):
+            continue
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict):
+                return data
+        except Exception as e:
+            log_exception("chat_service.load_aliases_doc", e)
+    return {"places": {}, "parameters": {}}
+
+
+def load_aliases_doc() -> Dict[str, Any]:
+    return _load_aliases_doc_stamped(_aliases_mkey())
+
+
+def clear_all_chat_dict_caches() -> None:
+    _load_fixed_responses_doc_stamped.cache_clear()
+    _load_aliases_doc_stamped.cache_clear()
+    _load_standards_cleaned_stamped.cache_clear()
+    _load_standards_keywords_stamped.cache_clear()
+    _standards_row_by_ref_map_stamped.cache_clear()
+    _catalog_luminaire_names_stamped.cache_clear()
+    try:
+        from luxscale.fixture_catalog import clear_fixture_map_cache
+
+        clear_fixture_map_cache()
+    except Exception as e:
+        log_exception("chat_service.clear_all_chat_dict_caches", e)
+
+
 def clear_fixed_responses_cache() -> None:
-    load_fixed_responses_doc.cache_clear()
+    clear_all_chat_dict_caches()
 
 
 def _all_candidates_for_response(r: dict) -> List[str]:
@@ -2950,6 +3146,38 @@ def _fixture_entries() -> List[dict]:
     return list(doc.get("entries") or [])
 
 
+def _fixture_map_mtime_key() -> float:
+    from luxscale.ies_dataset_config import active_fixture_map_basename
+
+    p = os.path.join(project_root(), "assets", str(active_fixture_map_basename() or ""))
+    return _mtime_key(p)
+
+
+@lru_cache(maxsize=4)
+def _catalog_luminaire_names_stamped(mtime_key: float) -> frozenset:
+    out: set = set()
+    for e in _fixture_entries():
+        n = str(e.get("api_luminaire_name") or "").strip()
+        if n:
+            out.add(n.lower())
+    return frozenset(out)
+
+
+def _catalog_luminaire_names() -> set:
+    return set(_catalog_luminaire_names_stamped(_fixture_map_mtime_key()))
+
+
+def _strict_lighting_for_gemini() -> bool:
+    try:
+        return bool(
+            (load_app_settings() or {})
+            .get("chat", {})
+            .get("strict_lighting_for_gemini", False)
+        )
+    except Exception:
+        return False
+
+
 def _fixture_family_score(question_norm: str, family_name: str) -> float:
     n = family_name.lower()
     score = 0.0
@@ -3064,6 +3292,21 @@ def _chat_context_lines(context_messages: List[Dict[str, str]]) -> str:
     return "\n".join(lines)
 
 
+def _compact_luminaire_allowlist(max_names: int = 48) -> str:
+    names: List[str] = []
+    seen: set = set()
+    for e in _fixture_entries() or []:
+        n = str((e or {}).get("api_luminaire_name") or "").strip()
+        if n and n.lower() not in seen:
+            seen.add(n.lower())
+            names.append(n)
+        if len(names) >= int(max_names):
+            break
+    if not names:
+        return ""
+    return "Luminaire name allowlist (use only these labels if naming products): " + ", ".join(names)
+
+
 def _chat_prompt(
     question: str,
     fixtures: List[dict],
@@ -3075,13 +3318,17 @@ def _chat_prompt(
         "You are LuxSCale lighting assistant. "
         f"Reply in short plain {lang_name} (max 6 lines). "
         "If data is not enough, ask for room dimensions + target lux/U0. "
-        "Do not invent fixture names outside provided fixture list. "
+        "Cite only EN 12464-1 for applicable workplace/indoor task lighting; do not substitute other building codes. "
+        "Mention only Short Circuit / SC/SV catalog luminaire labels. "
+        "Do not name competitor manufacturers. "
         "If recommending fixtures, include name + watt + one short reason."
     )
     fixture_ctx = _fixture_context_lines(fixtures)
+    allow_ctx = _compact_luminaire_allowlist(48)
     context_ctx = _chat_context_lines(context_messages or [])
     return (
         f"{base}\n\n"
+        f"{allow_ctx}\n\n"
         f"{context_ctx}\n\n"
         f"User question:\n{question}\n\n"
         f"{fixture_ctx}"
@@ -3168,6 +3415,37 @@ def _reconcile_gemini_answer(
             if correction not in reconciled_text:
                 reconciled_text = f"{reconciled_text}\n\n{correction}".strip()
 
+    if _KNOWN_COMPETITOR_LUMINAIRE_RE.search(reconciled_text):
+        if "competitor_brand_note" not in notes:
+            notes.append("competitor_brand_note")
+        fix = (
+            "ملاحظة: LuxSCale يرتبط بكتالوج Short Circuit فقط؛ اذكر أسماء تنافسية (مكتوبة فوق) غير مؤكدة."
+            if reply_language == "ar"
+            else "Note: LuxSCale is grounded to the Short Circuit catalog; unverified competitor names above are not endorsed."
+        )
+        if fix not in reconciled_text:
+            reconciled_text = f"{reconciled_text}\n\n{fix}".strip()
+
+    cat_names = _catalog_luminaire_names()
+    for m in _SC_CATALOG_TOKEN.finditer(reconciled_text):
+        pfx = str(m.group(1) or "")
+        sfx = str(m.group(2) or "")
+        merged = f"{pfx}-{sfx}"
+        cands = {merged.lower(), f"{pfx} {sfx}".lower(), (pfx + sfx).lower()}
+        if cands & cat_names:
+            continue
+        if "unknown_catalog_luminaire_token" in notes:
+            break
+        notes.append("unknown_catalog_luminaire_token")
+        ufix = (
+            f"تصويب: لا يظهر {merged} في كتالوج LuxSCale — استخدم التركيبات المسردة فقط (SC/SV)."
+            if reply_language == "ar"
+            else f"Catalog note: {merged} is not listed in the LuxSCale map — use SC/SV fixtures from the provided list only."
+        )
+        if ufix not in reconciled_text:
+            reconciled_text = f"{reconciled_text}\n\n{ufix}".strip()
+        break
+
     return {
         "answer": reconciled_text,
         "reconciled": bool(notes),
@@ -3205,8 +3483,34 @@ def _gemini_fallback_answer(
             "gate_meta": gate_meta,
         }
 
+    if (not force_allow) and _strict_lighting_for_gemini():
+        det = _domain_signal_details(str(raw_q or ""))
+        cats = det.get("categories") or {}
+        if not any(
+            bool(cats.get(x))
+            for x in ("domain_noun", "standard_ref", "quantity")
+        ) and not re.search(
+            r"(?i)(luxscale|short\s*circuit|lux-scal)",
+            str(raw_q or ""),
+        ):
+            log_step(
+                "chat_service.gemini_fallback",
+                "blocked_by_strict_setting",
+            )
+            return {
+                "source": "out_of_scope",
+                "answer": _out_of_scope_answer(reply_language=reply_language),
+                "requires_confirmation": False,
+                "show_yes_no": False,
+                "confidence": 1.0,
+                "fixtures": [],
+                "gate_meta": {**(gate_meta or {}), "strict_mode": True},
+            }
+
     need_fixtures = _is_recommendation_intent(question)
-    fixtures = recommend_fixtures_from_catalog(question, max_items=3) if need_fixtures else []
+    fixtures = (
+        recommend_fixtures_from_catalog(question, max_items=5) if need_fixtures else []
+    )
     prompt = _chat_prompt(
         question,
         fixtures,
@@ -3260,10 +3564,42 @@ def _gemini_fallback_answer(
 
 
 def _yes_no_value(value: str) -> Optional[bool]:
-    v = _normalize_text(value)
-    if v in {"yes", "y", "ok", "correct", "نعم", "ايوه", "ايوا", "تمام"}:
+    """
+    Return True/False only when the message is *only* a short yes/no (no extra words),
+    to avoid hijacking a normal follow-up (e.g. "yes, but what about u0?").
+    """
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    v = _normalize_text(raw)
+    v = " ".join(v.split())
+    yes_1 = {
+        "yes",
+        "y",
+        "ok",
+        "correct",
+        "fine",
+        "yep",
+        "yeah",
+        "نعم",
+        "ايوه",
+        "ايوا",
+        "تمام",
+        "اه",
+    }
+    no_1 = {
+        "no",
+        "n",
+        "nope",
+        "not",
+        "no.",
+        "لا",
+        "لأ",
+    }
+    no_2 = {"not really", "of course not"}
+    if v in yes_1:
         return True
-    if v in {"no", "n", "nope", "not really", "لا", "لأ"}:
+    if v in no_1 or v in no_2:
         return False
     return None
 

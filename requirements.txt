@@ -16,6 +16,8 @@ numpy
 scipy>=1.9.0
 Pillow>=9.0.0
 reportlab
+fpdf2
 fpdf
 openai
 google-generativeai
+gunicorn
