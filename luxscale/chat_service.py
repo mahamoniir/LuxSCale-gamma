@@ -2780,6 +2780,12 @@ def _domain_signal_details(question: str) -> Dict[str, Any]:
         r"\bbeam[-\s]?angle\b",
         r"\b(half|full|narrow)\s+beam\b",
         r"\b(photometr|luminous|intensity|candela|lumen)\b",
+        r"\bglare\b",
+        r"\bugr\b",
+        r"\bveil\w*",
+        r"\bdiscomfort\s+glare\b",
+        r"\bdaylight(ing)?\b",
+        r"\bcircadian\b",
     ]
     for pat in qty_patterns:
         if re.search(pat, qn, flags=re.IGNORECASE):
@@ -2817,6 +2823,36 @@ def _domain_signal_details(question: str) -> Dict[str, Any]:
     }
 
 
+_RE_EDU_Q_START = re.compile(
+    r"^(?:what\s+is|what\s+are|define(?:\s+the)?|meaning\s+of|explain)\s+",
+    re.IGNORECASE,
+)
+_RE_EDU_Q_TAIL_LIGHT = re.compile(
+    r"(?i)(^|\b)(glare|ugr|veil|lens|lense|lenses|lumen|lux|ies\b|candela|"
+    r"illumin|photo|photometr|photopic|mesopic|scotopic|troland|nits?|"
+    r"kelvin|cri|cct|u0|u1|ra\b|beam|baff|baffle|cut[-\s]?off|fixture|lamp|"
+    r"luminaires?|downlight|high[\s-]?bay|flood|daylight|circadian|flick|strob|"
+    r"diffus|reflector?|prism|optics?|uniform(ity)?)\b"
+)
+
+
+def _is_educational_lighting_what_is(question: str) -> bool:
+    """
+    Short definition-style questions (no long static list): send to the LLM when the tail
+    names a common lighting/photometry/vision term.
+    """
+    qn = _normalize_text(str(question or ""))
+    if not qn or len(qn) > 200:
+        return False
+    m = _RE_EDU_Q_START.match(qn)
+    if not m:
+        return False
+    tail = qn[m.end() :].strip()
+    if not tail or len(tail.split()) > 9:
+        return False
+    return bool(_RE_EDU_Q_TAIL_LIGHT.search(tail))
+
+
 def lighting_topic_gate(
     question: str,
     effective_question: Optional[str] = None,
@@ -2837,6 +2873,15 @@ def lighting_topic_gate(
     raw_categories = raw_details["categories"]
     raw_signal_count = sum(1 for v in raw_categories.values() if v)
     raw_has_negative = bool(raw_details["negative_en_hits"] or raw_details["negative_ar_hits"])
+
+    # Short "what is …" / "define …" on lighting topics → LLM, not clarify (no big static table).
+    edu_what = _is_educational_lighting_what_is(raw)
+    if edu_what and raw_signal_count == 0:
+        raw_signal_count = 1
+        raw_categories = {
+            **raw_categories,
+            "domain_noun": True,
+        }
 
     place_standard_hit = _find_place_standard_response(raw) is not None
     weak = semantic_fixed_match(raw, threshold=0.46)
