@@ -169,8 +169,11 @@ def api_chat_health():
     return jsonify({"status": "success", **chat_health()})
 
 
-@ai_bp.route("/api/chat/ask", methods=["POST"])
+@ai_bp.route("/api/chat/ask", methods=["POST", "OPTIONS"])
 def api_chat_ask():
+    if request.method == "OPTIONS":
+        return Response(status=204)
+
     from luxscale.chat_service import handle_question
 
     allowed, err_resp, ip = _chat_request_guard()

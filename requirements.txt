@@ -20,5 +20,4 @@ fpdf2
 fpdf
 openai
 google-generativeai
-anthropic
 gunicorn

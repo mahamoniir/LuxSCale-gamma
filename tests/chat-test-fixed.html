@@ -179,9 +179,9 @@ body{font-family:var(--font-body);background:var(--sc-black);color:var(--sc-whit
     <div class="sidebar-section">
       <div class="sidebar-label" style="color:#f59e0b;">⚠ Backend Required</div>
       <div class="info-block" style="border-left:3px solid #f59e0b;">
-        AI mode requires your backend to expose:<br>
-        <code style="font-size:10px;background:#000;color:#f59e0b;padding:2px 4px;border-radius:2px;">POST /api/ai/chat</code><br><br>
-        Your server must proxy the Anthropic API call using a server-side API key. Direct browser → Anthropic calls are blocked by CORS.
+        AI / Hybrid mode uses the LuxScale chat engine:<br>
+        <code style="font-size:10px;background:#000;color:#f59e0b;padding:2px 4px;border-radius:2px;">POST /api/chat/ask</code><br><br>
+        (Gemini / Ollama / local logic on the server — no third-party browser API keys.)
       </div>
     </div>
 
@@ -193,7 +193,7 @@ body{font-family:var(--font-body);background:var(--sc-black);color:var(--sc-whit
         <button class="mode-btn" id="modeHybrid" onclick="setMode('hybrid')">HYBRID</button>
       </div>
       <div class="info-block">
-        <strong>AI:</strong> Full Claude API with SC knowledge<br>
+        <strong>AI:</strong> Server chat (LuxScale) with SC knowledge<br>
         <strong>Fixed:</strong> Pre-loaded Q&amp;A only<br>
         <strong>Hybrid:</strong> Fixed first, AI fallback
       </div>
@@ -240,6 +240,8 @@ let BASE_URL = 'https://web-production-8d09d.up.railway.app';
 let chatMode = 'ai';
 let isLoading = false;
 let conversationHistory = [];
+/** @type {string} from LuxScale /api/chat/ask session_id (persist across messages) */
+let chatSessionId = "";
 
 // ============================================================
 // FULL KNOWLEDGE BASE — inline from project JSON files
@@ -305,59 +307,6 @@ const KB = {
 };
 
 // ============================================================
-// SYSTEM PROMPT — built from knowledge base
-// ============================================================
-function buildSystemPrompt() {
-  const luxTable = Object.entries(KB.lux_targets).map(([k,v]) => `  - ${k}: ${v.lux} lux, U0 ≥ ${v.u0}`).join('\n');
-  const prodTable = KB.products.map(p => `  - ${p.name} | ${p.power} | ${p.efficacy} | ${p.ip} | ${p.cct} | Warranty: ${p.warranty} | ${p.url}`).join('\n');
-  const famTable = KB.fixture_families.map(f => `  - ${f.api_name} (${f.power_w}W sample, IES: ${f.ies})`).join('\n');
-  const faqBlock = KB.fixed_qa.map(q => `  Q: ${q.q}\n  A: ${q.a}`).join('\n\n');
-
-  return `You are LuxScaleAI, the intelligent lighting design assistant for Short Circuit Company (https://shortcircuit.company).
-
-You speak English and Arabic fluently. Respond in the same language as the user.
-
-## WHO YOU ARE
-You help lighting designers, engineers, and architects with:
-- Lighting standards and EN 12464-1 targets
-- Product selection from the SC catalog
-- IES photometry and calculation guidance
-- Using the LuxScaleAI web tool at shortcircuit.company
-
-## COMPANY: SHORT CIRCUIT COMPANY
-- Website: https://shortcircuit.company
-- Products: High-quality LED fixtures (SC series = premium 160lm/W, SV/ECO = value 110-130lm/W)
-- Driver: SC driver™ on premium SC series; TLG on ECO/SV series
-- All SC series: Philips 3030 chip, IP65 IK08, AC 85-300V, 2200K-6500K CCT
-- Warranty: SC series 5/7 years, ECO/SV 2 years
-
-## STANDARD: EN 12464-1
-LuxScaleAI uses EN 12464-1 for all calculations. Maintenance factor default: ${KB.maintenance_factor_default}.
-
-## LUX TARGETS (EN 12464-1)
-${luxTable}
-
-## PRODUCT CATALOG (19 products)
-${prodTable}
-
-## FIXTURE FAMILIES IN IES LIBRARY (7 families)
-${famTable}
-
-## FREQUENTLY ASKED (answer these precisely)
-${faqBlock}
-
-## FORMATTING RULES
-- Use tables for product comparisons (HTML table format)
-- Use product cards with name, specs, and URL link for single-product recommendations
-- Bold important values like lux targets and U0 minimums
-- For calculations: show formula, then result
-- Keep answers concise but complete
-- For Arabic: use Arabic font (IBM Plex Sans Arabic) — but you are text-only so just respond naturally in Arabic
-- Never invent products not in the catalog above
-- Always provide the product URL when recommending a specific product`;
-}
-
-// ============================================================
 // FIXED RESPONSE MATCHING
 // ============================================================
 function matchFixed(text) {
@@ -378,42 +327,39 @@ function matchFixed(text) {
 }
 
 // ============================================================
-// API CALL
+// API CALL (LuxScale POST /api/chat/ask)
 // ============================================================
 async function callClaudeAPI(userMessage) {
-  // NOTE: Direct calls to api.anthropic.com are blocked by CORS in the browser.
-  // All Claude API requests must be proxied through your backend server.
-  // Your backend at BASE_URL should expose a POST /api/ai/chat endpoint that:
-  //   - Accepts { system, messages } in the request body
-  //   - Forwards to Anthropic's API using the server-side API key
-  //   - Returns { text: "..." } (or the raw Anthropic response)
-  const messages = [
-    ...conversationHistory,
-    { role: 'user', content: userMessage }
-  ];
-
-  const resp = await fetch(`${BASE_URL}/api/ai/chat`, {
+  const context = conversationHistory.map(m => ({
+    role: m.role,
+    text: m.content,
+    content: m.content
+  }));
+  const resp = await fetch(`${BASE_URL}/api/chat/ask`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      system: buildSystemPrompt(),
-      messages
+      message: userMessage,
+      session_id: chatSessionId || undefined,
+      context_messages: context
     })
   });
 
-  if (!resp.ok) {
-    const err = await resp.json().catch(()=>({error:{message:'Unknown error'}}));
-    throw new Error(err.error?.message || `HTTP ${resp.status} from backend`);
+  const data = await resp.json().catch(()=>({}));
+  if (!resp.ok || (data && data.status === 'error')) {
+    const msg = (data && data.message) || (data && data.error) || `HTTP ${resp.status} from backend`;
+    throw new Error(msg);
   }
 
-  const data = await resp.json();
-  // Support both proxied { text: "..." } and raw Anthropic response shapes
-  const text = data.text || data.content?.find(b=>b.type==='text')?.text || 'No response';
-  
-  conversationHistory.push({ role:'user', content:userMessage });
-  conversationHistory.push({ role:'assistant', content:text });
+  if (data.session_id) chatSessionId = String(data.session_id);
+  const text = (data.answer != null && data.answer !== '')
+    ? String(data.answer)
+    : (data.text != null ? String(data.text) : 'No response');
+
+  conversationHistory.push({ role: 'user', content: userMessage });
+  conversationHistory.push({ role: 'assistant', content: text });
   if (conversationHistory.length > 20) conversationHistory = conversationHistory.slice(-20);
-  
+
   return text;
 }
 

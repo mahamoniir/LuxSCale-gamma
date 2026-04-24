@@ -998,45 +998,6 @@ def api_report_solution(token, sol_index):
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/api/ai/chat", methods=["POST", "OPTIONS"])
-def api_ai_chat_proxy():
-    """
-    Proxy for the LuxScaleAI Smart Chat widget.
-    Accepts { system: str, messages: [{role, content}] } from the browser,
-    forwards to Anthropic's API server-side (no CORS/key-exposure issue),
-    and returns { text: str }.
-    """
-    import anthropic  # pip install anthropic
-
-    data = request.get_json(silent=True)
-    if not isinstance(data, dict):
-        return jsonify({"error": "Expected JSON body"}), 400
-
-    system_prompt = data.get("system", "")
-    messages = data.get("messages", [])
-
-    if not messages:
-        return jsonify({"error": "messages array is required"}), 400
-
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        return jsonify({"error": "ANTHROPIC_API_KEY not set on server"}), 500
-
-    try:
-        client = anthropic.Anthropic(api_key=api_key)
-        response = client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=1000,
-            system=system_prompt,
-            messages=messages,
-        )
-        text = response.content[0].text if response.content else ""
-        return jsonify({"text": text})
-    except Exception as e:
-        log_exception("POST /api/ai/chat", e)
-        return jsonify({"error": str(e)}), 500
-
-
 # ───────────────────────────────────────────────────────────────────────────────
 
 

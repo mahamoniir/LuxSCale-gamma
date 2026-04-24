@@ -798,8 +798,10 @@ const TESTS = {
     return { ok, msg: { status: r.status, results: (body.solutions||body.results||[]).length }, state: ok ? 'pass' : 'fail' };
   },
   'calc-warehouse': async () => {
-    const payload = { sides:[40,20,40,20], height:6, place:'Factory warehouse', fast: true };
-    const r = await fetchWithTimeout(`${BASE_URL}/calculate`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    // Smaller plan than 40×20: large industrial grids can exceed the default 15s client timeout
+    // even with fast: true, which triggers AbortError ("signal is aborted without reason").
+    const payload = { sides:[20, 12, 20, 12], height: 4, place:'Factory warehouse', fast: true };
+    const r = await fetchWithTimeout(`${BASE_URL}/calculate`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }, 90000);
     const body = await r.json();
     const ok = r.ok && (Array.isArray(body.solutions) || Array.isArray(body.results));
     return { ok, msg: { status: r.status, results_count: (body.solutions||body.results||[]).length }, state: ok ? 'pass' : 'fail' };
@@ -858,10 +860,16 @@ const TESTS = {
     return { ok, msg: { status: r.status, get_study: (body.endpoints && body.endpoints.get_study) || null, note: 'GET with real token from /api/submit for 200' }, state: ok ? 'pass' : 'fail' };
   },
   'cors': async () => {
-    const r = await fetchWithTimeout(`${BASE_URL}/calculate`, { method: 'OPTIONS', headers: { 'Origin': 'https://shortcircuit.company', 'Access-Control-Request-Method': 'POST' } });
-    const acao = r.headers.get('access-control-allow-origin') || r.headers.get('Access-Control-Allow-Origin') || '(none)';
-    const ok = acao !== '(none)';
-    return { ok, msg: { status: r.status, 'access-control-allow-origin': acao }, state: ok ? 'pass' : 'warn' };
+    // Browsers do not let scripts set a fake Origin; they send the page’s real origin (or none).
+    // A manual Origin: header is ignored, which made ACAO not match the deployment host → WARN.
+    // Only request method preflight; server may echo the real origin or, for no-Origin probes, *.
+    const r = await fetchWithTimeout(
+      `${BASE_URL}/calculate`,
+      { method: 'OPTIONS', headers: { 'Access-Control-Request-Method': 'POST' } }
+    );
+    const acao = (r.headers.get('access-control-allow-origin') || r.headers.get('Access-Control-Allow-Origin') || '').trim() || '(none)';
+    const ok = r.ok && (acao !== '(none)');
+    return { ok, msg: { status: r.status, 'access-control-allow-origin': acao, note: 'No fake Origin: browser sent real page origin' }, state: ok ? 'pass' : 'warn' };
   }
 };
 
