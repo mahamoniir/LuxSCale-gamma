@@ -1,3 +1,4 @@
 {
-  "api_base": "http://127.0.0.1:5000"
+  "api_base": "http://127.0.0.1:5000",
+  "remote_url": "https://web-production-8d09d.up.railway.app"
 }

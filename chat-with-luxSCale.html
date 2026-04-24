@@ -1149,15 +1149,23 @@ Tell me your room type, dimensions, and required lux/Uo to begin.</p>
           const host = String(window.location.hostname || "").trim();
           const pageProtocol = String(window.location.protocol || "").trim().toLowerCase();
           const sameHost5000 = host ? ("http://" + host + ":5000") : "";
-
-          // Common Flask defaults (always include, even when hostname is not localhost).
-          preferred.push("http://127.0.0.1:5000");
-          preferred.push("http://localhost:5000");
-          if (sameHost5000) {
-            preferred.push(sameHost5000);
+          var pageOrigin = "";
+          try {
+            pageOrigin = normalizeBase(String(window.location.origin || ""));
+          } catch (_e) {
+            pageOrigin = "";
           }
-          if (pageProtocol === "file:") {
+          if (pageOrigin && (pageProtocol === "http:" || pageProtocol === "https:")) {
+            preferred.push(pageOrigin);
+          }
+
+          // Local Flask. On https://, do not add http://127.0.0.1 (browsers block mixed content = "Failed to fetch").
+          if (pageProtocol !== "https:") {
             preferred.push("http://127.0.0.1:5000");
+            preferred.push("http://localhost:5000");
+            if (sameHost5000) {
+              preferred.push(sameHost5000);
+            }
           }
 
           // Dashboard-configured API base (written by Flask app.py)
@@ -1199,7 +1207,23 @@ Tell me your room type, dimensions, and required lux/Uo to begin.</p>
           fallback.push(relApiUrl.replace(/\/api\/chat\/menu$/, ""));
           fallback.push(window.location.origin);
 
-          return unique(preferred.concat(fallback).map(normalizeBase));
+          var allBases = unique(preferred.concat(fallback).map(normalizeBase));
+          if (pageProtocol === "https:") {
+            allBases = allBases.filter(function (b) {
+              var s = String(b || "").toLowerCase();
+              if (s.indexOf("http://127.0.0.1") === 0) return false;
+              if (s.indexOf("http://localhost") === 0) return false;
+              return true;
+            });
+            if (pageOrigin && allBases.indexOf(pageOrigin) < 0) {
+              allBases.unshift(pageOrigin);
+            } else if (pageOrigin) {
+              allBases = [pageOrigin].concat(
+                allBases.filter(function (x) { return x !== pageOrigin; })
+              );
+            }
+          }
+          return allBases;
         })();
 
         return backendBasesPromise;

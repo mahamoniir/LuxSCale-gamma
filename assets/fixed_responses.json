@@ -767,6 +767,27 @@
       ]
     },
     {
+      "intent_key": "lens_optical",
+      "response_id": "what_is_lens_optics",
+      "answers": {
+        "en": "A lens (in a luminaire) is an optical element that refracts and shapes light: it can narrow or spread the beam, control cutoff, and reduce glare. Common materials are glass or plastics with stable UV resistance. IES/CIE methods describe how distribution is reported; in projects, match lens choice to the task, mounting height, and the photometric IES. EN 12464-1 does not name lens brands, but the resulting beam affects lux and U0 on the workplane.",
+        "ar": "العدسة (في التركيب) عنصر بصري يكسر الضوء ويحدد شكل الحزمة: يضيق الانتشار أو يوسعه ويخفف الوهج. غالبًا زجاج أو لدائن مقاومة. طُرق IES/CIE تشرح تسجيل التوزيع الضوئي؛ اختر العدسة حسب المهمة وارتفاع التركيب وملف IES. EN 12464-1 لا يذكر علامات عدسات لكن ناتج الحزمة يؤثر في الإنارة والتجانس على سطح المهمة."
+      },
+      "patterns_en": [
+        "\\bwhat\\s+is\\s+(lens|lense|lenses)\\b",
+        "\\bwhat\\s+is\\s+a\\s+lens\\b",
+        "\\bdefine\\s+(a\\s+)?lens\\b",
+        "\\bwhat\\s+does\\s+a?\\s*lens\\s+do\\b"
+      ],
+      "patterns_ar": [
+        "ما\\s*ه(ي|و)\\s*العدس[ةه]?"
+      ],
+      "patterns_norm": [
+        "what is lens",
+        "what is lense"
+      ]
+    },
+    {
       "intent_key": "standard_name",
       "response_id": "std_code_name",
       "answers": {

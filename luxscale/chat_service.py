@@ -372,6 +372,19 @@ def _is_repeated_question(
     for prev in prior_users[-8:]:
         pn = _normalize_text(prev)
         pt = _tokenize(prev)
+        # "What is lux" / "What is lens" are different questions — do not mark repeat on shared prefix.
+        wiq = re.match(
+            r"^what\s+is\s+(\S+)\s*$",
+            qn,
+            flags=re.IGNORECASE,
+        )
+        wip = re.match(
+            r"^what\s+is\s+(\S+)\s*$",
+            pn,
+            flags=re.IGNORECASE,
+        )
+        if wiq and wip and wiq.group(1) != wip.group(1):
+            continue
         score = (_ratio(qn, pn) * 0.60) + (_jaccard(qt, pt) * 0.40)
         if score >= 0.82:
             return True
@@ -2659,6 +2672,23 @@ def exact_fixed_match(question: str) -> Optional[dict]:
     return None
 
 
+def _refine_semantic_to_response(
+    question: str,
+    sem: Optional[MatchResult],
+) -> Optional[MatchResult]:
+    """
+    Block false semantic wins (e.g. "what is lense" ~ candidate "what is en12464" for std_code_name).
+    """
+    if sem is None:
+        return None
+    raw_q = str(question or "").strip()
+    qn = _normalize_text(raw_q)
+    rid = str((sem.response or {}).get("id") or "")
+    if rid == "std_code_name" and (not _is_standard_name_lookup_question(raw_q, qn)):
+        return None
+    return sem
+
+
 def semantic_fixed_match(question: str, threshold: float = 0.56) -> Optional[MatchResult]:
     qn = _normalize_text(question)
     qt = _tokenize(question)
@@ -2678,7 +2708,7 @@ def semantic_fixed_match(question: str, threshold: float = 0.56) -> Optional[Mat
             if best is None or score > best.score:
                 best = MatchResult(response=r, score=score, matched_phrase=c)
     if best and best.score >= threshold:
-        return best
+        return _refine_semantic_to_response(question, best)
     return None
 
 
