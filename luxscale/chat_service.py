@@ -4,7 +4,7 @@ Chat fallback engine for Chat-with-LuxSCale.
 Flow:
 1) Exact fixed response
 2) Semantic fixed suggestion + yes/no confirmation
-3) Topic gate + Gemini short answer (lighting only)
+3) Topic gate + short LLM answer (lighting-focused; out-of-scope otherwise)
 """
 from __future__ import annotations
 
@@ -2313,8 +2313,8 @@ def _format_local_calc_answer(
     lines: List[str] = []
     std_ref = standard_ref_no or "EN 12464-1 (mapped)"
     task_line = task_or_activity or category or "-"
-    fill_note_ar = "تم استكمال بعض الحقول الناقصة محليًا عبر Gemini JSON." if used_gemini_fill else ""
-    fill_note_en = "Some missing fields were filled by Gemini JSON, then validated locally." if used_gemini_fill else ""
+    fill_note_ar = "تم استكمال بعض الحقول الناقصة تلقائيًا والتحقق منها محليًا." if used_gemini_fill else ""
+    fill_note_en = "Some missing fields were auto-completed, then checked locally." if used_gemini_fill else ""
 
     any_engine_non_compliant = False
     uses_lumen_fallback_only = False
@@ -2747,6 +2747,9 @@ def _domain_signal_details(question: str) -> Dict[str, Any]:
         r"\bcri\b",
         r"\bcct\b",
         r"\bkelvin\b",
+        r"\bbeam[-\s]?angle\b",
+        r"\b(half|full|narrow)\s+beam\b",
+        r"\b(photometr|luminous|intensity|candela|lumen)\b",
     ]
     for pat in qty_patterns:
         if re.search(pat, qn, flags=re.IGNORECASE):
@@ -2791,7 +2794,7 @@ def lighting_topic_gate(
 ) -> Any:
     """
     Local-only classifier.
-    Returns True if question is lighting-related and allowed to use Gemini fallback.
+    Returns True if question is lighting-related and allowed to use the LLM chat fallback.
     """
     raw = str(question or "").strip()
     effective = str(effective_question or "").strip()
@@ -3091,7 +3094,7 @@ def _clarify_answer(reply_language: str = "en", intent_hint: str = "generic") ->
                 "اذكر نوع المكان والأبعاد إذا كانت متاحة."
             )
         return (
-            "للتأكد أنني أفهم سؤالك بشكل صحيح قبل استخدام Gemini، "
+            "للتأكد أنني أفهم سؤالك بشكل صحيح: "
             "هل تسأل عن معيار إنارة (مثل EN 12464-1) أم عن قيمة مطلوبة لمساحة محددة "
             "(مثل lux/U0 للمكاتب أو المصانع)؟"
         )
@@ -3116,7 +3119,7 @@ def _clarify_answer(reply_language: str = "en", intent_hint: str = "generic") ->
             "Share place type and dimensions if available."
         )
     return (
-        "Before I use Gemini, let me confirm your intent: "
+        "Before I continue, a quick check: "
         "are you asking about a lighting standard name (for example EN 12464-1), "
         "or a required target value for a specific space (for example lux/U0 for offices or factories)?"
     )
@@ -3132,12 +3135,14 @@ def _session_id(raw: Optional[str]) -> str:
 def _out_of_scope_answer(reply_language: str = "en") -> str:
     if reply_language == "ar":
         return (
-            "يمكنني الإجابة فقط عن أسئلة الإضاءة الخاصة بـ LuxSCale. "
-            "اسأل عن مستويات lux أو U0 أو التركيبات أو IES أو توزيع الإنارة أو المطابقة للمعايير."
+            "هذا السؤال ليس عن الإضاءة. يقتصر مساعد LuxSCale على مواضيع الضوء والإضاءة "
+            "والفوتومترية ومعايير الإنارة. "
+            "لأسئلة أخرى يرجى استخدام أداة أو مصدر مناسب خارج LuxSCale."
         )
     return (
-        "I can only answer lighting-related questions for LuxSCale. "
-        "Please ask about lux targets, U0, fixtures, IES photometry, room layout, or compliance."
+        "This question is not about light or lighting. "
+        "LuxSCale only helps with light-related topics such as photometry, standards, fixtures, and design context. "
+        "For anything else, please use another source."
     )
 
 
@@ -3315,10 +3320,13 @@ def _chat_prompt(
 ) -> str:
     lang_name = "Arabic" if reply_language == "ar" else "English"
     base = (
-        "You are LuxSCale lighting assistant. "
+        "You are LuxSCale's lighting assistant. "
         f"Reply in short plain {lang_name} (max 6 lines). "
-        "If data is not enough, ask for room dimensions + target lux/U0. "
-        "Cite only EN 12464-1 for applicable workplace/indoor task lighting; do not substitute other building codes. "
+        "If the question is about light, lighting, photometry, fixtures, or lighting standards, "
+        "answer briefly; add 1–2 well-known reference pointers by name (for example IES, CIE, or EN 12464-1 where appropriate)—do not claim live web access. "
+        "If the question is clearly not about light or lighting, say in one line that you only help with light-related questions. "
+        "If more data is needed for a design, ask for room dimensions and target lux/U0. "
+        "For applicable workplace/indoor task lighting, anchor on EN 12464-1; do not substitute other building codes. "
         "Mention only Short Circuit / SC/SV catalog luminaire labels. "
         "Do not name competitor manufacturers. "
         "If recommending fixtures, include name + watt + one short reason."
@@ -3522,17 +3530,29 @@ def _gemini_fallback_answer(
     source = str(g.get("source") or "gemini")
 
     if not text:
-        if reply_language == "ar":
+        if str(source) == "ollama_unavailable":
+            if reply_language == "ar":
+                text = (
+                    "تعذّر الرد الآن. أعد المحاولة بعد لحظات. "
+                    "لحسابات داخل التطبيق أرسل أبعاد المساحة ونوع المكان."
+                )
+            else:
+                text = (
+                    "I could not get an answer right now. Please try again in a moment. "
+                    "For project numbers, use LuxSCale with your room size and place type."
+                )
+        elif reply_language == "ar":
             text = (
-                "تعذر الحصول على رد سحابي الآن. "
-                "يرجى إرسال أبعاد الغرفة، ارتفاع التركيب، وقيم lux/U0 المطلوبة ثم أعد المحاولة."
+                "تعذّر الرد الآن—قد يكون الاتصال مؤقتًا. أعد المحاولة لاحقًا. "
+                "لحسابات في LuxSCale أرسل أبعاد الغرفة ونوع المكان."
             )
         else:
             text = (
-                "I could not fetch a cloud answer right now. "
-                "Please share room dimensions, mounting height, and target lux/U0, and try again."
+                "I could not get an answer right now. Please try again in a few minutes. "
+                "This is often a temporary network issue. For lighting calculations, enter dimensions in LuxSCale; many standard topics are also in the app’s local help."
             )
-        source = "gemini_unavailable"
+        if str(source) != "ollama_unavailable":
+            source = "gemini_unavailable"
 
     if fixtures:
         text = _append_local_fixture_block(text, fixtures, reply_language=reply_language)

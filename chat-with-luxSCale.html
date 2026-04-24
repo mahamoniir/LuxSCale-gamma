@@ -397,7 +397,7 @@ Tell me your room type, dimensions, and required lux/Uo to begin.</p>
                 <textarea id="chatInput" class="chat-input" rows="2" placeholder="Type your lighting question..." required></textarea>
                 <button type="submit" class="btn btn-red">Send</button>
               </form>
-              <p class="chat-note">Powered by fixed responses + smart fallback + Gemini (lighting-only gate).</p>
+              <p class="chat-note">Quick answers from local guides, then the assistant for lighting questions (out-of-topic replies are declined).</p>
             </div>
           </section>
         </div>
@@ -955,18 +955,24 @@ Tell me your room type, dimensions, and required lux/Uo to begin.</p>
         const s = String(source || "").toLowerCase();
         if (s.startsWith("fixed_suggested")) return "suggested";
         if (s.startsWith("fixed")) return "fixed";
-        if (s.startsWith("gemini") || s.startsWith("ai")) return "ai";
+        if (s.startsWith("gemini") || s.startsWith("ai") || s.startsWith("ollama")) return "ai";
         if (s === "out_of_scope") return "scope";
+        if (s === "clarify_needed" || s.indexOf("unavailable") >= 0) return "scope";
+        if (s === "static_local" || s.startsWith("static_")) return "fixed";
         return "";
       }
 
       function sourceLabel(source) {
         const s = String(source || "").toLowerCase();
         if (s.startsWith("fixed_suggested")) return "Suggested";
-        if (s.startsWith("fixed_confirmed")) return "Fixed";
-        if (s.startsWith("fixed_exact")) return "Fixed";
-        if (s.startsWith("gemini")) return "AI";
-        if (s === "out_of_scope") return "Scope";
+        if (s.startsWith("fixed_confirmed") || s.startsWith("fixed_exact") || s.startsWith("alias")) return "Reference";
+        if (s === "static_local" || s.startsWith("static_")) return "Info";
+        if (s.startsWith("ollama") || s.startsWith("gemini") || s === "ai" || s === "gemini_unavailable") {
+          return "AI";
+        }
+        if (s === "out_of_scope") return "Not lighting";
+        if (s === "clarify_needed") return "Check";
+        if (s.indexOf("unavailable") >= 0) return "Offline";
         if (!s) return "";
         return s;
       }
@@ -1163,8 +1169,26 @@ Tell me your room type, dimensions, and required lux/Uo to begin.</p>
               const resp = await fetch(cfgUrl, { method: "GET" });
               if (!resp.ok) continue;
               const cfg = await resp.json().catch(function () { return {}; });
+              const remote = normalizeBase(cfg && cfg.remote_url);
               const apiBase = normalizeBase(cfg && cfg.api_base);
-              if (apiBase) preferred.unshift(apiBase);
+              var useLocal = false;
+              try {
+                useLocal = window.localStorage && localStorage.getItem("LUXSCALE_USE_LOCAL_API") === "1";
+              } catch (_ls) {
+                useLocal = false;
+              }
+              // If dashboard_config has remote_url (ALLOW_REMOTE in .env), that URL is tried first, then api_base. With ALLOW_REMOTE=false, Flask omits remote_url and local api_base/127.0.0.1:5000 wins. You can also set localStorage LUXSCALE_USE_LOCAL_API=1 to prefer api_base over remote.
+              const fromCfg = [];
+              if (useLocal) {
+                if (apiBase) fromCfg.push(apiBase);
+                if (remote) fromCfg.push(remote);
+              } else {
+                if (remote) fromCfg.push(remote);
+                if (apiBase) fromCfg.push(apiBase);
+              }
+              for (var bi = fromCfg.length - 1; bi >= 0; bi--) {
+                preferred.unshift(fromCfg[bi]);
+              }
             } catch (_err) {
               // ignore and continue
             }
@@ -1210,7 +1234,7 @@ Tell me your room type, dimensions, and required lux/Uo to begin.</p>
 
         if (!lastMeaningfulError) {
           lastMeaningfulError =
-            "Request failed with status 404. Chat API was not found. Start Flask backend on http://127.0.0.1:5000 or verify assets/dashboard_config.json api_base.";
+            "Request failed with status 404. Chat API was not found. Check assets/dashboard_config.json (api_base) and that Flask is running, or set ALLOW_REMOTE=false in .env so the page does not try REMOTE_URL first, or set localStorage LUXSCALE_USE_LOCAL_API to \"1\" to prefer the local base.";
         }
         throw new Error(lastMeaningfulError);
       }

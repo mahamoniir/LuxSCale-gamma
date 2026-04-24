@@ -441,6 +441,15 @@ def _auto_save_snapshot(result: dict) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Env / chat routing helpers
+# ---------------------------------------------------------------------------
+
+def _env_truthy(name: str) -> bool:
+    v = (os.environ.get(name) or "").strip().lower()
+    return v in ("1", "true", "yes", "on")
+
+
+# ---------------------------------------------------------------------------
 # Public interface
 # ---------------------------------------------------------------------------
 
@@ -451,11 +460,19 @@ def ask_gemini_text(
     temperature: float = 0.2,
 ) -> dict:
     """
-    Lightweight Gemini text answer helper for chat.
+    Text answer helper for chat (Ollama and/or Gemini).
 
-    Uses the same multi-account quota waterfall in ``gemini_config.json``.
+    Routing (Ollama first when enabled):
+      - ``CHAT_OLLAMA_FIRST=1`` or ``ollama_priority: true`` in ``gemini_config.json`` →
+        try local Ollama, then Gemini if empty
+      - ``CHAT_GEMINI_DISABLED=1`` → Ollama only (no Gemini; fails closed if Ollama is down)
+
+    **Note:** For which **HTTP base** the chat page calls (local Flask vs ``REMOTE_URL``), see
+    ``app.py`` / ``dashboard_config`` and ``ALLOW_REMOTE`` (not the same as this LLM routing).
+
+    Gemini uses the same multi-account quota waterfall in ``gemini_config.json``.
     Returns:
-      {"ok": bool, "text": str, "source": "gemini:<account>" | "gemini_unavailable"}
+      {"ok": bool, "text": str, "source": "ollama:local" | "gemini:<account>" | "ollama_unavailable" | "gemini_unavailable"}
     """
     prompt = (prompt or "").strip()
     if not prompt:
@@ -463,6 +480,36 @@ def ask_gemini_text(
 
     with _CONFIG_LOCK:
         cfg = _load_config()
+
+    ollama_cfg_priority = bool(cfg.get("ollama_priority", False))
+    ollama_first = _env_truthy("CHAT_OLLAMA_FIRST") or ollama_cfg_priority
+    gemini_off = _env_truthy("CHAT_GEMINI_DISABLED")
+
+    def _try_ollama_chat() -> Optional[dict]:
+        try:
+            from luxscale.ollama_manager import is_available, analyze_with_ollama
+            if not is_available():
+                return None
+            log_step("gemini_manager.ask_gemini_text", "trying Ollama (chat)")
+            raw = analyze_with_ollama(prompt)
+            text = (str(raw or "")).strip()
+            if not text:
+                return None
+            return {"ok": True, "text": text, "source": "ollama:local"}
+        except Exception as e:
+            log_exception("gemini_manager.ask_gemini_text.ollama", e)
+        return None
+
+    if ollama_first or gemini_off:
+        o = _try_ollama_chat()
+        if o is not None:
+            log_step("gemini_manager.ask_gemini_text", "success", source="ollama:local", length=len(o.get("text") or ""))
+            return o
+        if gemini_off:
+            log_step("gemini_manager.ask_gemini_text", "Ollama failed or empty; CHAT_GEMINI_DISABLED so Gemini skipped")
+            return {"ok": False, "text": "", "source": "ollama_unavailable"}
+        # ollama_first: fall through to Gemini
+        log_step("gemini_manager.ask_gemini_text", "Ollama failed or empty; trying Gemini (ollama first mode)")
 
     model = cfg.get("model", "gemini-3.1-flash-lite-preview")
     timeout = cfg.get("timeout_seconds", 15)

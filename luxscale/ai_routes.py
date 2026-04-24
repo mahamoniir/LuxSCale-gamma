@@ -33,6 +33,12 @@ _CHAT_IP_LAST: dict[str, float] = {}
 def register_ai_routes(app):
     """Call this in app.py after creating the Flask app."""
     app.register_blueprint(ai_bp)
+    try:
+        from luxscale.chat_file_log import init_chat_file_logging
+
+        init_chat_file_logging()
+    except OSError:
+        pass
 
 
 def _chat_client_ip() -> str:
@@ -174,6 +180,7 @@ def api_chat_ask():
     if request.method == "OPTIONS":
         return Response(status=204)
 
+    from luxscale.chat_file_log import append_chat_event
     from luxscale.chat_service import handle_question
 
     allowed, err_resp, ip = _chat_request_guard()
@@ -221,14 +228,53 @@ def api_chat_ask():
             source=result.get("source"),
             session_id=result.get("session_id"),
         )
+        st = str(result.get("status") or "")
+        if st == "error":
+            append_chat_event(
+                event="chat_ask",
+                ip=ip,
+                session_id=str(result.get("session_id") or ""),
+                user_id=user_id,
+                message=message,
+                status="error",
+                source="",
+                err=str(result.get("message") or ""),
+                http_status=200,
+            )
+        else:
+            append_chat_event(
+                event="chat_ask",
+                ip=ip,
+                session_id=str(result.get("session_id") or ""),
+                user_id=user_id,
+                message=message,
+                status="ok",
+                source=str(result.get("source") or ""),
+                err="",
+                http_status=200,
+            )
         return jsonify(result)
     except Exception as e:
         log_exception("POST /api/chat/ask", e)
+        try:
+            append_chat_event(
+                event="chat_ask",
+                ip=ip,
+                session_id=session_id,
+                user_id=user_id,
+                message=message,
+                status="exception",
+                err=str(e)[:500],
+                http_status=500,
+            )
+        except OSError:
+            pass
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
 @ai_bp.route("/api/chat/feedback", methods=["POST"])
 def api_chat_feedback():
+    from luxscale.chat_file_log import append_chat_event
     from luxscale.chat_service import handle_feedback
 
     allowed, err_resp, ip = _chat_size_guard()
@@ -258,9 +304,31 @@ def api_chat_feedback():
             source=result.get("source"),
             status=result.get("status"),
         )
+        append_chat_event(
+            event="chat_feedback",
+            ip=ip,
+            session_id=session_id,
+            message=feedback,
+            status=str(result.get("status") or ""),
+            source=str(result.get("source") or ""),
+            err=str(result.get("message") or "") if result.get("status") == "error" else "",
+            http_status=code,
+        )
         return jsonify(result), code
     except Exception as e:
         log_exception("POST /api/chat/feedback", e)
+        try:
+            append_chat_event(
+                event="chat_feedback",
+                ip=ip,
+                session_id=session_id,
+                message=feedback,
+                status="exception",
+                err=str(e)[:500],
+                http_status=500,
+            )
+        except OSError:
+            pass
         return jsonify({"status": "error", "message": str(e)}), 500
 
 

@@ -70,6 +70,59 @@ else:
         "https://www.shortcircuit.company",
         "https://web-production-8d09d.up.railway.app",
     ]
+
+
+def _cors_is_truthy_env(val: str | None) -> bool:
+    return str(val or "").strip().lower() in ("1", "true", "yes", "on", "y")
+
+
+def _cors_is_falsy_env(val: str | None) -> bool:
+    return str(val or "").strip().lower() in ("0", "false", "no", "off", "n")
+
+
+def _cors_append_origins(
+    out: list[str], seen: set[str], *urls: str, split_commas: bool
+) -> None:
+    for piece in urls:
+        if not (piece or "").strip():
+            continue
+        for u in (piece.split(",") if split_commas else (piece,)):
+            u = u.strip()
+            if not u or _cors_is_truthy_env(u) or _cors_is_falsy_env(u):
+                # Skip bare "true"/"false" — not valid Origin values
+                continue
+            if not (u.lower().startswith("http://") or u.lower().startswith("https://")):
+                continue
+            k = u.rstrip("/").lower()
+            if k in seen:
+                continue
+            seen.add(k)
+            out.append(u)
+
+
+def _merge_cors_env_urls(origins: list[str]) -> list[str]:
+    """
+    Merge CORS allowlist from ``.env``:
+
+    - ``LOCAL_URL`` — one or more comma-separated origins (e.g. add ``http://192.168.1.5:5000`` for LAN)
+    - ``ALLOW_REMOTE`` — if ``0``/``false``/``no``, do **not** add ``REMOTE_URL`` to CORS **or** to ``dashboard_config`` ``remote_url`` (unset or ``true`` = include; chat will try deploy first when present)
+    - ``REMOTE_URL`` — deployed origin(s) when allowed
+    - ``ALLOW_REMOTE_URL`` — comma-separated extra origins (bare ``true``/``false`` are ignored, not CORS values)
+
+    De-duplicated (case-insensitive, no trailing /).
+    """
+    seen: set[str] = {a.strip().rstrip("/").lower() for a in origins}
+    out: list[str] = list(origins)
+
+    _cors_append_origins(out, seen, os.environ.get("LOCAL_URL") or "", split_commas=True)
+    if not _cors_is_falsy_env((os.environ.get("ALLOW_REMOTE") or "").strip()):
+        _cors_append_origins(out, seen, os.environ.get("REMOTE_URL") or "", split_commas=True)
+    _cors_append_origins(out, seen, os.environ.get("ALLOW_REMOTE_URL") or "", split_commas=True)
+    return out
+
+
+_cors_origins = _merge_cors_env_urls(_cors_origins)
+
 _CORS_RAILWAY = re.compile(
     r"^https://[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.up\.railway\.app(?::\d+)?$",
     re.IGNORECASE,
@@ -187,15 +240,40 @@ def _fixture_map_path() -> str:
 
 
 def _dashboard_api_base() -> str:
-    return (os.environ.get("LUXSCALE_DASHBOARD_API_BASE") or "http://127.0.0.1:5000").strip()
+    return (
+        (os.environ.get("LUXSCALE_DASHBOARD_API_BASE") or "").strip()
+        or (os.environ.get("LOCAL_URL") or "").strip()
+        or "http://127.0.0.1:5000"
+    )
+
+
+def _remote_url_for_config() -> str:
+    return (os.environ.get("REMOTE_URL") or "").strip().split(",")[0].strip()
+
+
+def _include_remote_url_in_static_config() -> bool:
+    """
+    When ``ALLOW_REMOTE`` is false, omit ``REMOTE_URL`` from CORS and from
+    ``assets/dashboard_config.json`` / ``/api/public-config`` so static pages
+    (e.g. ``chat-with-luxSCale.html``) do not prefer the deploy URL over ``LOCAL``/``api_base``.
+    Unset or truthy ``ALLOW_REMOTE`` includes remote in both CORS and static JSON.
+    """
+    v = (os.environ.get("ALLOW_REMOTE") or "").strip()
+    if not v:
+        return True
+    return not _cors_is_falsy_env(v)
 
 
 def _write_dashboard_config_json() -> None:
     """Mirror ``.env`` into ``assets/dashboard_config.json`` for static (XAMPP) dashboard."""
     path = os.path.join(_ROOT_DIR, "assets", "dashboard_config.json")
     try:
+        out: dict = {"api_base": _dashboard_api_base()}
+        r = _remote_url_for_config()
+        if r and _include_remote_url_in_static_config():
+            out["remote_url"] = r
         with open(path, "w", encoding="utf-8") as f:
-            json.dump({"api_base": _dashboard_api_base()}, f, indent=2)
+            json.dump(out, f, indent=2)
     except OSError:
         pass
 
@@ -677,8 +755,13 @@ def api_ui_settings_public():
 
 @app.route("/api/public-config", methods=["GET"])
 def api_public_config():
-    """Public: dashboard API base URL from ``.env`` (``LUXSCALE_DASHBOARD_API_BASE``)."""
-    return jsonify({"api_base": _dashboard_api_base()})
+    """Public: dashboard API base URL from ``LUXSCALE_DASHBOARD_API_BASE`` or ``LOCAL_URL``."""
+    base = _dashboard_api_base()
+    out: dict = {"api_base": base}
+    r = _remote_url_for_config()
+    if r and _include_remote_url_in_static_config():
+        out["remote_url"] = r
+    return jsonify(out)
 
 
 _STUDIES_DIR = os.path.join(_ROOT_DIR, "api", "data", "studies")
