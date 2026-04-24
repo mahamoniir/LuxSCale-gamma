@@ -1040,6 +1040,21 @@ def api_ai_chat_proxy():
 # ───────────────────────────────────────────────────────────────────────────────
 
 
+# Deployment / SEO tools often run OPTIONS with no `Origin` header. flask-cors with
+# `always_send=False` then omits Access-Control-Allow-Origin; browsers always send
+# Origin for real CORS. Register last: runs first in Flask's after_request order,
+# so the probe gets `*`, then flask-cors runs (sees existing ACAO and no-ops).
+@app.after_request
+def _cors_options_probe_add_star_when_no_origin(resp: Response) -> Response:
+    h = "Access-Control-Allow-Origin"
+    if request.method != "OPTIONS" or resp.headers.get(h):
+        return resp
+    if (request.headers.get("Origin") or "").strip():
+        return resp
+    resp.headers[h] = "*"
+    return resp
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # use Railway's port
     app.run(host="0.0.0.0", port=port, debug=False)
