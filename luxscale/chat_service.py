@@ -2773,6 +2773,7 @@ def _domain_signal_details(question: str) -> Dict[str, Any]:
     qty_patterns = [
         r"\blux\b",
         r"\bu0\b",
+        r"\bu1\b",
         r"\bra\b",
         r"\bcri\b",
         r"\bcct\b",
@@ -2786,12 +2787,51 @@ def _domain_signal_details(question: str) -> Dict[str, Any]:
         r"\bdiscomfort\s+glare\b",
         r"\bdaylight(ing)?\b",
         r"\bcircadian\b",
+        # ── PATCH: bare lighting terms that must pass the gate without "what is" prefix ──
+        r"\buniform(ity)?\b",
+        r"\billuminanc(e|es)?\b",
+        r"\billuminat(e|ion|ions)?\b",
+        r"\befficac(y|ies)?\b",
+        r"\bluminous\s+flux\b",
+        r"\blumens?\b",
+        r"\breflectanc(e|es)?\b",
+        r"\bmaintenance\s+factor\b",
+        r"\butilisation\s+factor\b",
+        r"\butilization\s+factor\b",
+        r"\bwork\s*[-\s]?plane\b",
+        r"\bcolor\s+rendering\b",
+        r"\bcolour\s+rendering\b",
+        r"\blight\s+loss\s+factor\b",
+        r"\bphoton\b",
+        r"\birradianc(e|es)?\b",
+        r"\bluminanc(e|es)?\b",
+        r"\bcontrast\b",
+        r"\bspill\s*light\b",
+        r"\bobstruction\s+factor\b",
+        r"\bdirect\s+glare\b",
+        r"\breflected\s+glare\b",
+        r"\bveiling\b",
+        r"\bflickering?\b",
+        r"\bstroboscop\w+\b",
+        r"\bphotopic\b",
+        r"\bmesopic\b",
+        r"\bscotopic\b",
+        r"\b(downlight|highbay|triproof|floodlight|streetlight)\b",
+        r"\bies\b",
+        r"\bldt\b",
+        r"\beuml\b",
     ]
     for pat in qty_patterns:
         if re.search(pat, qn, flags=re.IGNORECASE):
             quantity_hits.append(pat)
     if _contains_arabic(question):
-        ar_qty_terms = ("لوكس", "يو او", "تجانس", "توحيد", "را", "مؤشر تجسيد")
+        ar_qty_terms = (
+            "لوكس", "يو او", "تجانس", "توحيد", "را", "مؤشر تجسيد",
+            # ── PATCH: additional Arabic lighting terms ──
+            "انتظام", "توازن", "اضاءه", "إضاءة", "تدفق ضوئي", "تدفق",
+            "كفاءة", "عامل صيانة", "معامل استخدام", "انعكاس", "انعكاسيه",
+            "وهج", "بريق", "تباين", "مستوى العمل", "الكانديلا", "اللومن",
+        )
         for term in ar_qty_terms:
             if term in str(question or ""):
                 quantity_hits.append(term)
@@ -2821,6 +2861,275 @@ def _domain_signal_details(question: str) -> Dict[str, Any]:
         "negative_en_hits": negative_en_hits,
         "negative_ar_hits": negative_ar_hits,
     }
+
+
+# ── PATCH: local definition answers for common lighting terms ─────────────────
+# Used as a Gemini-unavailable fallback so bare-term questions never show
+# "I could not get an answer right now" when the AI is down.
+# Keys are lowercase normalized forms; each entry has "en" and "ar" answers.
+_LOCAL_LIGHTING_DEFINITIONS: Dict[str, Dict[str, str]] = {
+    "uniformity": {
+        "en": (
+            "Uniformity (U0) is the ratio of minimum to average illuminance on the work plane: "
+            "U0 = E_min / E_avg. EN 12464-1 requires U0 ≥ 0.40 for most industrial tasks and "
+            "U0 ≥ 0.60 for offices and classrooms. A higher U0 means more even light distribution."
+        ),
+        "ar": (
+            "التجانس (U0) هو نسبة الإضاءة الدنيا إلى متوسط الإضاءة على مستوى العمل: U0 = E_min / E_avg. "
+            "يشترط معيار EN 12464-1 أن يكون U0 ≥ 0.40 لمعظم المهام الصناعية، و U0 ≥ 0.60 للمكاتب والفصول. "
+            "كلما ارتفعت القيمة، كان توزيع الضوء أكثر انتظامًا."
+        ),
+    },
+    "lux": {
+        "en": (
+            "Lux (lx) is the SI unit of illuminance — the luminous flux received per square metre "
+            "(1 lx = 1 lm/m²). EN 12464-1 specifies maintained illuminance targets (Em) in lux for "
+            "different task types, e.g. 500 lx for offices and 200 lx for general factory areas."
+        ),
+        "ar": (
+            "اللوكس (lx) هو وحدة الإضاءة في النظام الدولي — التدفق الضوئي الواصل لكل متر مربع (1 lx = 1 lm/m²). "
+            "يحدد معيار EN 12464-1 قيم الإضاءة المحافظة (Em) باللوكس لكل نوع مهمة، مثل 500 lx للمكاتب و 200 lx للمصانع العامة."
+        ),
+    },
+    "u0": {
+        "en": (
+            "U0 is the illuminance uniformity ratio: U0 = E_min / E_avg on the work plane. "
+            "EN 12464-1 minimums: 0.40 for industrial/warehouse, 0.60 for offices and classrooms. "
+            "A value below the minimum means patches of the room are significantly underlit."
+        ),
+        "ar": (
+            "U0 هو معامل تجانس الإضاءة: U0 = E_min / E_avg على مستوى العمل. "
+            "الحد الأدنى وفق EN 12464-1: 0.40 للمصانع والمستودعات، 0.60 للمكاتب والفصول الدراسية. "
+            "إذا انخفضت القيمة عن الحد، يعني ذلك وجود مناطق ضعيفة الإضاءة في الفراغ."
+        ),
+    },
+    "illuminance": {
+        "en": (
+            "Illuminance (E) is the luminous flux incident on a surface per unit area, measured in lux (lx). "
+            "It is the primary quantity in EN 12464-1 task lighting targets. "
+            "Average illuminance on the work plane (E_avg) is what LuxSCale calculates and compares against Em."
+        ),
+        "ar": (
+            "الإضاءة أو شدة الإنارة (E) هي التدفق الضوئي الساقط على سطح ما لكل وحدة مساحة، وتُقاس باللوكس (lx). "
+            "وهي الكمية الرئيسية في معيار EN 12464-1. يحسب LuxSCale متوسط الإضاءة على مستوى العمل (E_avg) ويقارنه بالقيمة المطلوبة."
+        ),
+    },
+    "illumination": {
+        "en": (
+            "Illumination refers to the process of lighting a space or surface. "
+            "In photometry, it is often used interchangeably with illuminance (the amount of light "
+            "falling on a surface, measured in lux). Good illumination meets both quantity (lux) "
+            "and quality (uniformity U0, glare UGR, colour rendering CRI) targets."
+        ),
+        "ar": (
+            "الإنارة تعني العملية الكاملة لإضاءة مساحة أو سطح. في الفوتومتريا تُستخدم أحيانًا بمعنى مقدار الضوء الساقط "
+            "على السطح (الإضاءة باللوكس). الإنارة الجيدة تحقق متطلبات الكمية (لوكس) والجودة (تجانس U0 وبريق UGR وعرض اللون CRI)."
+        ),
+    },
+    "cri": {
+        "en": (
+            "CRI (Colour Rendering Index), also written Ra, measures how accurately a light source "
+            "reproduces object colours compared to a reference (Ra = 100 = perfect). "
+            "EN 12464-1 requires Ra ≥ 80 for offices, classrooms, and retail; Ra ≥ 20 for storage areas."
+        ),
+        "ar": (
+            "مؤشر تجسيد الألوان (CRI / Ra) يقيس مدى دقة مصدر الضوء في إظهار ألوان الأجسام مقارنةً بمصدر مرجعي (Ra=100 مثالي). "
+            "يشترط معيار EN 12464-1 Ra ≥ 80 للمكاتب والفصول والمحلات، وRa ≥ 20 لمناطق التخزين."
+        ),
+    },
+    "glare": {
+        "en": (
+            "Glare is visual discomfort or reduced visibility caused by excessive brightness in the "
+            "field of view. EN 12464-1 limits glare using the Unified Glare Rating (UGR): "
+            "UGR ≤ 19 for offices and classrooms, UGR ≤ 25 for factory production. "
+            "Discomfort glare reduces concentration; disability glare reduces contrast on the task."
+        ),
+        "ar": (
+            "الوهج هو الإزعاج البصري أو انخفاض الرؤية بسبب إضاءة زائدة في مجال الرؤية. "
+            "يحدد معيار EN 12464-1 الحد المسموح به باستخدام معامل UGR: UGR ≤ 19 للمكاتب والفصول، وUGR ≤ 25 للإنتاج الصناعي."
+        ),
+    },
+    "ugr": {
+        "en": (
+            "UGR (Unified Glare Rating) is a calculated index for discomfort glare from indoor luminaires. "
+            "Lower is better. EN 12464-1 limits: UGR ≤ 19 for offices/classrooms/retail, "
+            "UGR ≤ 22 for detailed industrial work, UGR ≤ 25 for general production areas."
+        ),
+        "ar": (
+            "UGR (معامل الوهج الموحد) هو مؤشر محسوب لوهج الإزعاج الناتج عن التركيبات الداخلية. كلما انخفض كان أفضل. "
+            "حدود معيار EN 12464-1: UGR ≤ 19 للمكاتب والفصول والمحلات، UGR ≤ 22 للأعمال الصناعية الدقيقة، "
+            "UGR ≤ 25 لمناطق الإنتاج العام."
+        ),
+    },
+    "lumen": {
+        "en": (
+            "The lumen (lm) is the SI unit of luminous flux — the total perceived power of light emitted "
+            "by a source in all directions. A 100W LED retrofit typically emits ~10,000–14,000 lm. "
+            "LuxSCale uses the IES lumen output of each fixture to calculate average illuminance on the work plane."
+        ),
+        "ar": (
+            "اللومن (lm) هو وحدة التدفق الضوئي في النظام الدولي — إجمالي الطاقة الضوئية المنبعثة من مصدر في جميع الاتجاهات. "
+            "يستخدم LuxSCale التدفق الضوئي من ملف IES لكل تركيبة لحساب متوسط الإضاءة على مستوى العمل."
+        ),
+    },
+    "efficacy": {
+        "en": (
+            "Luminous efficacy is the ratio of luminous flux to electrical power: lm/W. "
+            "Modern LED highbays reach 140–160 lm/W; good LED panels 100–120 lm/W. "
+            "Higher efficacy means less power needed to achieve the same lux level."
+        ),
+        "ar": (
+            "الكفاءة الضوئية هي نسبة التدفق الضوئي إلى القدرة الكهربائية: lm/W. "
+            "تصل أفضل تركيبات الـ LED الصناعية إلى 140–160 lm/W، والألواح الجيدة 100–120 lm/W. "
+            "كلما ارتفعت الكفاءة، قلّ الاستهلاك للوصول لنفس مستوى الإضاءة."
+        ),
+    },
+    "reflectance": {
+        "en": (
+            "Reflectance (ρ) is the fraction of incident light reflected by a surface (0–1 or 0–100%). "
+            "Typical values: ceiling ρ ≈ 0.7–0.8, walls ρ ≈ 0.5–0.7, floor ρ ≈ 0.2–0.3. "
+            "Higher reflectance increases inter-reflected light and raises average illuminance."
+        ),
+        "ar": (
+            "معامل الانعكاس (ρ) هو نسبة الضوء المنعكس من السطح (0–1). "
+            "قيم نموذجية: السقف ρ ≈ 0.7–0.8، الجدران ρ ≈ 0.5–0.7، الأرضية ρ ≈ 0.2–0.3. "
+            "كلما ارتفع الانعكاس، زادت الإضاءة غير المباشرة ورفعت متوسط الإضاءة."
+        ),
+    },
+    "maintenance factor": {
+        "en": (
+            "Maintenance Factor (MF) accounts for light loss over time due to lamp depreciation and "
+            "luminaire soiling. Typical values: 0.80 for clean LED interiors, 0.70 for dusty environments. "
+            "LuxSCale applies MF to the IES flux before calculating average lux on the work plane."
+        ),
+        "ar": (
+            "عامل الصيانة (MF) يأخذ في الاعتبار فقدان الضوء بمرور الوقت بسبب تراجع المصابيح والتلوث. "
+            "القيم الشائعة: 0.80 للبيئات الداخلية النظيفة، 0.70 للبيئات الغبارية. "
+            "يطبّق LuxSCale هذا العامل على التدفق الضوئي من ملف IES قبل حساب متوسط الإضاءة."
+        ),
+    },
+    "ies": {
+        "en": (
+            "An IES file (.ies) is a standard photometric data file (ANSI/IES LM-63) that describes "
+            "the light distribution of a luminaire: intensity vs. angle in all directions. "
+            "LuxSCale uses IES files to compute accurate illuminance grids and uniformity values."
+        ),
+        "ar": (
+            "ملف IES هو ملف بيانات ضوئي قياسي (ANSI/IES LM-63) يصف توزيع الضوء من تركيبة: "
+            "الشدة مقابل الزاوية في جميع الاتجاهات. يستخدم LuxSCale ملفات IES لحساب شبكة الإضاءة ومعامل التجانس بدقة."
+        ),
+    },
+    "work plane": {
+        "en": (
+            "The work plane is the horizontal reference surface (usually 0.75–0.85 m above floor for desks, "
+            "0.00 m for floor-level tasks) on which illuminance is evaluated. "
+            "EN 12464-1 targets are specified at the work plane level."
+        ),
+        "ar": (
+            "مستوى العمل هو السطح الأفقي المرجعي (عادةً 0.75–0.85 م فوق الأرضية للمكاتب، أو 0.00 م لمهام الأرضية) "
+            "الذي يُحسب عليه مستوى الإضاءة. تُحدد متطلبات معيار EN 12464-1 عند مستوى العمل."
+        ),
+    },
+    "en 12464": {
+        "en": (
+            "EN 12464-1 is the European standard for lighting of indoor work places. "
+            "It specifies maintained illuminance (Em), uniformity (U0), glare (UGR), and colour rendering (Ra) "
+            "requirements for hundreds of task types. LuxSCale uses EN 12464-1 as its compliance reference."
+        ),
+        "ar": (
+            "EN 12464-1 هو المعيار الأوروبي لإضاءة أماكن العمل الداخلية. "
+            "يحدد متطلبات الإضاءة المحافظة (Em) والتجانس (U0) والوهج (UGR) وعرض الألوان (Ra) "
+            "لمئات أنواع المهام. يعتمد LuxSCale على هذا المعيار كمرجع للامتثال."
+        ),
+    },
+    "luminance": {
+        "en": (
+            "Luminance (L) is the photometric measure of light emitted or reflected from a surface "
+            "toward the observer, measured in cd/m². It is what the eye actually perceives as brightness. "
+            "High surface luminance can cause glare; luminance ratios affect visual comfort."
+        ),
+        "ar": (
+            "اللمعان (L) هو القياس الضوئي للضوء المنبعث أو المنعكس من سطح نحو المراقب، ويُقاس بـ cd/m². "
+            "هو ما تدركه العين كإضاءة فعلية. اللمعان السطحي المرتفع يسبب الوهج، وتؤثر نسب اللمعان على الراحة البصرية."
+        ),
+    },
+    "candela": {
+        "en": (
+            "The candela (cd) is the SI base unit of luminous intensity — the power of light emitted "
+            "in a particular direction per unit solid angle. IES files store candela values per direction; "
+            "LuxSCale integrates them to derive total luminous flux (lm) and workplane illuminance (lx)."
+        ),
+        "ar": (
+            "الكانديلا (cd) هي الوحدة الأساسية للشدة الضوئية في النظام الدولي — قوة الضوء المنبعث في اتجاه معين. "
+            "تُخزن ملفات IES قيم الكانديلا لكل اتجاه؛ يستخدمها LuxSCale لاشتقاق التدفق الضوئي الكلي (lm) ومستوى الإضاءة (lx)."
+        ),
+    },
+    "colour rendering": {
+        "en": (
+            "Colour rendering describes how faithfully a light source reveals object colours compared "
+            "to natural daylight. It is quantified by CRI (Ra). EN 12464-1 typically requires Ra ≥ 80 "
+            "for most occupied spaces and Ra ≥ 90 for colour inspection tasks."
+        ),
+        "ar": (
+            "عرض الألوان يصف مدى دقة مصدر الضوء في إظهار ألوان الأجسام مقارنةً بضوء النهار الطبيعي. "
+            "يُقاس بمؤشر CRI (Ra). يشترط معيار EN 12464-1 عادةً Ra ≥ 80 لمعظم الفراغات المشغولة، وRa ≥ 90 لمهام فحص الألوان."
+        ),
+    },
+    "cct": {
+        "en": (
+            "Correlated Colour Temperature (CCT), measured in Kelvin, describes the 'warmth' or "
+            "'coolness' of white light. Warm white ≈ 2700–3000 K (cosy, residential), neutral white "
+            "≈ 4000 K (offices, retail), cool white ≈ 5000–6500 K (industrial, daylight match)."
+        ),
+        "ar": (
+            "درجة حرارة اللون المترابطة (CCT) تُقاس بالكلفن وتصف 'دفء' أو 'برودة' الضوء الأبيض. "
+            "أبيض دافئ ≈ 2700–3000 K (مريح ومنزلي)، أبيض محايد ≈ 4000 K (مكاتب ومحلات)، "
+            "أبيض بارد ≈ 5000–6500 K (صناعي ومطابق لضوء النهار)."
+        ),
+    },
+}
+
+
+def _local_definition_answer(
+    question: str,
+    reply_language: str = "en",
+) -> Optional[str]:
+    """
+    Return a locally-stored definition for common lighting terms.
+
+    Called as a Gemini-unavailable fallback so bare-term questions
+    (e.g. 'uniformity', 'what is lux') are answered even when the AI is offline.
+
+    Returns the answer string, or None if no match found.
+    """
+    qn = _normalize_text(question)
+    if not qn:
+        return None
+
+    # Strip leading "what is / define / explain" to get the bare term
+    _strip_prefix = re.compile(
+        r"^(?:what(?:\s+(?:is|are))?|define(?:\s+the)?|meaning\s+of|explain(?:\s+the)?)\s+",
+        re.IGNORECASE,
+    )
+    bare = _strip_prefix.sub("", qn).strip().rstrip("?. ")
+
+    # Direct lookup — try progressively shorter keys
+    for key, entry in _LOCAL_LIGHTING_DEFINITIONS.items():
+        kn = _normalize_text(key)
+        if bare == kn or qn == kn or qn.startswith(kn + " ") or kn in bare:
+            text = str(entry.get(reply_language) or entry.get("en") or "").strip()
+            if text:
+                return text
+
+    # Partial / fuzzy: if bare contains any definition key as a substring
+    for key, entry in _LOCAL_LIGHTING_DEFINITIONS.items():
+        kn = _normalize_text(key)
+        if kn and kn in bare:
+            text = str(entry.get(reply_language) or entry.get("en") or "").strip()
+            if text:
+                return text
+
+    return None
 
 
 _RE_EDU_Q_START = re.compile(
@@ -3605,6 +3914,24 @@ def _gemini_fallback_answer(
     source = str(g.get("source") or "gemini")
 
     if not text:
+        # ── PATCH: try local definition before showing generic "unavailable" message ──
+        local_def = _local_definition_answer(str(raw_q or question or ""), reply_language)
+        if local_def:
+            log_step(
+                "chat_service.gemini_fallback",
+                "served_local_definition",
+                question=str(raw_q or "")[:120],
+            )
+            return {
+                "source": "static_local",
+                "answer": local_def,
+                "requires_confirmation": False,
+                "show_yes_no": False,
+                "confidence": 0.95,
+                "fixtures": [],
+                "gate_meta": gate_meta,
+            }
+        # ── END PATCH ──────────────────────────────────────────────────────────────────
         if str(source) == "ollama_unavailable":
             if reply_language == "ar":
                 text = (
@@ -4026,4 +4353,3 @@ def chat_health() -> Dict[str, Any]:
         "generated_at": doc.get("generated_at"),
         "updated_at": doc.get("updated_at"),
     }
-

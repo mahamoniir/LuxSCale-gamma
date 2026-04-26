@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat with LuxSCale - LuxSCale AI</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    .chat-hero {
+      padding: 4.5rem 0 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .chat-hero .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(235, 27, 38, 0.14);
+      border: 1px solid rgba(235, 27, 38, 0.45);
+      color: #ff9ea3;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .chat-workspace {
+      padding: 2.25rem 0 4rem;
+    }
+
+    .chat-sidebar,
+    .chat-panel {
+      background: rgba(45, 45, 45, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 18px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .chat-sidebar {
+      height: 100%;
+      padding: 1.25rem;
+    }
+
+    .chat-sidebar-title {
+      font-family: "Anton", sans-serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 1.05rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .prompt-chip-list {
+      display: grid;
+      gap: 0.7rem;
+      margin-top: 1rem;
+    }
+
+    .prompt-chip {
+      width: 100%;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #e7e7e7;
+      border-radius: 12px;
+      padding: 0.7rem 0.8rem;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .prompt-chip:hover {
+      border-color: rgba(235, 27, 38, 0.8);
+      background: rgba(235, 27, 38, 0.1);
+      color: #fff;
+    }
+
+    .chat-panel {
+      min-height: 620px;
+      height: min(78vh, 760px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-panel-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    .chat-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #cfcfcf;
+      font-size: 0.88rem;
+      margin: 0;
+    }
+
+    .chat-status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
+      flex-shrink: 0;
+    }
+
+    .chat-log {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior: contain;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(0, 0, 0, 0.2));
+    }
+
+    .chat-log::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .chat-log::-webkit-scrollbar-thumb {
+      background: rgba(235, 27, 38, 0.55);
+      border-radius: 999px;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-message {
+      max-width: min(84%, 780px);
+      border-radius: 14px;
+      padding: 0.85rem 0.95rem;
+      line-height: 1.5;
+      font-size: 0.95rem;
+      white-space: pre-line;
+    }
+
+    .chat-message p {
+      margin: 0;
+      color: inherit;
+    }
+
+    .chat-message.assistant {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #ececec;
+    }
+
+    .chat-message.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, rgba(235, 27, 38, 0.9), rgba(153, 14, 22, 0.92));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .chat-message.rtl {
+      direction: rtl;
+      text-align: right;
+      unicode-bidi: plaintext;
+    }
+
+    .chat-message.rtl .chat-meta {
+      text-align: right;
+    }
+
+    .chat-message.rtl .source-badge {
+      margin-left: 0;
+      margin-right: 0.45rem;
+    }
+
+    .chat-meta {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.74rem;
+      opacity: 0.75;
+    }
+
+    .source-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 0.45rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.64rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #f3f3f3;
+      background: rgba(255, 255, 255, 0.08);
+      vertical-align: middle;
+    }
+
+    .source-badge.fixed { border-color: rgba(34, 197, 94, 0.45); color: #a7f3d0; background: rgba(34, 197, 94, 0.15); }
+    .source-badge.suggested { border-color: rgba(245, 158, 11, 0.45); color: #fde68a; background: rgba(245, 158, 11, 0.15); }
+    .source-badge.ai { border-color: rgba(235, 27, 38, 0.5); color: #ffc4c7; background: rgba(235, 27, 38, 0.18); }
+    .source-badge.scope { border-color: rgba(148, 163, 184, 0.5); color: #cbd5e1; background: rgba(148, 163, 184, 0.14); }
+
+    .chat-actions {
+      margin-top: 0.75rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .chat-composer {
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 1rem 1.1rem 1.1rem;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.7rem;
+      align-items: end;
+    }
+
+    .chat-input {
+      min-height: 64px;
+      max-height: 180px;
+      resize: vertical;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      padding: 0.75rem 0.9rem;
+      outline: none;
+    }
+
+    .chat-input::placeholder {
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .chat-input:focus {
+      border-color: rgba(235, 27, 38, 0.8);
+      box-shadow: 0 0 0 3px rgba(235, 27, 38, 0.15);
+    }
+
+    .chat-note {
+      margin: 0.65rem 0 0;
+      color: #a9a9a9;
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 991.98px) {
+      .chat-sidebar {
+        margin-bottom: 1rem;
+      }
+      .chat-panel {
+        min-height: 560px;
+        height: min(76vh, 680px);
+      }
+    }
+
+    @media (max-width: 576px) {
+      .chat-panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .chat-form {
+        grid-template-columns: 1fr;
+      }
+      .chat-message {
+        max-width: 96%;
+      }
+      .chat-panel {
+        height: min(74vh, 620px);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg header">
+    <div class="container-fluid px-5 py-4">
+      <div class="logo">
+        <div class="logo-images d-flex align-items-center">
+          <span class="logo-text">Lux</span>
+          <span class="logo-text text-red">SC</span>
+          <span class="logo-text">ale</span>
+          <span class="logo-text">AI</span>
+        </div>
+      </div>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about.html">About LuxSCale</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="documentation.html">Documentations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="chat-with-luxSCale.html">Chat with LuxSCale</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contact.html">Contact us</a>
+          </li>
+        </ul>
+
+        <div class="d-flex">
+          <button class="btn btn-red ms-3" onclick="window.location.href='index.html#login'">Login</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="chat-hero">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-10">
+          <span class="hero-badge">LuxSCale AI Assistant</span>
+          <h1 class="hero-title anton text-uppercase fs-1 mb-3">Chat With LuxSCale</h1>
+          <p class="lead text-secondary fs-5 mb-0">
+            Ask about luminaires, standards, room setup, compliance logic, and report guidance in one focused workspace.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chat-workspace">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <aside class="chat-sidebar h-100">
+            <h2 class="chat-sidebar-title mb-2">Quick Prompts</h2>
+            <p class="text-secondary small mb-0">Start with a prepared prompt and refine the answer through follow-up questions.</p>
+
+            <div class="prompt-chip-list" id="promptChipList">
+              <button class="prompt-chip" type="button" data-prompt="Compare two fixtures for a 24m x 18m office and recommend one based on U0 and total power.">
+                Compare fixtures for office layout
+              </button>
+              <button class="prompt-chip" type="button" data-prompt="Explain why U0 can pass while lux is still below standard and how to fix it.">
+                Explain U0 vs lux mismatch
+              </button>
+              <button class="prompt-chip" type="button" data-prompt="Generate a step-by-step plan for improving room uniformity without over-lighting.">
+                Improve uniformity safely
+              </button>
+              <button class="prompt-chip" type="button" data-prompt="Summarize EN 12464-1 compliance checks used by LuxSCale outputs.">
+                EN 12464-1 compliance summary
+              </button>
+              <button class="prompt-chip" type="button" data-prompt="What should I validate before submitting a final LuxSCale report?">
+                Final report validation checklist
+              </button>
+            </div>
+          </aside>
+        </div>
+
+        <div class="col-lg-8">
+          <section class="chat-panel">
+            <header class="chat-panel-header">
+              <div>
+                <h2 class="section-title fs-4 mb-1">LuxSCale Conversation</h2>
+                <p class="chat-status mb-0"><span class="chat-status-dot"></span>Assistant online</p>
+              </div>
+              <div class="d-flex gap-2 flex-wrap">
+                <button class="btn btn-outline-light btn-sm" id="exportChatPdfBtn" type="button">Export chat (PDF)</button>
+                <button class="btn btn-outline-light btn-sm" id="exportChatBtn" type="button">Export chat (.txt)</button>
+                <button class="btn btn-outline-light btn-sm" id="clearChatBtn" type="button">Clear chat</button>
+              </div>
+            </header>
+
+            <div class="chat-log" id="chatLog" aria-live="polite" aria-label="LuxSCale chat messages">
+              <article class="chat-message assistant">
+                <p>Hello! I am LuxSCale AI Assistant.
+I can help with room setup, fixture comparisons, standards interpretation, and compliance reasoning.
+Tell me your room type, dimensions, and required lux/Uo to begin.</p>
+                <span class="chat-meta">LuxSCale AI • Ready</span>
+              </article>
+            </div>
+
+            <div class="chat-composer">
+              <form id="chatForm" class="chat-form">
+                <textarea id="chatInput" class="chat-input" rows="2" placeholder="Type your lighting question..." required></textarea>
+                <button type="submit" class="btn btn-red">Send</button>
+              </form>
+              <p class="chat-note">Quick answers from local guides, then the assistant for lighting questions (out-of-topic replies are declined).</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="company-info-block">
+          <div class="company-logo-section">
+            <div class="company-logo mb-3">
+              <img src="images/logo-dark.png" class="footer-logo" alt="Short Circuit Company Logo" />
+            </div>
+          </div>
+          <div class="company-description">
+            <p class="footer-text small-text">
+              LuxSCale AI is an official project owned by Short Circuit Company. All rights to the concept, design, development, and implementation of this project are exclusively reserved by Short Circuit Company.
+            </p>
+          </div>
+        </div>
+
+        <div class="footer-navigation">
+          <div class="nav-row">
+            <div class="nav-column">
+              <h5 class="footer-title">Our Projects</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">LuxSCale</a></li>
+                <li><a href="#" class="footer-link">SChools</a></li>
+                <li><a href="#" class="footer-link">eSC-AI</a></li>
+              </ul>
+            </div>
+
+            <div class="nav-column">
+              <h5 class="footer-title">AI Platform</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">Platform Overview</a></li>
+                <li><a href="#" class="footer-link">Documentation</a></li>
+                <li><a href="#" class="footer-link">Developer Forum</a></li>
+              </ul>
+            </div>
+
+            <div class="nav-column">
+              <h5 class="footer-title">Company</h5>
+              <ul class="footer-links">
+                <li><a href="about.html" class="footer-link">About Us</a></li>
+                <li><a href="news.html" class="footer-link">News</a></li>
+                <li><a href="career.html" class="footer-link">Career</a></li>
+                <li><a href="downloads.html" class="footer-link">Downloads</a></li>
+                <li><a href="brand.html" class="footer-link">Brand</a></li>
+              </ul>
+            </div>
+
+            <div class="nav-column">
+              <h5 class="footer-title">Terms & Policy</h5>
+              <ul class="footer-links">
+                <li><a href="terms.html" class="footer-link">Terms of Use</a></li>
+                <li><a href="privacy.html" class="footer-link">Privacy Policy</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="nav-row">
+            <div class="nav-column">
+              <h5 class="footer-title">Safety</h5>
+              <ul class="footer-links">
+                <li><a href="#" class="footer-link">Safety Approach</a></li>
+                <li><a href="#" class="footer-link">Security & Privacy</a></li>
+                <li><a href="#" class="footer-link">Trust & Transparency</a></li>
+              </ul>
+            </div>
+
+            <div class="nav-column">
+              <h5 class="footer-title">Support</h5>
+              <ul class="footer-links">
+                <li><a href="help.html" class="footer-link">Help Center</a></li>
+              </ul>
+            </div>
+
+            <div class="nav-column"></div>
+            <div class="nav-column"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="copyright-section">
+          <p class="copyright mb-0">Short Circuit Company &copy; 2025</p>
+        </div>
+        <div class="social-media-section">
+          <div class="social-icons">
+            <a href="#" class="social-link">
+              <img src="images/facebook-109.svg" class="social-icon" alt="Facebook" />
+            </a>
+            <a href="#" class="social-link">
+              <img src="images/instagram-111.svg" class="social-icon" alt="Instagram" />
+            </a>
+            <a href="#" class="social-link">
+              <img src="images/linkedin-113.svg" class="social-icon" alt="LinkedIn" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    (function () {
+
+      // ─────────────────────────────────────────────────────────────────────────
+      // API SOURCE TOGGLE
+      // Set USE_RAILWAY = true  → all requests go to the Railway deployment.
+      // Set USE_RAILWAY = false → requests fall back to localhost:5000 (default).
+      // ─────────────────────────────────────────────────────────────────────────
+      // const USE_RAILWAY = false;
+      const USE_RAILWAY = true;
+      const RAILWAY_BASE = "https://web-production-8d09d.up.railway.app";
+      const LOCAL_BASE   = "http://localhost:5000";
+      // ─────────────────────────────────────────────────────────────────────────
+
+      const API_ASK_PATH = "/api/chat/ask";
+      const API_FEEDBACK_PATH = "/api/chat/feedback";
+      const API_MENU_PATH = "/api/chat/menu";
+      const SESSION_KEY = "luxscale_chat_session_id";
+      const CHAT_PREFILL_KEY = "luxscale_chat_prefill_message";
+      const HISTORY_PREFIX = "luxscale_chat_history_";
+      const CONTEXT_MAX_MESSAGES = 12;
+      const MAX_HISTORY_MESSAGES = 80;
+
+      const chatLog = document.getElementById("chatLog");
+      const chatForm = document.getElementById("chatForm");
+      const chatInput = document.getElementById("chatInput");
+      const clearChatBtn = document.getElementById("clearChatBtn");
+      const exportChatBtn = document.getElementById("exportChatBtn");
+      const exportChatPdfBtn = document.getElementById("exportChatPdfBtn");
+      const promptChipList = document.getElementById("promptChipList");
+      const sendButton = chatForm.querySelector("button[type='submit']");
+
+      let sessionId = localStorage.getItem(SESSION_KEY) || "";
+      let backendBasesPromise = null;
+      let migratedHistoryToUid = false;
+      let lastWorkingBase = "";
+
+      function safeUid(raw) {
+        const v = String(raw || "").trim();
+        if (!v) return "";
+        return /^[a-zA-Z0-9:_-]{6,200}$/.test(v) ? v : "";
+      }
+
+      function readFirebaseUid() {
+        const direct = safeUid(localStorage.getItem("luxscale_firebase_uid"));
+        if (direct) return direct;
+        if (window.__luxscaleAuthUser && window.__luxscaleAuthUser.uid) {
+          const fromWindow = safeUid(window.__luxscaleAuthUser.uid);
+          if (fromWindow) return fromWindow;
+        }
+        for (let i = 0; i < localStorage.length; i += 1) {
+          const k = localStorage.key(i) || "";
+          if (!k.startsWith("firebase:authUser:")) continue;
+          try {
+            const raw = localStorage.getItem(k);
+            if (!raw) continue;
+            const parsed = JSON.parse(raw);
+            const uid = safeUid(parsed && parsed.uid);
+            if (uid) return uid;
+          } catch (_err) {}
+        }
+        return "";
+      }
+
+      function migrateHistoryToUid(uid) {
+        if (!uid || migratedHistoryToUid) return;
+        migratedHistoryToUid = true;
+        try {
+          const currentSid = sessionId || localStorage.getItem(SESSION_KEY) || "";
+          if (!currentSid || currentSid.startsWith("uid_")) return;
+          const anonKey = HISTORY_PREFIX + currentSid;
+          const uidKey = HISTORY_PREFIX + ("uid_" + uid);
+          if (localStorage.getItem(uidKey)) return;
+          const anonHistory = localStorage.getItem(anonKey);
+          if (!anonHistory) return;
+          localStorage.setItem(uidKey, anonHistory);
+        } catch (_err) {}
+      }
+
+      function ensureSessionId() {
+        const uid = readFirebaseUid();
+        if (uid) {
+          migrateHistoryToUid(uid);
+          sessionId = "uid_" + uid;
+          localStorage.setItem(SESSION_KEY, sessionId);
+          return sessionId;
+        }
+        if (sessionId) return sessionId;
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          sessionId = window.crypto.randomUUID();
+        } else {
+          sessionId = "sess_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+        }
+        localStorage.setItem(SESSION_KEY, sessionId);
+        return sessionId;
+      }
+
+      function historyIdentityKey() {
+        const uid = readFirebaseUid();
+        if (uid) return "uid_" + uid;
+        return ensureSessionId();
+      }
+
+      function historyStorageKey() {
+        return HISTORY_PREFIX + historyIdentityKey();
+      }
+
+      function loadHistory() {
+        try {
+          const raw = localStorage.getItem(historyStorageKey());
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return [];
+          return parsed
+            .filter(function (m) {
+              return m && (m.role === "user" || m.role === "assistant") && String(m.text || "").trim();
+            })
+            .slice(-MAX_HISTORY_MESSAGES);
+        } catch (_err) {
+          return [];
+        }
+      }
+
+      function saveHistory(history) {
+        try {
+          localStorage.setItem(historyStorageKey(), JSON.stringify((history || []).slice(-MAX_HISTORY_MESSAGES)));
+        } catch (_err) {}
+      }
+
+      function appendHistory(role, text, source) {
+        const history = loadHistory();
+        history.push({
+          role: role === "user" ? "user" : "assistant",
+          text: String(text || "").trim(),
+          source: String(source || ""),
+          at: Date.now()
+        });
+        saveHistory(history);
+      }
+
+      function collectExportRows() {
+        const history = loadHistory();
+        if (history.length) {
+          return history.map(function (m) {
+            const role = m.role === "user" ? "You" : "LuxSCale AI";
+            const when = m.at ? new Date(m.at).toLocaleString() : "";
+            const text = String(m.text || "").trim();
+            return { role: role, when: when, text: text };
+          });
+        }
+        return Array.from(chatLog.querySelectorAll(".chat-message")).map(function (node) {
+          const role = node.classList.contains("user") ? "You" : "LuxSCale AI";
+          const meta = node.querySelector(".chat-meta");
+          const body = node.querySelector("p");
+          const when = meta ? String(meta.textContent || "").trim() : "";
+          const text = body ? String(body.innerText || "").trim() : "";
+          return { role: role, when: when, text: text };
+        });
+      }
+
+      function exportChatToText() {
+        const rows = collectExportRows().filter(function (r) { return r.text; });
+        if (!rows.length) return;
+        const lines = [];
+        lines.push("LuxSCale Chat Export");
+        lines.push("Generated: " + new Date().toLocaleString());
+        lines.push("");
+        rows.forEach(function (r) {
+          const when = r.when ? " [" + r.when + "]" : "";
+          lines.push(r.role + when);
+          lines.push(r.text);
+          lines.push("");
+        });
+        const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+        a.href = url;
+        a.download = "luxscale-chat-" + stamp + ".txt";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      const _loadedScripts = Object.create(null);
+      function loadScriptOnce(src) {
+        const key = String(src || "");
+        if (!key) return Promise.reject(new Error("Missing script src"));
+        if (_loadedScripts[key]) return _loadedScripts[key];
+        _loadedScripts[key] = new Promise(function (resolve, reject) {
+          const existing = Array.from(document.scripts).find(function (s) { return s.src === key; });
+          if (existing) { resolve(); return; }
+          const script = document.createElement("script");
+          script.src = key;
+          script.async = true;
+          script.onload = function () { resolve(); };
+          script.onerror = function () { reject(new Error("Failed to load " + key)); };
+          document.head.appendChild(script);
+        });
+        return _loadedScripts[key];
+      }
+
+      function buildPdfCaptureNode() {
+        const wrap = document.createElement("div");
+        wrap.className = "pdf-capture-wrap";
+        wrap.style.position = "fixed";
+        wrap.style.left = "-100000px";
+        wrap.style.top = "0";
+        wrap.style.zIndex = "-1";
+        wrap.style.pointerEvents = "none";
+        wrap.style.background = "#0f1115";
+        wrap.style.padding = "16px";
+        const sourceWidth = Math.max(420, Math.round(chatLog.getBoundingClientRect().width || 760));
+        wrap.style.width = sourceWidth + "px";
+        const clone = chatLog.cloneNode(true);
+        clone.removeAttribute("id");
+        clone.style.maxHeight = "none";
+        clone.style.height = "auto";
+        clone.style.overflow = "visible";
+        clone.style.display = "flex";
+        clone.style.flexDirection = "column";
+        clone.style.gap = "1rem";
+        clone.style.padding = "1.25rem";
+        clone.style.background = "linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.2))";
+        clone.style.border = "1px solid rgba(255,255,255,0.13)";
+        clone.style.borderRadius = "18px";
+        clone.querySelectorAll(".chat-actions").forEach(function (el) { el.remove(); });
+        wrap.appendChild(clone);
+        return wrap;
+      }
+
+      async function applyExportImageProxy(root) {
+        const bases = await resolveBackendBases();
+        const orderedBases = [];
+        if (lastWorkingBase) orderedBases.push(lastWorkingBase);
+        bases.forEach(function (b) {
+          if (orderedBases.indexOf(b) === -1) orderedBases.push(b);
+        });
+        if (!orderedBases.length) orderedBases.push(window.location.origin);
+        Array.from(root.querySelectorAll("img")).forEach(function (img) {
+          const src = String(img.getAttribute("src") || img.src || "").trim();
+          if (!isHttpUrl(src)) return;
+          const proxyChain = orderedBases.map(function (base) {
+            return endpointFromBase(
+              normalizeBase(base),
+              "/api/chat/image-proxy?url=" + encodeURIComponent(src)
+            );
+          });
+          let idx = 0;
+          const nextProxy = function () {
+            if (idx >= proxyChain.length) { img.onerror = null; img.src = src; return; }
+            const next = proxyChain[idx]; idx += 1; img.src = next;
+          };
+          img.onerror = nextProxy;
+          nextProxy();
+        });
+      }
+
+      function prepareCaptureImages(root) {
+        Array.from(root.querySelectorAll("img")).forEach(function (img) {
+          try { img.loading = "eager"; } catch (_err) {}
+          try { img.decoding = "sync"; } catch (_err) {}
+          try { img.referrerPolicy = "no-referrer"; } catch (_err) {}
+          try { img.crossOrigin = "anonymous"; } catch (_err) {}
+        });
+      }
+
+      async function waitForCaptureImages(root, timeoutMs) {
+        const imgs = Array.from(root.querySelectorAll("img"));
+        if (!imgs.length) return;
+        const waitOne = function (img) {
+          return new Promise(function (resolve) {
+            let done = false;
+            const finish = function () { if (done) return; done = true; resolve(); };
+            if (img.complete && img.naturalWidth > 0) { finish(); return; }
+            img.addEventListener("load", finish, { once: true });
+            img.addEventListener("error", finish, { once: true });
+            setTimeout(finish, timeoutMs);
+            if (typeof img.decode === "function") { img.decode().then(finish).catch(function () {}); }
+          });
+        };
+        await Promise.all(imgs.map(waitOne));
+      }
+
+      function buildPageSlicesCss(captureNode, pageCssHeight) {
+        const totalHeight = Math.max(captureNode.scrollHeight, captureNode.getBoundingClientRect().height, 1);
+        const messageBounds = Array.from(captureNode.querySelectorAll(".chat-message"))
+          .map(function (m) {
+            const top = Math.max(0, m.offsetTop);
+            const height = Math.max(1, m.offsetHeight);
+            return { top: top, bottom: top + height };
+          })
+          .sort(function (a, b) { return a.top - b.top; });
+        const slices = [];
+        let cursor = 0;
+        const minStep = 40;
+        while (cursor < totalHeight - 1) {
+          const preferred = cursor + pageCssHeight;
+          if (preferred >= totalHeight) { slices.push([cursor, totalHeight]); break; }
+          let candidate = 0;
+          for (let i = 0; i < messageBounds.length; i += 1) {
+            const b = messageBounds[i].bottom;
+            if (b <= cursor + minStep) continue;
+            if (b <= preferred) candidate = b;
+            if (b > preferred) break;
+          }
+          let cut = candidate > 0 ? candidate : preferred;
+          if (cut <= cursor + 1) { cut = Math.min(totalHeight, cursor + pageCssHeight); }
+          slices.push([cursor, cut]);
+          cursor = cut;
+        }
+        return slices;
+      }
+
+      async function exportChatToPdf() {
+        try {
+          exportChatPdfBtn.disabled = true;
+          exportChatPdfBtn.textContent = "Exporting...";
+          await loadScriptOnce("https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js");
+          await loadScriptOnce("https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js");
+          if (!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF) throw new Error("PDF tools are unavailable.");
+          const captureNode = buildPdfCaptureNode();
+          document.body.appendChild(captureNode);
+          await applyExportImageProxy(captureNode);
+          prepareCaptureImages(captureNode);
+          await waitForCaptureImages(captureNode, 8000);
+          let canvas;
+          let slicesCss;
+          let captureCssWidth = 1;
+          try {
+            captureCssWidth = Math.max(captureNode.getBoundingClientRect().width || 1, 1);
+            canvas = await window.html2canvas(captureNode, {
+              backgroundColor: "#0f1115", scale: 2, useCORS: true, allowTaint: false, logging: false
+            });
+            const pdfProbe = new window.jspdf.jsPDF("p", "mm", "a4");
+            const pageWidthMm = pdfProbe.internal.pageSize.getWidth();
+            const pageHeightMm = pdfProbe.internal.pageSize.getHeight();
+            const marginMm = 8;
+            const contentWidthMm = pageWidthMm - (marginMm * 2);
+            const contentHeightMm = pageHeightMm - (marginMm * 2);
+            const pageHeightPx = Math.max(1, Math.floor((contentHeightMm / contentWidthMm) * canvas.width));
+            const cssToCanvas = canvas.width / captureCssWidth;
+            const pageCssHeight = pageHeightPx / cssToCanvas;
+            slicesCss = buildPageSlicesCss(captureNode, pageCssHeight);
+          } finally {
+            captureNode.remove();
+          }
+          const pdf = new window.jspdf.jsPDF("p", "mm", "a4");
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const margin = 8;
+          const contentWidth = pageWidth - (margin * 2);
+          const contentHeight = pageHeight - (margin * 2);
+          const cssToCanvas = canvas.width / Math.max(captureCssWidth || 1, 1);
+          const addSlicePage = function (startCss, endCss, pageIndex) {
+            const yPx = Math.max(0, Math.floor(startCss * cssToCanvas));
+            const hPx = Math.max(1, Math.ceil((endCss - startCss) * cssToCanvas));
+            const sliceCanvas = document.createElement("canvas");
+            sliceCanvas.width = canvas.width;
+            sliceCanvas.height = hPx;
+            const ctx = sliceCanvas.getContext("2d");
+            if (!ctx) return;
+            ctx.fillStyle = "#0f1115";
+            ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+            ctx.drawImage(canvas, 0, yPx, canvas.width, hPx, 0, 0, sliceCanvas.width, hPx);
+            const imgData = sliceCanvas.toDataURL("image/png");
+            const imgHeightMm = Math.min(contentHeight, (hPx * contentWidth) / canvas.width);
+            if (pageIndex > 0) pdf.addPage();
+            pdf.setFillColor(15, 17, 21);
+            pdf.rect(0, 0, pageWidth, pageHeight, "F");
+            pdf.addImage(imgData, "PNG", margin, margin, contentWidth, imgHeightMm, undefined, "FAST");
+          };
+          const slices = Array.isArray(slicesCss) && slicesCss.length
+            ? slicesCss : [[0, Math.max(canvas.height / Math.max(cssToCanvas, 1), 1)]];
+          slices.forEach(function (r, idx) { addSlicePage(Number(r[0] || 0), Number(r[1] || 0), idx); });
+          const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+          pdf.save("luxscale-chat-" + stamp + ".pdf");
+        } catch (err) {
+          const msg = err && err.message ? err.message : String(err);
+          alert("PDF export failed: " + msg);
+        } finally {
+          document.querySelectorAll(".pdf-capture-wrap").forEach(function (n) { n.remove(); });
+          exportChatPdfBtn.disabled = false;
+          exportChatPdfBtn.textContent = "Export chat (PDF)";
+        }
+      }
+
+      function nowStamp() {
+        return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      }
+
+      function sourceClass(source) {
+        const s = String(source || "").toLowerCase();
+        if (s.startsWith("fixed_suggested")) return "suggested";
+        if (s.startsWith("fixed")) return "fixed";
+        if (s.startsWith("gemini") || s.startsWith("ai") || s.startsWith("ollama")) return "ai";
+        if (s === "out_of_scope") return "scope";
+        if (s === "clarify_needed" || s.indexOf("unavailable") >= 0) return "scope";
+        if (s === "static_local" || s.startsWith("static_")) return "fixed";
+        return "";
+      }
+
+      function sourceLabel(source) {
+        const s = String(source || "").toLowerCase();
+        if (s.startsWith("fixed_suggested")) return "Suggested";
+        if (s.startsWith("fixed_confirmed") || s.startsWith("fixed_exact") || s.startsWith("alias")) return "Reference";
+        if (s === "static_local" || s.startsWith("static_")) return "Info";
+        if (s.startsWith("ollama") || s.startsWith("gemini") || s === "ai" || s === "gemini_unavailable") return "AI";
+        if (s === "out_of_scope") return "Not lighting";
+        if (s === "clarify_needed") return "Check";
+        if (s.indexOf("unavailable") >= 0) return "Offline";
+        if (!s) return "";
+        return s;
+      }
+
+      function isHttpUrl(value) {
+        try {
+          const u = new URL(String(value || "").trim());
+          return u.protocol === "http:" || u.protocol === "https:";
+        } catch (_err) {
+          return false;
+        }
+      }
+
+      function extractTaggedValue(line, tagName) {
+        const txt = String(line || "").trim();
+        const rx = new RegExp("^\\[" + tagName + "\\]([\\s\\S]*?)\\[\\/" + tagName + "\\]$", "i");
+        const m = txt.match(rx);
+        return m ? String(m[1] || "").trim() : "";
+      }
+
+      function containsArabicText(value) {
+        return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(String(value || ""));
+      }
+
+      function renderRichBody(container, text) {
+        const lines = String(text || "").split(/\r?\n/);
+        lines.forEach(function (line, idx) {
+          const trimmed = String(line || "").trim();
+          const imgUrl = extractTaggedValue(trimmed, "img");
+          const linkUrl = extractTaggedValue(trimmed, "url");
+          if (imgUrl && isHttpUrl(imgUrl)) {
+            const img = document.createElement("img");
+            img.src = imgUrl;
+            img.alt = "Fixture image";
+            img.loading = "lazy";
+            img.referrerPolicy = "no-referrer";
+            img.style.display = "block";
+            img.style.maxWidth = "100%";
+            img.style.width = "300px";
+            img.style.height = "auto";
+            img.style.margin = "8px 0";
+            img.style.borderRadius = "10px";
+            container.appendChild(img);
+          } else if (linkUrl && isHttpUrl(linkUrl)) {
+            const a = document.createElement("a");
+            a.href = linkUrl;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.textContent = linkUrl;
+            a.style.display = "inline-block";
+            a.style.margin = "4px 0";
+            container.appendChild(a);
+          } else {
+            container.appendChild(document.createTextNode(line));
+          }
+          if (idx < lines.length - 1) container.appendChild(document.createElement("br"));
+        });
+      }
+
+      function buildContextMessages() {
+        return loadHistory()
+          .slice(-CONTEXT_MAX_MESSAGES)
+          .map(function (m) {
+            return { role: m.role === "user" ? "user" : "assistant", text: String(m.text || "") };
+          });
+      }
+
+      function replayHistory() {
+        const history = loadHistory();
+        if (!history.length) return false;
+        chatLog.innerHTML = "";
+        history.forEach(function (m) {
+          appendMessage(m.role, m.text, m.role === "user" ? "You" : "LuxSCale AI", {
+            source: m.source || "", persist: false
+          });
+        });
+        return true;
+      }
+
+      function appendMessage(role, text, metaLabel, options) {
+        const opts = options || {};
+        const article = document.createElement("article");
+        article.className = "chat-message " + (role === "user" ? "user" : "assistant");
+        const isArabic = containsArabicText(text);
+        if (isArabic) { article.classList.add("rtl"); article.setAttribute("dir", "rtl"); }
+        else { article.setAttribute("dir", "ltr"); }
+        const body = document.createElement("p");
+        body.setAttribute("dir", isArabic ? "rtl" : "ltr");
+        renderRichBody(body, text);
+        article.appendChild(body);
+        const meta = document.createElement("span");
+        meta.className = "chat-meta";
+        meta.textContent = (metaLabel || (role === "user" ? "You" : "LuxSCale AI")) + " • " + nowStamp();
+        if (opts.source && role !== "user") {
+          const badge = document.createElement("span");
+          badge.className = "source-badge " + sourceClass(opts.source);
+          badge.textContent = sourceLabel(opts.source);
+          meta.appendChild(badge);
+        }
+        article.appendChild(meta);
+        if (opts.showYesNo) {
+          const actions = document.createElement("div");
+          actions.className = "chat-actions";
+          const yesBtn = document.createElement("button");
+          yesBtn.type = "button";
+          yesBtn.className = "btn btn-sm btn-outline-light";
+          yesBtn.textContent = "Yes";
+          const noBtn = document.createElement("button");
+          noBtn.type = "button";
+          noBtn.className = "btn btn-sm btn-red";
+          noBtn.textContent = "No";
+          yesBtn.addEventListener("click", function () { sendFeedback("yes"); actions.remove(); });
+          noBtn.addEventListener("click", function () { sendFeedback("no"); actions.remove(); });
+          actions.appendChild(yesBtn);
+          actions.appendChild(noBtn);
+          article.appendChild(actions);
+        }
+        chatLog.appendChild(article);
+        chatLog.scrollTop = chatLog.scrollHeight;
+        if (opts.persist !== false) appendHistory(role, text, opts.source || "");
+      }
+
+      function setSending(isSending) {
+        sendButton.disabled = !!isSending;
+        sendButton.textContent = isSending ? "Sending..." : "Send";
+      }
+
+      function normalizeBase(base) {
+        return String(base || "").trim().replace(/\/+$/, "");
+      }
+
+      function endpointFromBase(base, path) {
+        return normalizeBase(base) + String(path || "");
+      }
+
+      function unique(values) {
+        return Array.from(new Set(values.filter(Boolean)));
+      }
+
+      // ─────────────────────────────────────────────────────────────────────────
+      // Backend base resolution — USE_RAILWAY bypasses all discovery logic and
+      // sends every request directly to the Railway deployment URL.
+      // ─────────────────────────────────────────────────────────────────────────
+      async function resolveBackendBases() {
+        if (backendBasesPromise) return backendBasesPromise;
+
+        if (USE_RAILWAY) {
+          backendBasesPromise = Promise.resolve([RAILWAY_BASE]);
+          return backendBasesPromise;
+        }
+
+        backendBasesPromise = (async function () {
+          const preferred = [];
+          const fallback = [];
+          const host = String(window.location.hostname || "").trim();
+          const pageProtocol = String(window.location.protocol || "").trim().toLowerCase();
+          const sameHost5000 = host ? ("http://" + host + ":5000") : "";
+          var pageOrigin = "";
+          try { pageOrigin = normalizeBase(String(window.location.origin || "")); } catch (_e) { pageOrigin = ""; }
+          if (pageOrigin && (pageProtocol === "http:" || pageProtocol === "https:")) preferred.push(pageOrigin);
+
+          if (pageProtocol !== "https:") {
+            preferred.push(LOCAL_BASE);
+            preferred.push("http://127.0.0.1:5000");
+            if (sameHost5000) preferred.push(sameHost5000);
+          }
+
+          const cfgPaths = [new URL("./assets/dashboard_config.json", window.location.href).toString()];
+          for (const cfgUrl of cfgPaths) {
+            try {
+              const resp = await fetch(cfgUrl, { method: "GET" });
+              if (!resp.ok) continue;
+              const cfg = await resp.json().catch(function () { return {}; });
+              const remote = normalizeBase(cfg && cfg.remote_url);
+              const apiBase = normalizeBase(cfg && cfg.api_base);
+              var useLocal = false;
+              try { useLocal = window.localStorage && localStorage.getItem("LUXSCALE_USE_LOCAL_API") === "1"; } catch (_ls) { useLocal = false; }
+              const fromCfg = [];
+              if (useLocal) {
+                if (apiBase) fromCfg.push(apiBase);
+                if (remote) fromCfg.push(remote);
+              } else {
+                if (remote) fromCfg.push(remote);
+                if (apiBase) fromCfg.push(apiBase);
+              }
+              for (var bi = fromCfg.length - 1; bi >= 0; bi--) preferred.unshift(fromCfg[bi]);
+            } catch (_err) {}
+          }
+
+          const relApiUrl = new URL("./api/chat/menu", window.location.href).toString();
+          fallback.push(relApiUrl.replace(/\/api\/chat\/menu$/, ""));
+          fallback.push(window.location.origin);
+
+          var allBases = unique(preferred.concat(fallback).map(normalizeBase));
+          if (pageProtocol === "https:") {
+            allBases = allBases.filter(function (b) {
+              var s = String(b || "").toLowerCase();
+              if (s.indexOf("http://127.0.0.1") === 0) return false;
+              if (s.indexOf("http://localhost") === 0) return false;
+              return true;
+            });
+            if (pageOrigin && allBases.indexOf(pageOrigin) < 0) allBases.unshift(pageOrigin);
+            else if (pageOrigin) allBases = [pageOrigin].concat(allBases.filter(function (x) { return x !== pageOrigin; }));
+          }
+          return allBases;
+        })();
+
+        return backendBasesPromise;
+      }
+
+      async function requestWithFallback(path, options) {
+        const bases = await resolveBackendBases();
+        let lastMeaningfulError = "";
+        for (const base of bases) {
+          const url = endpointFromBase(base, path);
+          try {
+            const res = await fetch(url, options);
+            const data = await res.json().catch(function () { return {}; });
+            if (res.ok && data.status !== "error") { lastWorkingBase = base; return data; }
+            if (res.status === 404) continue;
+            lastMeaningfulError = (data && data.message) || ("Request failed with status " + res.status);
+          } catch (e) {
+            lastMeaningfulError = e && e.message ? e.message : String(e);
+          }
+        }
+        if (!lastMeaningfulError) {
+          lastMeaningfulError = USE_RAILWAY
+            ? "Request failed. Check that the Railway deployment is running at " + RAILWAY_BASE
+            : "Request failed with status 404. Check assets/dashboard_config.json (api_base) and that Flask is running.";
+        }
+        throw new Error(lastMeaningfulError);
+      }
+
+      async function postJson(path, payload) {
+        return requestWithFallback(path, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload || {})
+        });
+      }
+
+      async function getJson(path) {
+        return requestWithFallback(path, { method: "GET" });
+      }
+
+      async function sendFeedback(feedbackValue) {
+        try {
+          setSending(true);
+          const sid = ensureSessionId();
+          const uid = readFirebaseUid();
+          const res = await postJson(API_FEEDBACK_PATH, { session_id: sid, user_id: uid || "", feedback: feedbackValue });
+          if (res.session_id) { sessionId = String(res.session_id); localStorage.setItem(SESSION_KEY, sessionId); }
+          appendMessage("assistant", String(res.answer || "Done."), "LuxSCale AI", { source: res.source });
+        } catch (err) {
+          appendMessage("assistant", String(err.message || err), "LuxSCale AI");
+        } finally {
+          setSending(false);
+        }
+      }
+
+      async function sendMessage(text) {
+        const clean = (text || "").trim();
+        if (!clean) return;
+        const contextMessages = buildContextMessages();
+        appendMessage("user", clean);
+        chatInput.value = "";
+        try {
+          setSending(true);
+          const sid = ensureSessionId();
+          const uid = readFirebaseUid();
+          const res = await postJson(API_ASK_PATH, {
+            session_id: sid, user_id: uid || "", context_messages: contextMessages, message: clean
+          });
+          if (res.session_id) { sessionId = String(res.session_id); localStorage.setItem(SESSION_KEY, sessionId); }
+          appendMessage("assistant", String(res.answer || ""), "LuxSCale AI", { source: res.source, showYesNo: !!res.show_yes_no });
+        } catch (err) {
+          appendMessage("assistant", String(err.message || err), "LuxSCale AI");
+        } finally {
+          setSending(false);
+        }
+      }
+
+      async function loadMenu() {
+        try {
+          const data = await getJson(API_MENU_PATH);
+          if (!data || data.status !== "success" || !Array.isArray(data.menu_items)) return;
+          if (!data.menu_items.length) return;
+          promptChipList.innerHTML = "";
+          data.menu_items.slice(0, 8).forEach(function (item) {
+            const btn = document.createElement("button");
+            btn.className = "prompt-chip";
+            btn.type = "button";
+            btn.setAttribute("data-prompt", String(item.question || ""));
+            btn.textContent = String(item.label || item.question || "Prompt");
+            promptChipList.appendChild(btn);
+          });
+        } catch (_err) {}
+      }
+
+      chatForm.addEventListener("submit", function (e) { e.preventDefault(); sendMessage(chatInput.value); });
+
+      promptChipList.addEventListener("click", function (e) {
+        const target = e.target.closest("[data-prompt]");
+        if (!target) return;
+        chatInput.value = target.getAttribute("data-prompt") || "";
+        chatInput.focus();
+      });
+
+      clearChatBtn.addEventListener("click", function () {
+        chatLog.innerHTML = "";
+        try { localStorage.removeItem(historyStorageKey()); } catch (_err) {}
+        appendMessage("assistant", "Chat cleared. Ask your next LuxSCale question whenever you are ready.", "LuxSCale AI");
+      });
+
+      exportChatBtn.addEventListener("click", function () { exportChatToText(); });
+      exportChatPdfBtn.addEventListener("click", function () { exportChatToPdf(); });
+
+      ensureSessionId();
+      replayHistory();
+      loadMenu();
+
+      const prefill = (sessionStorage.getItem(CHAT_PREFILL_KEY) || "").trim();
+      if (prefill) { sessionStorage.removeItem(CHAT_PREFILL_KEY); chatInput.value = prefill; sendMessage(prefill); }
+    })();
+  </script>
+</body>
+</html>
