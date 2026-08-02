@@ -1098,6 +1098,12 @@ def _cors_options_probe_add_star_when_no_origin(resp: Response) -> Response:
     resp.headers[h] = "*"
     return resp
 
+@app.route("/docs")
+def api_docs():
+    path = os.path.join(_ROOT_DIR, "docs", "api_docs.html")
+    if not os.path.isfile(path):
+        return jsonify({"error": "docs not found"}), 404
+    return send_file(path)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # use Railway's port

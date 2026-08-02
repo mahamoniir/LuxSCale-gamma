@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuxScale API — Developer Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sc-red:#eb1b26;
+  --sc-dark-red:#a40e16;
+  --sc-black:#000000;
+  --sc-white:#ffffff;
+  --sc-gray:#cccccc;
+  --bg-primary:#0a0a0a;
+  --bg-secondary:#141414;
+  --bg-tertiary:#1e1e1e;
+  --text-primary:#ffffff;
+  --text-secondary:#e0e0e0;
+  --text-muted:#999999;
+  --border-color:#2a2a2a;
+  --card-bg:#1a1a1a;
+  --card-border:#2a2a2a;
+  --section-bg:#111111;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --body-font: 'Poppins', sans-serif;
+  --head-font: 'Anton', sans-serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg-primary);
+  color:var(--text-secondary);
+  font-family:var(--body-font);
+  font-weight:400;
+  line-height:1.7;
+  font-size:15px;
+}
+::selection{ background:var(--sc-red); color:#fff; }
+
+/* ---------- layout shell ---------- */
+.shell{ display:flex; min-height:100vh; }
+
+/* ---------- sidebar ---------- */
+.sidebar{
+  width:280px;
+  flex-shrink:0;
+  background:var(--bg-secondary);
+  border-right:1px solid var(--border-color);
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+  padding:28px 0 60px;
+}
+.sidebar::-webkit-scrollbar{ width:6px; }
+.sidebar::-webkit-scrollbar-thumb{ background:var(--border-color); border-radius:4px; }
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 24px 24px;
+  border-bottom:1px solid var(--border-color);
+  margin-bottom:8px;
+}
+.brand svg{ width:26px; height:26px; flex-shrink:0; }
+.brand-text{ display:flex; flex-direction:column; line-height:1.15; }
+.brand-text .name{
+  font-family:var(--head-font);
+  font-size:16px;
+  letter-spacing:0.02em;
+  color:var(--text-primary);
+  text-transform:uppercase;
+}
+.brand-text .tag{
+  font-size:10px;
+  color:var(--text-muted);
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  margin-top:2px;
+}
+
+.env-pill{
+  margin:16px 24px 20px;
+  padding:9px 12px;
+  background:var(--bg-tertiary);
+  border:1px solid var(--border-color);
+  border-radius:6px;
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--text-muted);
+}
+.env-pill b{ color:var(--sc-red); font-weight:600; display:block; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:4px; }
+.env-pill span{ color:var(--text-secondary); word-break:break-all; }
+
+.nav-group{ margin-bottom:6px; }
+.nav-group-label{
+  font-family:var(--body-font);
+  font-weight:300;
+  font-size:10.5px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  padding:14px 24px 8px;
+}
+.nav-link{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 24px;
+  color:var(--text-secondary);
+  text-decoration:none;
+  font-size:13px;
+  border-left:2px solid transparent;
+  transition:background .12s ease, color .12s ease, border-color .12s ease;
+}
+.nav-link:hover{ background:var(--bg-tertiary); color:var(--text-primary); }
+.nav-link.active{ border-left-color:var(--sc-red); background:var(--bg-tertiary); color:var(--text-primary); }
+.nav-method{
+  font-family:var(--mono);
+  font-size:9px;
+  font-weight:600;
+  padding:1px 5px;
+  border-radius:3px;
+  letter-spacing:0.03em;
+  flex-shrink:0;
+  min-width:32px;
+  text-align:center;
+}
+.nav-method.get{ background:transparent; border:1px solid var(--text-muted); color:var(--text-muted); }
+.nav-method.post{ background:var(--sc-red); color:#fff; }
+.nav-method.put{ background:transparent; border:1px solid var(--sc-red); color:var(--sc-red); }
+
+/* ---------- main content ---------- */
+.main{ flex:1; min-width:0; max-width:900px; padding:56px 64px 120px; }
+@media (max-width:900px){
+  .sidebar{ display:none; }
+  .main{ padding:32px 24px 80px; max-width:100%; }
+}
+
+.hero{ margin-bottom:56px; }
+.hero .eyebrow{
+  font-family:var(--body-font); font-weight:300; font-size:11px;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--sc-red); margin-bottom:14px;
+}
+.hero h1{
+  font-family:var(--head-font);
+  font-size:52px;
+  line-height:1;
+  text-transform:uppercase;
+  color:var(--text-primary);
+  margin:0 0 18px;
+  letter-spacing:0.01em;
+}
+.hero p{ color:var(--text-muted); font-size:15px; max-width:60ch; margin:0 0 24px; }
+.hero-meta{ display:flex; gap:28px; flex-wrap:wrap; margin-top:28px; padding-top:24px; border-top:1px solid var(--border-color); }
+.hero-meta div{ display:flex; flex-direction:column; gap:4px; }
+.hero-meta .k{ font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); }
+.hero-meta .v{ font-family:var(--mono); font-size:13px; color:var(--text-secondary); }
+
+section.doc-section{ margin-bottom:64px; scroll-margin-top:28px; }
+.section-head{
+  display:flex; align-items:baseline; gap:14px; margin-bottom:22px;
+  padding-bottom:14px; border-bottom:1px solid var(--border-color);
+}
+.section-head h2{
+  font-family:var(--head-font); font-size:24px; text-transform:uppercase;
+  color:var(--text-primary); margin:0; letter-spacing:0.01em;
+}
+.section-head .count{ font-family:var(--mono); font-size:12px; color:var(--text-muted); }
+
+p.lead{ color:var(--text-muted); margin:0 0 28px; max-width:68ch; }
+
+/* endpoint card */
+.endpoint{
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:10px;
+  margin-bottom:22px;
+  overflow:hidden;
+  scroll-margin-top:28px;
+}
+.endpoint-head{
+  display:flex; align-items:center; gap:12px;
+  padding:18px 22px;
+  border-bottom:1px solid var(--card-border);
+  background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
+}
+.method{
+  font-family:var(--mono); font-size:11px; font-weight:600;
+  padding:4px 10px; border-radius:5px; letter-spacing:0.03em; flex-shrink:0;
+}
+.method.get{ border:1px solid var(--text-muted); color:var(--text-secondary); }
+.method.post{ background:var(--sc-red); color:#fff; }
+.method.put{ border:1px solid var(--sc-red); color:var(--sc-red); }
+.path{ font-family:var(--mono); font-size:14px; color:var(--text-primary); font-weight:500; word-break:break-all; }
+.auth-badge{
+  margin-left:auto; font-size:10px; letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--text-muted); border:1px solid var(--border-color); padding:3px 8px; border-radius:4px;
+  font-family:var(--body-font); font-weight:500; flex-shrink:0;
+}
+.auth-badge.required{ color:var(--sc-red); border-color:rgba(235,27,38,0.4); }
+
+.endpoint-body{ padding:22px; }
+.endpoint-body > p{ margin:0 0 20px; color:var(--text-secondary); }
+
+.subhead{
+  font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--text-muted); font-weight:500; margin:22px 0 10px;
+}
+.subhead:first-child{ margin-top:0; }
+
+table.params{
+  width:100%; border-collapse:collapse; font-size:13px; margin-bottom:4px;
+}
+table.params th{
+  text-align:left; font-weight:500; color:var(--text-muted);
+  font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase;
+  padding:8px 12px; border-bottom:1px solid var(--border-color);
+}
+table.params td{
+  padding:10px 12px; border-bottom:1px solid var(--border-color);
+  color:var(--text-secondary); vertical-align:top;
+}
+table.params tr:last-child td{ border-bottom:none; }
+table.params code{ font-family:var(--mono); color:var(--text-primary); font-size:12.5px; }
+.req-yes{ color:var(--sc-red); font-size:11px; font-weight:600; }
+.req-no{ color:var(--text-muted); font-size:11px; }
+
+pre{
+  background:var(--section-bg);
+  border:1px solid var(--border-color);
+  border-radius:8px;
+  padding:16px 18px;
+  overflow-x:auto;
+  font-family:var(--mono);
+  font-size:12.5px;
+  line-height:1.6;
+  color:var(--text-secondary);
+  margin:0 0 4px;
+}
+pre .k{ color:#e0a3a3; }
+pre .s{ color:#a3c9e0; }
+pre .n{ color:var(--sc-gray); }
+pre .c{ color:var(--text-muted); }
+
+.code-tabs{ display:flex; gap:2px; margin-bottom:0; }
+.code-tab{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:0.04em; text-transform:uppercase;
+  color:var(--text-muted); padding:7px 14px; background:var(--bg-tertiary);
+  border:1px solid var(--border-color); border-bottom:none;
+  border-radius:6px 6px 0 0;
+}
+.code-tab.on{ color:var(--text-primary); background:var(--section-bg); }
+.code-block-wrap pre{ border-radius:0 8px 8px 8px; margin-top:0; }
+
+.status-row{ display:flex; align-items:center; gap:8px; margin:14px 0 8px; }
+.status-chip{
+  font-family:var(--mono); font-size:11px; font-weight:600; padding:2px 8px; border-radius:4px;
+}
+.status-chip.s2{ background:rgba(80,200,120,0.12); color:#6fd897; }
+.status-chip.s4{ background:rgba(235,27,38,0.12); color:#f0666e; }
+.status-chip.s5{ background:rgba(235,27,38,0.18); color:#f0666e; }
+.status-note{ font-size:12.5px; color:var(--text-muted); }
+
+.note{
+  border-left:2px solid var(--sc-red);
+  background:rgba(235,27,38,0.06);
+  padding:12px 16px;
+  font-size:13px;
+  color:var(--text-secondary);
+  border-radius:0 6px 6px 0;
+  margin:18px 0;
+}
+.note b{ color:var(--text-primary); }
+
+.error-grid{ display:grid; grid-template-columns:70px 1fr; gap:0; font-size:13px; }
+.error-grid .code{ font-family:var(--mono); color:var(--sc-red); padding:9px 0; border-bottom:1px solid var(--border-color); font-weight:600; }
+.error-grid .desc{ padding:9px 0; border-bottom:1px solid var(--border-color); color:var(--text-secondary); }
+.error-grid > div:nth-last-child(-n+2){ border-bottom:none; }
+
+footer{
+  border-top:1px solid var(--border-color);
+  padding:36px 64px;
+  color:var(--text-muted);
+  font-size:12px;
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;
+}
+footer .mark{ display:flex; align-items:center; gap:8px; }
+footer svg{ width:16px; height:16px; opacity:0.6; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <nav class="sidebar">
+    <div class="brand">
+      <svg viewBox="0 0 88.194804 39.567375" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(1154.6313,-99.845264)">
+          <path fill="#eb1b26" d="m -1115.1899,99.845264 a 4.0626351,4.0626351 0 0 0 -3.7237,2.438096 h -2.1383 v 0.38368 h -5.9907 c -2.2904,0 -4.2007,1.83906 -4.2007,4.1171 v 12.80001 c 0,2.27804 1.9103,4.11561 4.2007,4.11561 h 12.4648 a 1.1440361,1.1440361 0 0 0 1.144,-1.14396 1.1440361,1.1440361 0 0 0 -1.144,-1.14396 h -12.4648 c -1.0965,0 -1.9125,-0.81267 -1.9125,-1.82769 v -12.80001 c 0,-1.01501 0.816,-1.82886 1.9125,-1.82886 h 5.9907 v 0.3754 h 2.0582 a 4.0626351,4.0626351 0 0 0 3.8038,2.6397 h 1.073 v -8.125116 z m 8.3308,0 v 1.556026 h -2.2031 c -0.3677,0 -0.6639,0.29587 -0.6639,0.66362 v 0.46202 c 0,0.36775 0.2962,0.66362 0.6639,0.66362 h 2.2031 v 1.43454 h -2.2031 c -0.3677,0 -0.6639,0.29617 -0.6639,0.66392 v 0.46171 c 0,0.36776 0.2962,0.66393 0.6639,0.66393 h 2.2031 v 1.55573 h 1.0728 a 4.0626351,4.0626351 0 0 0 3.8037,-2.6397 h 2.0582 v -0.3754 h 5.899 c 1.0965,0 1.9128,0.81385 1.9128,1.82886 v 12.80001 c 0,1.01502 -0.8163,1.82769 -1.9128,1.82769 h -12.2088 a 1.1440361,1.1440361 0 0 0 -1.144,1.14396 1.1440361,1.1440361 0 0 0 1.144,1.14396 h 12.2088 c 2.2905,0 4.2008,-1.83757 4.2008,-4.11561 v -12.80001 c 0,-2.27804 -1.9103,-4.1171 -4.2008,-4.1171 h -5.899 v -0.38368 h -2.138 a 4.0626351,4.0626351 0 0 0 -3.7239,-2.438096 z"/>
+        </g>
+      </svg>
+      <div class="brand-text">
+        <span class="name">LuxScale API</span>
+        <span class="tag">Short Circuit Co.</span>
+      </div>
+    </div>
+
+    <div class="env-pill">
+      <b>Base URL</b>
+      <span>web-production-8d09d.up.railway.app</span>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Overview</div>
+      <a class="nav-link" href="#getting-started">Getting started</a>
+      <a class="nav-link" href="#auth">Authentication</a>
+      <a class="nav-link" href="#errors">Error format</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Calculation</div>
+      <a class="nav-link" href="#ep-calculate"><span class="nav-method post">POST</span> /calculate</a>
+      <a class="nav-link" href="#ep-pdf"><span class="nav-method post">POST</span> /pdf</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Reference Data</div>
+      <a class="nav-link" href="#ep-root"><span class="nav-method get">GET</span> /</a>
+      <a class="nav-link" href="#ep-places"><span class="nav-method get">GET</span> /places</a>
+      <a class="nav-link" href="#ep-ui-settings"><span class="nav-method get">GET</span> /api/ui-settings</a>
+      <a class="nav-link" href="#ep-public-config"><span class="nav-method get">GET</span> /api/public-config</a>
+      <a class="nav-link" href="#ep-standards-resolve"><span class="nav-method post">POST</span> /standards/resolve</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Studies</div>
+      <a class="nav-link" href="#ep-submit"><span class="nav-method post">POST</span> /api/submit</a>
+      <a class="nav-link" href="#ep-get"><span class="nav-method get">GET</span> /api/get</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">PDF Reports</div>
+      <a class="nav-link" href="#ep-report-full"><span class="nav-method get">GET</span> /api/report/:token/full</a>
+      <a class="nav-link" href="#ep-report-solution"><span class="nav-method get">GET</span> /api/report/:token/solution/:i</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Admin</div>
+      <a class="nav-link" href="#ep-admin-login"><span class="nav-method post">POST</span> /api/admin/login</a>
+      <a class="nav-link" href="#ep-admin-logout"><span class="nav-method post">POST</span> /api/admin/logout</a>
+      <a class="nav-link" href="#ep-admin-settings"><span class="nav-method get">GET</span> /api/admin/settings</a>
+      <a class="nav-link" href="#ep-admin-settings-put"><span class="nav-method put">PUT</span> /api/admin/settings</a>
+      <a class="nav-link" href="#ep-admin-fixtures"><span class="nav-method get">GET</span> /api/admin/fixture-map</a>
+      <a class="nav-link" href="#ep-admin-fixtures-put"><span class="nav-method put">PUT</span> /api/admin/fixture-map</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Static</div>
+      <a class="nav-link" href="#ep-assets"><span class="nav-method get">GET</span> /assets/:path</a>
+      <a class="nav-link" href="#ep-dashboard"><span class="nav-method get">GET</span> /admin/dashboard.html</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Pending</div>
+      <a class="nav-link" href="#not-documented">AI &amp; IES routes</a>
+    </div>
+  </nav>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <div class="hero" id="getting-started">
+      <div class="eyebrow">Internal API Reference</div>
+      <h1>LuxScale API</h1>
+      <p>The lighting-calculation engine behind LuxScale — room-based photometric calculations, IES-driven fixture solutions, study persistence, and PDF report generation. This reference is generated directly from the live route definitions in <code style="font-family:var(--mono);color:var(--text-primary);">app.py</code>, so it stays accurate as the backend evolves.</p>
+      <div class="hero-meta">
+        <div><span class="k">Base URL</span><span class="v">https://web-production-8d09d.up.railway.app</span></div>
+        <div><span class="k">Format</span><span class="v">application/json</span></div>
+        <div><span class="k">Auth</span><span class="v">Session cookie or Bearer token (admin routes only)</span></div>
+      </div>
+    </div>
+
+    <!-- AUTH -->
+    <section class="doc-section" id="auth">
+      <div class="section-head"><h2>Authentication</h2></div>
+      <p class="lead">Most endpoints are public. Routes under <code style="font-family:var(--mono);color:var(--text-primary);">/api/admin/*</code> require one of the following:</p>
+      <table class="params">
+        <tr><th>Method</th><th>How</th></tr>
+        <tr><td><code>Session cookie</code></td><td>Set automatically after a successful <code>POST /api/admin/login</code>. Works for same-origin browser clients.</td></tr>
+        <tr><td><code>Bearer token</code></td><td>Send header <code>X-Admin-Token: &lt;token&gt;</code>, issued at login. Use this for dashboards hosted on a different origin. Tokens expire after 7 days by default (<code>LUXSCALE_ADMIN_TOKEN_TTL_S</code>).</td></tr>
+      </table>
+      <div class="note">CORS is restricted to configured origins (<code style="font-family:var(--mono);">LUXSCALE_CORS_ORIGINS</code>). If you're calling this API from a new frontend origin, it needs to be added there first — otherwise browser requests will be blocked before they hit these routes.</div>
+    </section>
+
+    <!-- ERRORS -->
+    <section class="doc-section" id="errors">
+      <div class="section-head"><h2>Error format</h2></div>
+      <p class="lead">Two shapes are currently in use across the API — handle both when parsing failures:</p>
+      <div class="subhead">Shape A — most endpoints</div>
+      <pre>{ <span class="k">"status"</span>: <span class="s">"error"</span>, <span class="k">"message"</span>: <span class="s">"..."</span> }</pre>
+      <div class="subhead">Shape B — submit validation &amp; report generation</div>
+      <pre>{ <span class="k">"error"</span>: <span class="s">"..."</span> }</pre>
+    </section>
+
+    <!-- ================= CALCULATION ================= -->
+    <section class="doc-section">
+      <div class="section-head"><h2>Calculation</h2><span class="count">2 endpoints</span></div>
+
+      <div class="endpoint" id="ep-calculate">
+        <div class="endpoint-head">
+          <span class="method post">POST</span>
+          <span class="path">/calculate</span>
+          <span class="auth-badge">No auth</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Runs the lighting calculation engine for a room and returns fixture placement solutions. Every call is recorded to a calculation trace file, whether it succeeds or fails.</p>
+
+          <div class="subhead">Body parameters</div>
+          <table class="params">
+            <tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>sides</code></td><td>array</td><td><span class="req-yes">Required</span></td><td>Room boundary coordinates</td></tr>
+            <tr><td><code>height</code></td><td>number</td><td><span class="req-yes">Required</span></td><td>Ceiling height in meters</td></tr>
+            <tr><td><code>place</code></td><td>string</td><td><span class="req-no">Conditional</span></td><td>Calculator room-type key. Required if <code>standard_ref_no</code> doesn't resolve.</td></tr>
+            <tr><td><code>project_info</code></td><td>object</td><td><span class="req-no">Optional</span></td><td>Free-form metadata; <code>standard_ref_no</code> may be nested here</td></tr>
+            <tr><td><code>standard_ref_no</code></td><td>string</td><td><span class="req-no">Conditional</span></td><td>Reference number into the standards table. Required if <code>place</code> isn't given.</td></tr>
+            <tr><td><code>fast</code></td><td>bool / string</td><td><span class="req-no">Optional</span></td><td>Also accepted as query param <code>?fast=1</code>. Enables faster calc mode.</td></tr>
+          </table>
+          <div class="note">At least one of <b>place</b> or a valid <b>standard_ref_no</b> is required. If both resolve, the standard row takes priority.</div>
+
+          <div class="subhead">Request</div>
+          <div class="code-tabs"><div class="code-tab on">cURL</div></div>
+          <div class="code-block-wrap"><pre>curl -X POST https://web-production-8d09d.up.railway.app/calculate \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{
+    "sides": [5, 4, 5, 4],
+    "height": 2.8,
+    "place": "office_open_plan"
+  }'</span></pre></div>
+
+          <div class="status-row"><span class="status-chip s2">200</span><span class="status-note">success</span></div>
+          <pre>{
+  <span class="k">"status"</span>: <span class="s">"success"</span>,
+  <span class="k">"project_info"</span>: { <span class="c">...</span> },
+  <span class="k">"results"</span>: [ { <span class="c">...one object per fixture solution...</span> } ],
+  <span class="k">"length"</span>: <span class="n">5</span>,
+  <span class="k">"width"</span>: <span class="n">4</span>,
+  <span class="k">"calculation_trace_file"</span>: <span class="s">"path/to/trace.json"</span>,
+  <span class="k">"calculation_meta"</span>: { <span class="c">...</span> },
+  <span class="k">"ui_settings"</span>: { <span class="c">...</span> },
+  <span class="k">"standard_row"</span>: { <span class="c">...only if standard_ref_no resolved...</span> }
+}</pre>
+
+          <div class="subhead">Errors</div>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc">Body isn't a JSON object</div>
+            <div class="code">400</div><div class="desc">Missing <code style="font-family:var(--mono);">sides</code> or <code style="font-family:var(--mono);">height</code></div>
+            <div class="code">400</div><div class="desc">Invalid ceiling height</div>
+            <div class="code">400</div><div class="desc">Neither <code style="font-family:var(--mono);">place</code> nor a valid <code style="font-family:var(--mono);">standard_ref_no</code> given</div>
+            <div class="code">400</div><div class="desc">Exception during calculation — body includes <code style="font-family:var(--mono);">message</code> and, if available, <code style="font-family:var(--mono);">calculation_trace_file</code></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-pdf">
+        <div class="endpoint-head">
+          <span class="method post">POST</span>
+          <span class="path">/pdf</span>
+          <span class="auth-badge">No auth</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Same input contract as <code style="font-family:var(--mono);color:var(--text-primary);">/calculate</code>, but streams a generated PDF directly instead of returning JSON.</p>
+          <div class="subhead">Body parameters</div>
+          <p style="font-size:13px;color:var(--text-muted);margin:0 0 14px;">Identical to <code style="font-family:var(--mono);">/calculate</code>: <code style="font-family:var(--mono);">sides</code>, <code style="font-family:var(--mono);">height</code>, one of <code style="font-family:var(--mono);">place</code> / <code style="font-family:var(--mono);">standard_ref_no</code>, plus optional <code style="font-family:var(--mono);">project_info</code> and <code style="font-family:var(--mono);">fast</code>.</p>
+          <div class="status-row"><span class="status-chip s2">200</span><span class="status-note"><code style="font-family:var(--mono);">application/pdf</code> · <code style="font-family:var(--mono);">Content-Disposition: attachment; filename="report.pdf"</code></span></div>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc">Missing <code style="font-family:var(--mono);">sides</code> or <code style="font-family:var(--mono);">height</code></div>
+            <div class="code">400</div><div class="desc">Neither <code style="font-family:var(--mono);">place</code> nor <code style="font-family:var(--mono);">standard_ref_no</code> resolvable</div>
+          </div>
+          <div class="note">Unlike <code style="font-family:var(--mono);">/calculate</code>, this route doesn't wrap calculation in a try/except — an internal error surfaces as a raw 500, not a JSON error body.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= REFERENCE DATA ================= -->
+    <section class="doc-section">
+      <div class="section-head"><h2>Reference data</h2><span class="count">5 endpoints</span></div>
+
+      <div class="endpoint" id="ep-root">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Health / welcome check.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"message"</span>: <span class="s">"Welcome to the API"</span> }</pre>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-places">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/places</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Calculator room types plus standards-derived categories, for populating selection UI.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{
+  <span class="k">"calculator_places"</span>: [ { <span class="k">"key"</span>: <span class="s">"..."</span>, <span class="k">"lux"</span>: <span class="n">0</span>, <span class="k">"uniformity"</span>: <span class="n">0</span> } ],
+  <span class="k">"places"</span>: [ <span class="c">...same array, kept for backward compatibility...</span> ],
+  <span class="k">"standard_categories"</span>: [ <span class="s">"..."</span> ],
+  <span class="k">"category_keywords"</span>: { <span class="c">...</span> },
+  <span class="k">"metadata"</span>: { <span class="c">...</span> }
+}</pre>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-ui-settings">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/ui-settings</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Public pagination / UI defaults — the same block returned inside <code style="font-family:var(--mono);color:var(--text-primary);">/calculate</code>, without running a calculation.</p>
+          <div class="status-row"><span class="status-chip s2">200</span><span class="status-note">shape defined by <code style="font-family:var(--mono);">get_ui_config()</code></span></div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-public-config">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/public-config</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Exposes the dashboard's configured API base URL, sourced from <code style="font-family:var(--mono);color:var(--text-primary);">LUXSCALE_DASHBOARD_API_BASE</code>.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"api_base"</span>: <span class="s">"http://127.0.0.1:5000"</span> }</pre>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-standards-resolve">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/standards/resolve</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Validates and returns a single standards row by reference number — used to confirm a client-side selection before calculating.</p>
+          <div class="subhead">Body parameters</div>
+          <table class="params">
+            <tr><th>Field</th><th>Type</th><th>Required</th></tr>
+            <tr><td><code>ref_no</code></td><td>string</td><td><span class="req-yes">Required</span></td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"row"</span>: { <span class="c">...</span> } }</pre>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc"><code style="font-family:var(--mono);">ref_no</code> missing or empty</div>
+            <div class="code">404</div><div class="desc">No row matches <code style="font-family:var(--mono);">ref_no</code></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STUDIES ================= -->
+    <section class="doc-section">
+      <div class="section-head"><h2>Studies</h2><span class="count">2 endpoints</span></div>
+      <p class="lead">Studies are saved calculation results retrievable later by token — used for shareable, client-facing results pages. Stored server-side as JSON.</p>
+
+      <div class="endpoint" id="ep-submit">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/submit</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Saves a study payload and returns a retrieval token.</p>
+          <div class="subhead">Body parameters</div>
+          <table class="params">
+            <tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>sides</code></td><td>array[4]</td><td><span class="req-yes">Required</span></td><td>Each value must be a positive number</td></tr>
+            <tr><td><code>height</code></td><td>number</td><td><span class="req-yes">Required</span></td><td>Must be &gt; 0 and pass ceiling-height validation</td></tr>
+            <tr><td><code>results</code></td><td>array</td><td><span class="req-yes">Required</span></td><td>May be empty, but the key must be present</td></tr>
+            <tr><td><code>project_name, name, phone, company, email, place, standard_ref_no, standard_category, standard_task_or_activity, standard_lighting, calculation_meta</code></td><td>—</td><td><span class="req-no">Optional</span></td><td>Passed through as-is into the stored payload</td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"token"</span>: <span class="s">"32-char hex token"</span> }</pre>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc">Body not a JSON object</div>
+            <div class="code">400</div><div class="desc"><code style="font-family:var(--mono);">sides</code> missing / not 4 numbers / contains a non-positive value</div>
+            <div class="code">400</div><div class="desc"><code style="font-family:var(--mono);">height</code> missing, invalid, or fails ceiling-height check</div>
+            <div class="code">400</div><div class="desc"><code style="font-family:var(--mono);">results</code> missing or not an array</div>
+            <div class="code">500</div><div class="desc">Filesystem write failure</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-get">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/get</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Retrieves a previously submitted study, reshaped to match the <code style="font-family:var(--mono);color:var(--text-primary);">/calculate</code> response format.</p>
+          <div class="subhead">Query parameters</div>
+          <table class="params">
+            <tr><th>Param</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>token</code></td><td><span class="req-yes">Required</span></td><td>Must match <code>^[a-f0-9]{32}$</code></td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{
+  <span class="k">"status"</span>: <span class="s">"success"</span>,
+  <span class="k">"results"</span>: [ <span class="c">...</span> ],
+  <span class="k">"calculation_meta"</span>: { <span class="c">...</span> },
+  <span class="k">"project_info"</span>: { <span class="k">"Project Name"</span>: <span class="s">""</span>, <span class="k">"Client Name"</span>: <span class="s">""</span>, <span class="k">"Client Number"</span>: <span class="s">""</span>, <span class="k">"Company Name"</span>: <span class="s">""</span> },
+  <span class="k">"request"</span>: { <span class="k">"project_name"</span>: <span class="s">""</span>, <span class="k">"sides"</span>: [], <span class="k">"height"</span>: <span class="n">0</span> },
+  <span class="k">"customer"</span>: { <span class="k">"name"</span>: <span class="s">""</span>, <span class="k">"phone"</span>: <span class="s">""</span>, <span class="k">"company"</span>: <span class="s">""</span>, <span class="k">"email"</span>: <span class="s">""</span> },
+  <span class="k">"width"</span>: <span class="n">0</span>,
+  <span class="k">"length"</span>: <span class="n">0</span>
+}</pre>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc"><code style="font-family:var(--mono);">token</code> doesn't match the 32-char hex pattern</div>
+            <div class="code">404</div><div class="desc">No stored study for that token</div>
+            <div class="code">500</div><div class="desc">Stored file is corrupt, invalid JSON, or missing <code style="font-family:var(--mono);">payload</code></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= REPORTS ================= -->
+    <section class="doc-section">
+      <div class="section-head"><h2>PDF reports</h2><span class="count">2 endpoints</span></div>
+
+      <div class="endpoint" id="ep-report-full">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/report/:token/full</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Streams a full report PDF covering every solution in the study.</p>
+          <div class="status-row"><span class="status-chip s2">200</span><span class="status-note"><code style="font-family:var(--mono);">application/pdf</code> · filename <code style="font-family:var(--mono);">SC_LuxScale_Report_&lt;token8&gt;.pdf</code></span></div>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc">Token contains non-hex characters</div>
+            <div class="code">404</div><div class="desc">No study file for that token</div>
+            <div class="code">500</div><div class="desc">Exception during PDF generation — body <code style="font-family:var(--mono);">{ "error": "..." }</code></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-report-solution">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/report/:token/solution/:sol_index</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Streams a single-solution PDF. <code style="font-family:var(--mono);color:var(--text-primary);">sol_index</code> is zero-based.</p>
+          <div class="status-row"><span class="status-chip s2">200</span><span class="status-note">filename <code style="font-family:var(--mono);">SC_LuxScale_Solution_&lt;n&gt;_&lt;token8&gt;.pdf</code></span></div>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc">Token contains non-hex characters</div>
+            <div class="code">404</div><div class="desc">No study for token, or <code style="font-family:var(--mono);">sol_index</code> out of range</div>
+            <div class="code">500</div><div class="desc">Exception during PDF generation</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ADMIN ================= -->
+    <section class="doc-section">
+      <div class="section-head"><h2>Admin</h2><span class="count">6 endpoints</span></div>
+      <p class="lead">Everything below except login requires authentication — see the <a href="#auth" style="color:var(--sc-red);">Authentication</a> section.</p>
+
+      <div class="endpoint" id="ep-admin-login">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/admin/login</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <table class="params">
+            <tr><th>Field</th><th>Type</th><th>Required</th></tr>
+            <tr><td><code>username</code></td><td>string</td><td><span class="req-yes">Required</span></td></tr>
+            <tr><td><code>password</code></td><td>string</td><td><span class="req-yes">Required</span></td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"token"</span>: <span class="s">"issued bearer token"</span> }</pre>
+          <p style="font-size:13px;color:var(--text-muted);">Also sets a session cookie for same-origin clients.</p>
+          <div class="status-row"><span class="status-chip s4">401</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"error"</span>, <span class="k">"message"</span>: <span class="s">"Invalid credentials"</span> }</pre>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-admin-logout">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/admin/logout</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Revokes the bearer token in <code style="font-family:var(--mono);color:var(--text-primary);">X-Admin-Token</code> (if provided) and clears the session. Safe to call regardless of current auth state.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span> }</pre>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-admin-settings">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/admin/settings</span><span class="auth-badge required">Auth required</span></div>
+        <div class="endpoint-body">
+          <p>Returns current application settings.</p>
+          <div class="status-row"><span class="status-chip s4">401</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"error"</span>, <span class="k">"message"</span>: <span class="s">"Unauthorized"</span> }</pre>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-admin-settings-put">
+        <div class="endpoint-head"><span class="method put">PUT</span><span class="path">/api/admin/settings</span><span class="auth-badge required">Auth required</span></div>
+        <div class="endpoint-body">
+          <p>Replaces application settings with the given JSON object.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"settings"</span>: { <span class="c">...reloaded settings...</span> } }</pre>
+          <div class="error-grid">
+            <div class="code">401</div><div class="desc">Not authenticated</div>
+            <div class="code">400</div><div class="desc">Body not a JSON object</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-admin-fixtures">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/admin/fixture-map</span><span class="auth-badge required">Auth required</span></div>
+        <div class="endpoint-body">
+          <p>Returns the raw contents of the active fixture map JSON.</p>
+          <div class="status-row"><span class="status-chip s4">401</span><span class="status-note">if not authenticated</span></div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-admin-fixtures-put">
+        <div class="endpoint-head"><span class="method put">PUT</span><span class="path">/api/admin/fixture-map</span><span class="auth-badge required">Auth required</span></div>
+        <div class="endpoint-body">
+          <p>Replaces the fixture map JSON entirely. On success, the in-memory fixture catalog cache is cleared so calculations immediately pick up the new map.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span> }</pre>
+          <div class="error-grid">
+            <div class="code">401</div><div class="desc">Not authenticated</div>
+            <div class="code">400</div><div class="desc">Body not a JSON object</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STATIC ================= -->
+    <section class="doc-section">
+      <div class="section-head"><h2>Static</h2><span class="count">2 endpoints</span></div>
+
+      <div class="endpoint" id="ep-assets">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/assets/:path</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Serves files from the <code style="font-family:var(--mono);color:var(--text-primary);">assets/</code> directory — logo, favicon, video, fixture map — for when the admin UI is opened directly from Flask instead of a separate static host.</p>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-dashboard">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/admin/dashboard.html</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Serves the static admin dashboard HTML page.</p>
+          <div class="status-row"><span class="status-chip s4">404</span></div>
+          <pre>{ <span class="k">"error"</span>: <span class="s">"dashboard not found"</span> }</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= NOT DOCUMENTED ================= -->
+    <section class="doc-section" id="not-documented">
+      <div class="section-head"><h2>Pending</h2></div>
+      <div class="note">
+        <b>AI routes</b> (mounted via <code style="font-family:var(--mono);">register_ai_routes(app)</code> from <code style="font-family:var(--mono);">luxscale/ai_routes.py</code>) and <b>IES routes</b> (blueprint <code style="font-family:var(--mono);">ies_bp</code> from <code style="font-family:var(--mono);">luxscale/ies_routes.py</code>) are live in the app but not yet documented here. Add their source to extend this page.
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="mark">
+    <svg viewBox="0 0 88.194804 39.567375" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(1154.6313,-99.845264)">
+        <path fill="#cccccc" d="m -1115.1899,99.845264 a 4.0626351,4.0626351 0 0 0 -3.7237,2.438096 h -2.1383 v 0.38368 h -5.9907 c -2.2904,0 -4.2007,1.83906 -4.2007,4.1171 v 12.80001 c 0,2.27804 1.9103,4.11561 4.2007,4.11561 h 12.4648 a 1.1440361,1.1440361 0 0 0 1.144,-1.14396 1.1440361,1.1440361 0 0 0 -1.144,-1.14396 h -12.4648 c -1.0965,0 -1.9125,-0.81267 -1.9125,-1.82769 v -12.80001 c 0,-1.01501 0.816,-1.82886 1.9125,-1.82886 h 5.9907 v 0.3754 h 2.0582 a 4.0626351,4.0626351 0 0 0 3.8038,2.6397 h 1.073 v -8.125116 z m 8.3308,0 v 1.556026 h -2.2031 c -0.3677,0 -0.6639,0.29587 -0.6639,0.66362 v 0.46202 c 0,0.36775 0.2962,0.66362 0.6639,0.66362 h 2.2031 v 1.43454 h -2.2031 c -0.3677,0 -0.6639,0.29617 -0.6639,0.66392 v 0.46171 c 0,0.36776 0.2962,0.66393 0.6639,0.66393 h 2.2031 v 1.55573 h 1.0728 a 4.0626351,4.0626351 0 0 0 3.8037,-2.6397 h 2.0582 v -0.3754 h 5.899 c 1.0965,0 1.9128,0.81385 1.9128,1.82886 v 12.80001 c 0,1.01502 -0.8163,1.82769 -1.9128,1.82769 h -12.2088 a 1.1440361,1.1440361 0 0 0 -1.144,1.14396 1.1440361,1.1440361 0 0 0 1.144,1.14396 h 12.2088 c 2.2905,0 4.2008,-1.83757 4.2008,-4.11561 v -12.80001 c 0,-2.27804 -1.9103,-4.1171 -4.2008,-4.1171 h -5.899 v -0.38368 h -2.138 a 4.0626351,4.0626351 0 0 0 -3.7239,-2.438096 z"/>
+      </g>
+    </svg>
+    <span>Short Circuit Company — LuxScale R&amp;D</span>
+  </div>
+  <span>Generated from live route definitions in <code style="font-family:var(--mono);">app.py</code></span>
+</footer>
+
+<script>
+  // highlight active section link on scroll
+  const links = document.querySelectorAll('.nav-link');
+  const targets = Array.from(links).map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  function onScroll(){
+    let current = null;
+    for(const t of targets){
+      const r = t.getBoundingClientRect();
+      if(r.top <= 120) current = t;
+    }
+    links.forEach(l => l.classList.remove('active'));
+    if(current){
+      const active = document.querySelector(`.nav-link[href="#${current.id}"]`);
+      if(active) active.classList.add('active');
+    }
+  }
+  document.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+</script>
+</body>
+</html>
