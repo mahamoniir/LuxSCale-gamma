@@ -998,9 +998,22 @@ def admin_dashboard_static():
     return send_file(path)
 
 
-@app.route("/standards/resolve", methods=["POST"])
+# @app.route("/standards/resolve", methods=["POST"])
+# def api_standards_resolve():
+#     """Return one row from standards_cleaned.json by ref_no (validates client selection)."""
+#     data = request.get_json(silent=True) or {}
+#     ref = (data.get("ref_no") or "").strip()
+#     if not ref:
+#         return jsonify({"status": "error", "message": "ref_no required"}), 400
+#     row = cleaned_row_by_ref(ref)
+#     if not row:
+#         return jsonify({"status": "error", "message": "Unknown ref_no"}), 404
+#     return jsonify({"status": "success", "row": row})
+
+@app.route("/standards/resolve", methods=["POST", "OPTIONS"])
 def api_standards_resolve():
-    """Return one row from standards_cleaned.json by ref_no (validates client selection)."""
+    if request.method == "OPTIONS":
+        return Response(status=204)
     data = request.get_json(silent=True) or {}
     ref = (data.get("ref_no") or "").strip()
     if not ref:
