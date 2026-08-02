@@ -997,6 +997,9 @@ def admin_dashboard_static():
         return jsonify({"error": "dashboard not found"}), 404
     return send_file(path)
 
+@app.route("/api/standards/cleaned", methods=["GET"])
+def api_standards_cleaned():
+    return jsonify(load_standards_file("standards_cleaned.json"))
 
 # @app.route("/standards/resolve", methods=["POST"])
 # def api_standards_resolve():
