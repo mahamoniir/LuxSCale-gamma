@@ -381,11 +381,19 @@ function hidePdfLoading() {
  * Download a PDF from the Flask backend and trigger browser save-dialog.
  * @param {string} url        - Flask endpoint URL
  * @param {string} filename   - suggested download filename
+ * @param {object} [body]     - optional JSON body; when provided the request is POSTed
+ *                              instead of GETed. Use this when the study lives on a
+ *                              different origin (e.g. api/submit.php on shortcircuit.company)
+ *                              than the Flask backend (Railway), so Flask can generate
+ *                              the PDF without needing the token in its own DB.
  */
-async function downloadPdfFromFlask(url, filename) {
+async function downloadPdfFromFlask(url, filename, body) {
   showPdfLoading("Generating PDF report…");
   try {
-    const res = await fetch(url, { method: "GET" });
+    const init = body
+      ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }
+      : { method: "GET" };
+    const res = await fetch(url, init);
     if (!res.ok) {
       let errMsg = `Server error ${res.status}`;
       try {
@@ -413,7 +421,42 @@ async function downloadPdfFromFlask(url, filename) {
 }
 
 /**
+ * Reconstruct the raw payload shape that generate_report.py expects
+ * (flat keys: sides, height, project_name, name, phone, company, email,
+ *  results, calculation_meta, standard_ref_no, standard_category,
+ *  standard_task_or_activity, standard_lighting, notes, mounting_height, …)
+ * from the data already loaded into `request`, `customer`, `results`, and
+ * `calculationMeta` by loadResults().
+ */
+function buildReportPayload() {
+  const req = request || {};
+  const cust = customer || {};
+  const payload = {
+    project_name: req.project_name || "",
+    sides:        req.sides,
+    height:       req.height,
+    name:         cust.name    || "",
+    phone:        cust.phone   || "",
+    company:      cust.company || "",
+    email:        cust.email   || "",
+    results:      Array.isArray(results) ? results : [],
+    calculation_meta: calculationMeta || {},
+  };
+  if (req.place)                     payload.place                     = req.place;
+  if (req.standard_ref_no != null)   payload.standard_ref_no           = req.standard_ref_no;
+  if (req.standard_category)         payload.standard_category         = req.standard_category;
+  if (req.standard_task_or_activity) payload.standard_task_or_activity = req.standard_task_or_activity;
+  if (req.standard_lighting)         payload.standard_lighting         = req.standard_lighting;
+  if (req.mounting_height != null)   payload.mounting_height           = req.mounting_height;
+  if (req.notes)                     payload.notes                     = req.notes;
+  return payload;
+}
+
+/**
  * Full-report PDF — all solutions.
+ * POSTs the payload directly so it works even when the study JSON was saved
+ * on a different server (e.g. api/submit.php on shortcircuit.company) and
+ * doesn't exist in the Flask backend's DB (Railway).
  */
 async function downloadFullReportPdf() {
   const token = getToken();
@@ -421,7 +464,7 @@ async function downloadFullReportPdf() {
   const url = `${FLASK_BASE}/api/report/${encodeURIComponent(token)}/full`;
   const filename = `SC_LuxScale_Report_${token.slice(0, 8)}.pdf`;
   try {
-    await downloadPdfFromFlask(url, filename);
+    await downloadPdfFromFlask(url, filename, buildReportPayload());
   } catch (err) {
     console.error("Full PDF error:", err);
     alert("Failed to generate full PDF report.\n" + err.message);
@@ -441,7 +484,7 @@ async function downloadSolutionPdf(index, btn) {
   const origText = btn ? btn.textContent : "";
   if (btn) { btn.disabled = true; btn.textContent = "Generating…"; }
   try {
-    await downloadPdfFromFlask(url, filename);
+    await downloadPdfFromFlask(url, filename, buildReportPayload());
   } catch (err) {
     console.error("Solution PDF error:", err);
     alert(`Failed to generate PDF for Solution ${index + 1}.\n` + err.message);
