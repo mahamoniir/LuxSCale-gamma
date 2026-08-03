@@ -336,8 +336,11 @@ const API_ENDPOINTS = (() => {
 const FLASK_BASE = (() => {
   const h = window.location.hostname;
   if (h === "localhost" || h === "127.0.0.1") return "http://127.0.0.1:5000";
-  // return "";
-  return "https://bkr3800.pythonanywhere.com";
+  const override =
+    (typeof window !== "undefined" && window.LUXSCALE_FLASK_BASE) ||
+    document.querySelector('meta[name="luxscale-flask-base"]')?.content;
+  if (override) return String(override).replace(/\/+$/, "");
+  return "https://web-production-8d09d.up.railway.app";
 })();
 
 const FIXTURES_BASE = "https://shortcircuit.company/assets/img/products/";

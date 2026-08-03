@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import tempfile
 from flask_cors import CORS
+from werkzeug.exceptions import HTTPException
 
 from luxscale.app_logging import LOG_FILE, log_exception, log_step
 from luxscale.calculation_trace import CalculationTrace
@@ -79,6 +80,23 @@ else:
         "https://shortcircuit.company",
         "https://www.shortcircuit.company",
         "https://web-production-8d09d.up.railway.app",
+        "https://short-circuit-r-d.github.io/",
+        "https://short-circuit-r-d.github.io/LuxSCale-dev/",
+        "https://short-circuit-r-d.github.io/LuxSCale-dev/create-study",
+        "https://short-circuit-r-d.github.io/LuxSCale-dev/result",
+        "https://short-circuit-r-d.github.io/LuxSCale-dev/report",
+        "https://MahmoudMNael.github.io/",
+        "https://MahmoudMNael.github.io/LuxSCale-dev/",
+        "https://MahmoudMNael.github.io/LuxSCale-dev/create-study",
+        "https://MahmoudMNael.github.io/LuxSCale-dev/result",
+        "https://MahmoudMNael.github.io/LuxSCale-dev/report",
+        "https://MahmoudMNael.github.io/LuxSCale-dev/report/full",
+        "https://MahmoudMNael.github.io/LuxSCale-dev/report/solution/0",
+        "https://MahmoudMNael.github.io/LuxSCale-dev/report/solution/1",
+        "https://MahmoudMNael.github.io/LuxSCale-dev/report/solution/2",
+        "https://MahmoudMNael.github.io/LuxSCale-dev/report/solution/3",
+        "https://MahmoudMNael.github.io/LuxSCale-dev/report/solution/4",
+        "https://MahmoudMNael.github.io/LuxSCale-dev/report/solution/5",
     ]
 
 
@@ -1052,13 +1070,45 @@ def _load_payload(token: str) -> dict:
     return payload
 
 
-@app.route("/api/report/<token>/full", methods=["GET"])
+def _resolve_report_payload(token):
+    """
+    Return the payload for a report request.
+
+    Preference order:
+      1) If the request POSTs a JSON body → use it directly as the payload.
+         This lets external hosts (e.g. shortcircuit.company/LuxSCale/result.html or
+         GitHub Pages) generate PDFs even when their study JSON was saved by
+         api/submit.php on their own server and does NOT exist in Flask's DB.
+      2) Otherwise, look the token up via study_store (same-server flow).
+    """
+    if request.method == "POST":
+        body = request.get_json(silent=True)
+        if isinstance(body, dict):
+            # Accept either the raw payload directly, or a wrapper {"payload": {...}}.
+            nested = body.get("payload") if isinstance(body.get("payload"), dict) else None
+            candidate = nested if nested is not None else body
+            if isinstance(candidate.get("results"), list) or candidate.get("sides") is not None:
+                return candidate
+    if not token:
+        abort(400, description="Provide a token in the URL or a payload in the POST body")
+    return _load_payload(token)
+
+
+@app.route("/api/report/<token>/full", methods=["GET", "POST"])
+@app.route("/api/report/full", methods=["POST"], defaults={"token": None})
 def api_report_full(token):
-    """Generate and stream the full report PDF (all solutions)."""
+    """Generate and stream the full report PDF (all solutions).
+
+    Supported forms:
+      - GET  /api/report/<token>/full   → load payload from study_store by token
+      - POST /api/report/<token>/full   → payload in JSON body (token ignored if body has payload)
+      - POST /api/report/full           → payload in JSON body (no token needed)
+    """
     try:
-        payload   = _load_payload(token)
+        payload   = _resolve_report_payload(token)
         pdf_bytes = build_full_report_pdf(payload)
-        filename  = f"SC_LuxScale_Report_{token[:8]}.pdf"
+        stem      = (token or "study")[:8]
+        filename  = f"SC_LuxScale_Report_{stem}.pdf"
         return Response(
             pdf_bytes,
             mimetype="application/pdf",
@@ -1067,21 +1117,32 @@ def api_report_full(token):
                 "Content-Length": str(len(pdf_bytes)),
             },
         )
+    except HTTPException:
+        # Preserve status codes from abort() (400/404/etc.) — do not remap to 500.
+        raise
     except Exception as e:
         app.logger.error("Full PDF error for token %s: %s", token, e, exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/api/report/<token>/solution/<int:sol_index>", methods=["GET"])
+@app.route("/api/report/<token>/solution/<int:sol_index>", methods=["GET", "POST"])
+@app.route("/api/report/solution/<int:sol_index>", methods=["POST"], defaults={"token": None})
 def api_report_solution(token, sol_index):
-    """Generate and stream a single-solution PDF."""
+    """Generate and stream a single-solution PDF.
+
+    Supported forms:
+      - GET  /api/report/<token>/solution/<i>
+      - POST /api/report/<token>/solution/<i>   (payload in body)
+      - POST /api/report/solution/<i>           (payload in body, no token needed)
+    """
     try:
-        payload   = _load_payload(token)
+        payload   = _resolve_report_payload(token)
         results   = payload.get("results", [])
         if sol_index < 0 or sol_index >= len(results):
             return jsonify({"error": f"Solution index {sol_index} out of range (have {len(results)})"}), 404
         pdf_bytes = build_solution_pdf(payload, sol_index)
-        filename  = f"SC_LuxScale_Solution_{sol_index + 1}_{token[:8]}.pdf"
+        stem      = (token or "study")[:8]
+        filename  = f"SC_LuxScale_Solution_{sol_index + 1}_{stem}.pdf"
         return Response(
             pdf_bytes,
             mimetype="application/pdf",
@@ -1090,8 +1151,10 @@ def api_report_solution(token, sol_index):
                 "Content-Length": str(len(pdf_bytes)),
             },
         )
+    except HTTPException:
+        raise
     except Exception as e:
-        app.logger.error("Solution PDF error for token %s idx %d: %s", token, sol_index, e, exc_info=True)
+        app.logger.error("Solution PDF error for token %s idx %s: %s", token, sol_index, e, exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 
