@@ -113,7 +113,7 @@ body{
   padding:7px 24px;
   color:var(--text-secondary);
   text-decoration:none;
-  font-size:13px;
+  font-size:12.5px;
   border-left:2px solid transparent;
   transition:background .12s ease, color .12s ease, border-color .12s ease;
 }
@@ -133,6 +133,17 @@ body{
 .nav-method.get{ background:transparent; border:1px solid var(--text-muted); color:var(--text-muted); }
 .nav-method.post{ background:var(--sc-red); color:#fff; }
 .nav-method.put{ background:transparent; border:1px solid var(--sc-red); color:var(--sc-red); }
+.nav-badge-new{
+  margin-left:auto;
+  font-family:var(--mono);
+  font-size:8px;
+  font-weight:600;
+  color:var(--sc-red);
+  border:1px solid rgba(235,27,38,0.4);
+  padding:0 5px;
+  border-radius:3px;
+  letter-spacing:0.06em;
+}
 
 /* ---------- main content ---------- */
 .main{ flex:1; min-width:0; max-width:900px; padding:56px 64px 120px; }
@@ -171,6 +182,10 @@ section.doc-section{ margin-bottom:64px; scroll-margin-top:28px; }
   color:var(--text-primary); margin:0; letter-spacing:0.01em;
 }
 .section-head .count{ font-family:var(--mono); font-size:12px; color:var(--text-muted); }
+.section-head .badge-new{
+  font-family:var(--mono); font-size:10px; font-weight:600; color:#fff;
+  background:var(--sc-red); padding:2px 7px; border-radius:3px; letter-spacing:0.05em;
+}
 
 p.lead{ color:var(--text-muted); margin:0 0 28px; max-width:68ch; }
 
@@ -196,6 +211,7 @@ p.lead{ color:var(--text-muted); margin:0 0 28px; max-width:68ch; }
 .method.get{ border:1px solid var(--text-muted); color:var(--text-secondary); }
 .method.post{ background:var(--sc-red); color:#fff; }
 .method.put{ border:1px solid var(--sc-red); color:var(--sc-red); }
+.method.get-post{ background:linear-gradient(90deg, transparent 50%, var(--sc-red) 50%); border:1px solid var(--sc-red); color:var(--text-primary); }
 .path{ font-family:var(--mono); font-size:14px; color:var(--text-primary); font-weight:500; word-break:break-all; }
 .auth-badge{
   margin-left:auto; font-size:10px; letter-spacing:0.06em; text-transform:uppercase;
@@ -203,6 +219,21 @@ p.lead{ color:var(--text-muted); margin:0 0 28px; max-width:68ch; }
   font-family:var(--body-font); font-weight:500; flex-shrink:0;
 }
 .auth-badge.required{ color:var(--sc-red); border-color:rgba(235,27,38,0.4); }
+.endpoint.new::before{
+  content:"NEW";
+  display:inline-block;
+  position:relative;
+  top:-1px;
+  margin-right:6px;
+  font-family:var(--mono);
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:0.08em;
+  color:#fff;
+  background:var(--sc-red);
+  padding:2px 6px;
+  border-radius:3px;
+}
 
 .endpoint-body{ padding:22px; }
 .endpoint-body > p{ margin:0 0 20px; color:var(--text-secondary); }
@@ -282,10 +313,16 @@ pre .c{ color:var(--text-muted); }
 .error-grid .desc{ padding:9px 0; border-bottom:1px solid var(--border-color); color:var(--text-secondary); }
 .error-grid > div:nth-last-child(-n+2){ border-bottom:none; }
 
+/* Try-it panel */
 .try-panel{ margin-top:18px; border-top:1px solid var(--border-color); padding-top:18px; }
 .try-panel .subhead{ margin-top:0; display:flex; align-items:center; gap:8px; }
 .try-panel .subhead::before{ content:"▸"; color:var(--sc-red); font-size:9px; }
 .try-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+.try-row label{
+  display:flex; align-items:center; gap:6px; flex-basis:100%;
+  font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--text-muted); margin-bottom:-4px;
+}
 .try-input{
   flex:1 1 160px; min-width:140px;
   background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:6px;
@@ -293,7 +330,8 @@ pre .c{ color:var(--text-muted); }
 }
 .try-input::placeholder{ color:var(--text-muted); }
 .try-input:focus{ outline:none; border-color:var(--sc-red); }
-textarea.try-input{ width:100%; min-height:70px; resize:vertical; font-size:12px; flex-basis:100%; }
+textarea.try-input{ width:100%; min-height:80px; resize:vertical; font-size:12px; flex-basis:100%; }
+.try-input[type="file"]{ padding:6px 10px; font-family:var(--body-font); font-size:12.5px; }
 .try-btn{
   background:var(--sc-red); color:#fff; border:none; border-radius:6px;
   font-family:var(--body-font); font-weight:600; font-size:12.5px;
@@ -301,18 +339,55 @@ textarea.try-input{ width:100%; min-height:70px; resize:vertical; font-size:12px
 }
 .try-btn:hover{ background:var(--sc-dark-red); }
 .try-btn:disabled{ opacity:0.5; cursor:default; }
+.try-btn.secondary{
+  background:transparent; color:var(--text-secondary);
+  border:1px solid var(--border-color);
+}
+.try-btn.secondary:hover{ background:var(--bg-tertiary); border-color:var(--text-muted); color:var(--text-primary); }
 .try-result{ margin-top:12px; }
 .try-meta{ font-family:var(--mono); font-size:11px; margin-bottom:6px; letter-spacing:0.02em; }
 .try-meta.ok{ color:#6fd897; }
 .try-meta.err{ color:#f0666e; }
 .try-output{ max-height:340px; }
-.api-base-row{ display:flex; align-items:center; gap:10px; margin-top:10px; }
-.api-base-row label{ font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); flex-shrink:0; }
+.try-download{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--bg-tertiary); border:1px solid var(--sc-red); border-radius:6px;
+  color:var(--text-primary); text-decoration:none;
+  font-family:var(--body-font); font-size:12.5px; font-weight:500;
+  padding:9px 14px; margin-top:6px;
+}
+.try-download:hover{ background:var(--sc-dark-red); color:#fff; border-color:var(--sc-red); }
+.try-download .sz{ font-family:var(--mono); font-size:11px; color:var(--text-muted); }
+.try-image-preview{
+  margin-top:8px; max-width:100%; max-height:340px; border:1px solid var(--border-color); border-radius:6px;
+}
+
+/* Try-it header — global api base + admin token */
+.api-base-row{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:10px 12px;
+  align-items:center;
+  margin-top:10px;
+}
+.api-base-row label{ font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); flex-shrink:0; white-space:nowrap; }
 .api-base-row input{
   flex:1; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:6px;
   color:var(--text-primary); font-family:var(--mono); font-size:12px; padding:8px 10px;
+  width:100%;
 }
 .api-base-row input:focus{ outline:none; border-color:var(--sc-red); }
+
+.section-toc{
+  display:flex; gap:8px; flex-wrap:wrap; margin:0 0 20px;
+  font-size:11.5px;
+}
+.section-toc a{
+  font-family:var(--mono); color:var(--text-muted);
+  border:1px solid var(--border-color); border-radius:4px;
+  padding:3px 10px; text-decoration:none;
+}
+.section-toc a:hover{ color:var(--text-primary); border-color:var(--sc-red); }
 
 footer{
   border-top:1px solid var(--border-color);
@@ -357,7 +432,9 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
     <div class="nav-group">
       <div class="nav-group-label">Calculation</div>
       <a class="nav-link" href="#ep-calculate"><span class="nav-method post">POST</span> /calculate</a>
+      <a class="nav-link" href="#ep-cad-calc"><span class="nav-method post">POST</span> /cad_calc <span class="nav-badge-new">NEW</span></a>
       <a class="nav-link" href="#ep-pdf"><span class="nav-method post">POST</span> /pdf</a>
+      <a class="nav-link" href="#ep-reflectance"><span class="nav-method post">POST</span> /api/reflectance</a>
     </div>
 
     <div class="nav-group">
@@ -375,6 +452,7 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
       <a class="nav-link" href="#ep-std-tasks"><span class="nav-method get">GET</span> /api/standards/categories/:cat/tasks</a>
       <a class="nav-link" href="#ep-std-detect"><span class="nav-method post">POST</span> /api/standards/detect</a>
       <a class="nav-link" href="#ep-std-ref"><span class="nav-method get">GET</span> /api/standards/ref/:ref_no</a>
+      <a class="nav-link" href="#ep-std-cleaned"><span class="nav-method get">GET</span> /api/standards/cleaned</a>
     </div>
 
     <div class="nav-group">
@@ -394,7 +472,38 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
     <div class="nav-group">
       <div class="nav-group-label">PDF Reports</div>
       <a class="nav-link" href="#ep-report-full"><span class="nav-method get">GET</span> /api/report/:token/full</a>
+      <a class="nav-link" href="#ep-report-full-post"><span class="nav-method post">POST</span> /api/report/:token/full</a>
+      <a class="nav-link" href="#ep-report-full-tokenless"><span class="nav-method post">POST</span> /api/report/full</a>
       <a class="nav-link" href="#ep-report-solution"><span class="nav-method get">GET</span> /api/report/:token/solution/:i</a>
+      <a class="nav-link" href="#ep-report-solution-post"><span class="nav-method post">POST</span> /api/report/:token/solution/:i</a>
+      <a class="nav-link" href="#ep-report-solution-tokenless"><span class="nav-method post">POST</span> /api/report/solution/:i</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">AI Analysis</div>
+      <a class="nav-link" href="#ep-ai-analyze"><span class="nav-method post">POST</span> /api/ai/analyze</a>
+      <a class="nav-link" href="#ep-ai-approve"><span class="nav-method post">POST</span> /api/ai/approve-fix</a>
+      <a class="nav-link" href="#ep-ai-status"><span class="nav-method get">GET</span> /api/ai/status</a>
+      <a class="nav-link" href="#ep-ai-snapshots"><span class="nav-method get">GET</span> /api/ai/snapshots</a>
+      <a class="nav-link" href="#ep-ai-snapshot-get"><span class="nav-method get">GET</span> /api/ai/snapshots/:file</a>
+      <a class="nav-link" href="#ep-ai-snapshot-restore"><span class="nav-method post">POST</span> /api/ai/snapshots/restore</a>
+      <a class="nav-link" href="#ep-ai-account"><span class="nav-method put">PUT</span> /api/ai/account</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">IES Viewer</div>
+      <a class="nav-link" href="#ep-ies-upload"><span class="nav-method post">POST</span> /ies/upload</a>
+      <a class="nav-link" href="#ep-ies-specs"><span class="nav-method get">GET</span> /ies/specs</a>
+      <a class="nav-link" href="#ep-ies-data"><span class="nav-method get">GET</span> /ies/ies_data</a>
+      <a class="nav-link" href="#ep-ies-polar"><span class="nav-method get">GET</span> /ies/plot/polar</a>
+      <a class="nav-link" href="#ep-ies-panorama"><span class="nav-method get">GET</span> /ies/panorama</a>
+      <a class="nav-link" href="#ep-ies-floorplan"><span class="nav-method get">GET</span> /ies/floorplan</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">System</div>
+      <a class="nav-link" href="#ep-deploy-health"><span class="nav-method get">GET</span> /api/deployment/health</a>
+      <a class="nav-link" href="#ep-deploy-storage"><span class="nav-method get">GET</span> /api/deployment/storage-check</a>
     </div>
 
     <div class="nav-group">
@@ -412,11 +521,6 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
       <a class="nav-link" href="#ep-assets"><span class="nav-method get">GET</span> /assets/:path</a>
       <a class="nav-link" href="#ep-dashboard"><span class="nav-method get">GET</span> /admin/dashboard.html</a>
     </div>
-
-    <div class="nav-group">
-      <div class="nav-group-label">Pending</div>
-      <a class="nav-link" href="#not-documented">AI &amp; IES routes</a>
-    </div>
   </nav>
 
   <!-- ============ MAIN ============ -->
@@ -425,23 +529,25 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
     <div class="hero" id="getting-started">
       <div class="eyebrow">Internal API Reference</div>
       <h1>LuxScale API</h1>
-      <p>The lighting-calculation engine behind LuxScale — room-based photometric calculations, IES-driven fixture solutions, study persistence, and PDF report generation. This reference is generated directly from the live route definitions in <code style="font-family:var(--mono);color:var(--text-primary);">app.py</code>, so it stays accurate as the backend evolves.</p>
+      <p>The lighting-calculation engine behind LuxScale — room-based photometric calculations, IES-driven fixture solutions, study persistence, PDF report generation, and AI-assisted analysis. This reference is generated from the live route definitions in <code style="font-family:var(--mono);color:var(--text-primary);">app.py</code>, <code style="font-family:var(--mono);color:var(--text-primary);">luxscale/ai_routes.py</code>, and <code style="font-family:var(--mono);color:var(--text-primary);">luxscale/ies_routes.py</code>, so it stays accurate as the backend evolves.</p>
       <div class="hero-meta">
         <div><span class="k">Base URL</span><span class="v">https://web-production-8d09d.up.railway.app</span></div>
-        <div><span class="k">Format</span><span class="v">application/json</span></div>
+        <div><span class="k">Format</span><span class="v">application/json &nbsp;·&nbsp; multipart/form-data (IES upload)</span></div>
         <div><span class="k">Auth</span><span class="v">Session cookie or Bearer token (admin routes only)</span></div>
       </div>
       <div class="api-base-row">
         <label for="api-base-input">Try-it target</label>
-        <input id="api-base-input" type="text" spellcheck="false" value="">
+        <input id="api-base-input" type="text" spellcheck="false" placeholder="https://your-luxscale-host">
+        <label for="admin-token-input">Admin token</label>
+        <input id="admin-token-input" type="password" spellcheck="false" placeholder="X-Admin-Token — required for admin/AI routes">
       </div>
-      <div class="note" style="margin-top:14px;">Every <b>Try it</b> panel below sends a real request to the URL above (defaults to this page's own origin). Point it at your local Flask instance or the deployed API to test live.</div>
+      <div class="note" style="margin-top:14px;">Every <b>Try it</b> panel below sends a live request to the URL above (defaults to this page's own origin). The <b>Admin token</b> is sent as an <code style="font-family:var(--mono);">X-Admin-Token</code> header on every request when set, and persists in <code style="font-family:var(--mono);">sessionStorage</code> for the lifetime of the tab.</div>
     </div>
 
     <!-- AUTH -->
     <section class="doc-section" id="auth">
       <div class="section-head"><h2>Authentication</h2></div>
-      <p class="lead">Most endpoints are public. Routes under <code style="font-family:var(--mono);color:var(--text-primary);">/api/admin/*</code> require one of the following:</p>
+      <p class="lead">Most endpoints are public. Routes under <code style="font-family:var(--mono);color:var(--text-primary);">/api/admin/*</code> and <code style="font-family:var(--mono);color:var(--text-primary);">/api/ai/*</code> require one of the following:</p>
       <table class="params">
         <tr><th>Method</th><th>How</th></tr>
         <tr><td><code>Session cookie</code></td><td>Set automatically after a successful <code>POST /api/admin/login</code>. Works for same-origin browser clients.</td></tr>
@@ -456,14 +562,16 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
       <p class="lead">Two shapes are currently in use across the API — handle both when parsing failures:</p>
       <div class="subhead">Shape A — most endpoints</div>
       <pre>{ <span class="k">"status"</span>: <span class="s">"error"</span>, <span class="k">"message"</span>: <span class="s">"..."</span> }</pre>
-      <div class="subhead">Shape B — submit validation &amp; report generation</div>
+      <div class="subhead">Shape B — submit validation, report generation, IES upload</div>
       <pre>{ <span class="k">"error"</span>: <span class="s">"..."</span> }</pre>
     </section>
 
     <!-- ================= CALCULATION ================= -->
     <section class="doc-section">
-      <div class="section-head"><h2>Calculation</h2><span class="count">2 endpoints</span></div>
+      <div class="section-head"><h2>Calculation</h2><span class="count">4 endpoints</span></div>
+      <p class="lead">The core photometric engine. <code style="font-family:var(--mono);color:var(--text-primary);">/calculate</code> is the classic rectangular-room path (4-side geometry). <code style="font-family:var(--mono);color:var(--text-primary);">/cad_calc</code> is the new polygon path for arbitrary N-sided rooms. Both return the same result schema so downstream tooling (PDF, AI, storage) can consume them interchangeably.</p>
 
+      <!-- /calculate -->
       <div class="endpoint" id="ep-calculate">
         <div class="endpoint-head">
           <span class="method post">POST</span>
@@ -471,16 +579,17 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
           <span class="auth-badge">No auth</span>
         </div>
         <div class="endpoint-body">
-          <p>Runs the lighting calculation engine for a room and returns fixture placement solutions. Every call is recorded to a calculation trace file, whether it succeeds or fails.</p>
+          <p>Runs the lighting calculation engine for a rectangular room and returns fixture placement solutions. Every call is recorded to a calculation trace file, whether it succeeds or fails.</p>
 
           <div class="subhead">Body parameters</div>
           <table class="params">
             <tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr>
-            <tr><td><code>sides</code></td><td>array</td><td><span class="req-yes">Required</span></td><td>Room boundary coordinates</td></tr>
+            <tr><td><code>sides</code></td><td>array[4]</td><td><span class="req-yes">Required</span></td><td>Room side lengths in meters. Engine uses <code>max(sides[0], sides[2])</code> as width and <code>max(sides[1], sides[3])</code> as length.</td></tr>
             <tr><td><code>height</code></td><td>number</td><td><span class="req-yes">Required</span></td><td>Ceiling height in meters</td></tr>
             <tr><td><code>place</code></td><td>string</td><td><span class="req-no">Conditional</span></td><td>Calculator room-type key. Required if <code>standard_ref_no</code> doesn't resolve.</td></tr>
             <tr><td><code>project_info</code></td><td>object</td><td><span class="req-no">Optional</span></td><td>Free-form metadata; <code>standard_ref_no</code> may be nested here</td></tr>
             <tr><td><code>standard_ref_no</code></td><td>string</td><td><span class="req-no">Conditional</span></td><td>Reference number into the standards table. Required if <code>place</code> isn't given.</td></tr>
+            <tr><td><code>material_physics</code></td><td>object</td><td><span class="req-no">Optional</span></td><td>Optional <code>{irf, label}</code> to override room-reflectance preset for this call</td></tr>
             <tr><td><code>fast</code></td><td>bool / string</td><td><span class="req-no">Optional</span></td><td>Also accepted as query param <code>?fast=1</code>. Enables faster calc mode.</td></tr>
           </table>
           <div class="note">At least one of <b>place</b> or a valid <b>standard_ref_no</b> is required. If both resolve, the standard row takes priority.</div>
@@ -490,9 +599,9 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
           <div class="code-block-wrap"><pre>curl -X POST https://web-production-8d09d.up.railway.app/calculate \
   -H <span class="s">"Content-Type: application/json"</span> \
   -d <span class="s">'{
-    "sides": [5, 4, 5, 4],
-    "height": 2.8,
-    "place": "office_open_plan"
+    "sides": [6, 4, 6, 4],
+    "height": 3.0,
+    "place": "Office"
   }'</span></pre></div>
 
           <div class="status-row"><span class="status-chip s2">200</span><span class="status-note">success</span></div>
@@ -500,7 +609,7 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
   <span class="k">"status"</span>: <span class="s">"success"</span>,
   <span class="k">"project_info"</span>: { <span class="c">...</span> },
   <span class="k">"results"</span>: [ { <span class="c">...one object per fixture solution...</span> } ],
-  <span class="k">"length"</span>: <span class="n">5</span>,
+  <span class="k">"length"</span>: <span class="n">6</span>,
   <span class="k">"width"</span>: <span class="n">4</span>,
   <span class="k">"calculation_trace_file"</span>: <span class="s">"path/to/trace.json"</span>,
   <span class="k">"calculation_meta"</span>: { <span class="c">...</span> },
@@ -516,9 +625,134 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
             <div class="code">400</div><div class="desc">Neither <code style="font-family:var(--mono);">place</code> nor a valid <code style="font-family:var(--mono);">standard_ref_no</code> given</div>
             <div class="code">400</div><div class="desc">Exception during calculation — body includes <code style="font-family:var(--mono);">message</code> and, if available, <code style="font-family:var(--mono);">calculation_trace_file</code></div>
           </div>
+
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="sides" placeholder='sides — e.g. [6,4,6,4]' value="[6, 4, 6, 4]">
+              <input class="try-input" data-role="height" placeholder="height (m)" value="3.0">
+            </div>
+            <div class="try-row">
+              <input class="try-input" data-role="place" placeholder="place (e.g. Office)" value="Office">
+              <input class="try-input" data-role="standard_ref_no" placeholder="or standard_ref_no (e.g. 5.1.1)">
+              <label><input type="checkbox" data-role="fast"> fast</label>
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/calculate',{body:w=>{
+                const sides = safeJsonInput(w,'sides');
+                const b = { sides, height: parseFloat(w.querySelector('[data-role=height]').value) };
+                const p = w.querySelector('[data-role=place]').value.trim();
+                const s = w.querySelector('[data-role=standard_ref_no]').value.trim();
+                if (p) b.place = p;
+                if (s) b.standard_ref_no = s;
+                if (w.querySelector('[data-role=fast]').checked) b.fast = true;
+                return b;
+              }})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
 
+      <!-- /cad_calc (NEW) -->
+      <div class="endpoint new" id="ep-cad-calc">
+        <div class="endpoint-head">
+          <span class="method post">POST</span>
+          <span class="path">/cad_calc</span>
+          <span class="auth-badge">No auth</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Polygon-based lighting calculation for arbitrary N-sided rooms. Accepts a list of 2D vertices (in meters) and returns the same result shape as <code style="font-family:var(--mono);">/calculate</code>, plus polygon geometry metadata (shoelace area, perimeter, centroid, bounding box, convexity). Ideal for CAD tools that already produce a polygon outline.</p>
+          <div class="note"><b>Phase A behavior:</b> total lumens are correct for any polygon shape (uses shoelace area). Fixture placement in the returned results is still on an equivalent-area rectangular grid — polygon-clipped placement lands in the follow-up phase. See <code style="font-family:var(--mono);">development_plan/06-non-symmetric-rooms-migration-plan.md</code>.</div>
+
+          <div class="subhead">Body parameters</div>
+          <table class="params">
+            <tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>polygon</code></td><td>object / array</td><td><span class="req-yes">Required</span></td><td>One of: <code>{"vertices": [[x,y],...]}</code>, <code>[[x,y],...]</code>, or top-level <code>vertices</code>. Minimum 3 vertices, all coordinates in meters. CW input auto-normalized to CCW.</td></tr>
+            <tr><td><code>height</code></td><td>number</td><td><span class="req-yes">Required</span></td><td>Ceiling height (m)</td></tr>
+            <tr><td><code>place</code></td><td>string</td><td><span class="req-no">Conditional</span></td><td>Legacy calculator place key</td></tr>
+            <tr><td><code>standard_ref_no</code></td><td>string</td><td><span class="req-no">Conditional</span></td><td>Reference into the standards table (alternative to <code>place</code>)</td></tr>
+            <tr><td><code>project_info</code></td><td>object</td><td><span class="req-no">Optional</span></td><td>Pass-through metadata</td></tr>
+            <tr><td><code>fast</code></td><td>bool</td><td><span class="req-no">Optional</span></td><td>Same semantics as <code>/calculate</code></td></tr>
+          </table>
+
+          <div class="subhead">Request</div>
+          <div class="code-tabs"><div class="code-tab on">cURL — L-shape room</div></div>
+          <div class="code-block-wrap"><pre>curl -X POST https://web-production-8d09d.up.railway.app/cad_calc \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{
+    "polygon": { "vertices": [[0,0],[6,0],[6,4],[3,4],[3,8],[0,8]] },
+    "height": 3.0,
+    "place": "Office"
+  }'</span></pre></div>
+
+          <div class="status-row"><span class="status-chip s2">200</span><span class="status-note">success</span></div>
+          <pre>{
+  <span class="k">"status"</span>: <span class="s">"success"</span>,
+  <span class="k">"results"</span>: [ <span class="c">...same shape as /calculate...</span> ],
+  <span class="k">"length"</span>: <span class="n">6.928</span>,  <span class="c">// equivalent-rectangle length</span>
+  <span class="k">"width"</span>:  <span class="n">5.196</span>,  <span class="c">// equivalent-rectangle width</span>
+  <span class="k">"calculation_meta"</span>: {
+    <span class="k">"geometry_version"</span>: <span class="n">2</span>,
+    <span class="k">"polygon"</span>: {
+      <span class="k">"vertices"</span>: [<span class="c">...</span>],
+      <span class="k">"area_m2"</span>: <span class="n">36.0</span>,
+      <span class="k">"perimeter_m"</span>: <span class="n">28.0</span>,
+      <span class="k">"centroid"</span>: [<span class="n">2.5</span>, <span class="n">3.83</span>],
+      <span class="k">"bbox"</span>: [<span class="n">0</span>, <span class="n">0</span>, <span class="n">6</span>, <span class="n">8</span>],
+      <span class="k">"bbox_width_m"</span>: <span class="n">6</span>,
+      <span class="k">"bbox_length_m"</span>: <span class="n">8</span>,
+      <span class="k">"is_convex"</span>: <span class="n">false</span>,
+      <span class="k">"vertex_count"</span>: <span class="n">6</span>
+    },
+    <span class="k">"equivalent_rectangle"</span>: {
+      <span class="k">"width_m"</span>: <span class="n">5.196</span>,
+      <span class="k">"length_m"</span>: <span class="n">6.928</span>,
+      <span class="k">"sides_used"</span>: [<span class="c">...</span>]
+    },
+    <span class="k">"engine_notes"</span>: [<span class="c">...</span>]
+  }
+}</pre>
+
+          <div class="subhead">Errors</div>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc">Body not JSON</div>
+            <div class="code">400</div><div class="desc">Invalid polygon — fewer than 3 vertices, self-intersecting, or zero area (collinear)</div>
+            <div class="code">400</div><div class="desc">Missing / invalid <code style="font-family:var(--mono);">height</code></div>
+            <div class="code">400</div><div class="desc">Neither <code style="font-family:var(--mono);">place</code> nor valid <code style="font-family:var(--mono);">standard_ref_no</code> given</div>
+          </div>
+
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <label>polygon vertices — JSON array</label>
+              <textarea class="try-input" data-role="vertices">[[0,0],[6,0],[6,4],[3,4],[3,8],[0,8]]</textarea>
+            </div>
+            <div class="try-row">
+              <input class="try-input" data-role="height" placeholder="height (m)" value="3.0">
+              <input class="try-input" data-role="place" placeholder="place" value="Office">
+              <input class="try-input" data-role="standard_ref_no" placeholder="or standard_ref_no">
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/cad_calc',{body:w=>{
+                const verts = safeJsonInput(w,'vertices');
+                const b = { polygon: { vertices: verts }, height: parseFloat(w.querySelector('[data-role=height]').value) };
+                const p = w.querySelector('[data-role=place]').value.trim();
+                const s = w.querySelector('[data-role=standard_ref_no]').value.trim();
+                if (p) b.place = p;
+                if (s) b.standard_ref_no = s;
+                return b;
+              }})">Send</button>
+              <button class="try-btn secondary" onclick="setVertexPreset(this,'rectangle')">Preset: rectangle</button>
+              <button class="try-btn secondary" onclick="setVertexPreset(this,'l-shape')">L-shape</button>
+              <button class="try-btn secondary" onclick="setVertexPreset(this,'hex')">Hexagon</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- /pdf -->
       <div class="endpoint" id="ep-pdf">
         <div class="endpoint-head">
           <span class="method post">POST</span>
@@ -526,15 +760,64 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
           <span class="auth-badge">No auth</span>
         </div>
         <div class="endpoint-body">
-          <p>Same input contract as <code style="font-family:var(--mono);color:var(--text-primary);">/calculate</code>, but streams a generated PDF directly instead of returning JSON.</p>
+          <p>Same input contract as <code style="font-family:var(--mono);color:var(--text-primary);">/calculate</code>, but returns a generated PDF stream instead of a JSON body. Under the hood this runs the calculation and pipes results into <code style="font-family:var(--mono);">generate_report.build_full_report_pdf</code>.</p>
           <div class="subhead">Body parameters</div>
-          <p style="font-size:13px;color:var(--text-muted);margin:0 0 14px;">Identical to <code style="font-family:var(--mono);">/calculate</code>: <code style="font-family:var(--mono);">sides</code>, <code style="font-family:var(--mono);">height</code>, one of <code style="font-family:var(--mono);">place</code> / <code style="font-family:var(--mono);">standard_ref_no</code>, plus optional <code style="font-family:var(--mono);">project_info</code> and <code style="font-family:var(--mono);">fast</code>.</p>
+          <p style="font-size:13px;color:var(--text-muted);margin:0 0 14px;">Identical to <code style="font-family:var(--mono);">/calculate</code>: <code style="font-family:var(--mono);">sides</code>, <code style="font-family:var(--mono);">height</code>, one of <code style="font-family:var(--mono);">place</code> / <code style="font-family:var(--mono);">standard_ref_no</code>, plus optional <code style="font-family:var(--mono);">project_info</code>, <code style="font-family:var(--mono);">material_physics</code>, <code style="font-family:var(--mono);">fast</code>.</p>
           <div class="status-row"><span class="status-chip s2">200</span><span class="status-note"><code style="font-family:var(--mono);">application/pdf</code> · <code style="font-family:var(--mono);">Content-Disposition: attachment; filename="report.pdf"</code></span></div>
           <div class="error-grid">
             <div class="code">400</div><div class="desc">Missing <code style="font-family:var(--mono);">sides</code> or <code style="font-family:var(--mono);">height</code></div>
             <div class="code">400</div><div class="desc">Neither <code style="font-family:var(--mono);">place</code> nor <code style="font-family:var(--mono);">standard_ref_no</code> resolvable</div>
+            <div class="code">500</div><div class="desc">Uncaught exception during PDF generation — HTML error page (not a JSON body)</div>
           </div>
-          <div class="note">Unlike <code style="font-family:var(--mono);">/calculate</code>, this route doesn't wrap calculation in a try/except — an internal error surfaces as a raw 500, not a JSON error body.</div>
+
+          <div class="try-panel">
+            <div class="subhead">Try it — returns a downloadable PDF</div>
+            <div class="try-row">
+              <input class="try-input" data-role="sides" placeholder="sides" value="[6, 4, 6, 4]">
+              <input class="try-input" data-role="height" placeholder="height" value="3.0">
+              <input class="try-input" data-role="place" placeholder="place" value="Office">
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/pdf',{body:w=>({
+                sides: safeJsonInput(w,'sides'),
+                height: parseFloat(w.querySelector('[data-role=height]').value),
+                place: w.querySelector('[data-role=place]').value.trim() || undefined
+              })})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- /api/reflectance -->
+      <div class="endpoint" id="ep-reflectance">
+        <div class="endpoint-head">
+          <span class="method post">POST</span>
+          <span class="path">/api/reflectance</span>
+          <span class="auth-badge">No auth</span>
+        </div>
+        <div class="endpoint-body">
+          <p>Preview endpoint used by the calculator UI to show how a chosen <b>indirect reflectance factor</b> (IRF) or reflectance preset will affect calculations, without committing the value to app settings. Returns the resolved effective reflectance values.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"reflectance"</span>: { <span class="c">...effective values...</span> } }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="preset" placeholder="preset (light/medium/dark)" value="medium">
+              <input class="try-input" data-role="irf" placeholder="irf 0.0-1.0 (optional)">
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/api/reflectance',{body:w=>{
+                const b = {};
+                const p = w.querySelector('[data-role=preset]').value.trim();
+                const irf = w.querySelector('[data-role=irf]').value.trim();
+                if (p) b.preset = p;
+                if (irf) b.irf = parseFloat(irf);
+                return b;
+              }})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
     </section>
@@ -549,6 +832,11 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
           <p>Health / welcome check.</p>
           <div class="status-row"><span class="status-chip s2">200</span></div>
           <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"message"</span>: <span class="s">"Welcome to the API"</span> }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row"><button class="try-btn" onclick="runTry(this,'GET',()=>'/')">Send</button></div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
 
@@ -564,6 +852,11 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
   <span class="k">"category_keywords"</span>: { <span class="c">...</span> },
   <span class="k">"metadata"</span>: { <span class="c">...</span> }
 }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row"><button class="try-btn" onclick="runTry(this,'GET',()=>'/places')">Send</button></div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
 
@@ -572,6 +865,11 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
         <div class="endpoint-body">
           <p>Public pagination / UI defaults — the same block returned inside <code style="font-family:var(--mono);color:var(--text-primary);">/calculate</code>, without running a calculation.</p>
           <div class="status-row"><span class="status-chip s2">200</span><span class="status-note">shape defined by <code style="font-family:var(--mono);">get_ui_config()</code></span></div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row"><button class="try-btn" onclick="runTry(this,'GET',()=>'/api/ui-settings')">Send</button></div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
 
@@ -581,6 +879,11 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
           <p>Exposes the dashboard's configured API base URL, sourced from <code style="font-family:var(--mono);color:var(--text-primary);">LUXSCALE_DASHBOARD_API_BASE</code>.</p>
           <div class="status-row"><span class="status-chip s2">200</span></div>
           <pre>{ <span class="k">"api_base"</span>: <span class="s">"http://127.0.0.1:5000"</span> }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row"><button class="try-btn" onclick="runTry(this,'GET',()=>'/api/public-config')">Send</button></div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
 
@@ -599,14 +902,22 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
             <div class="code">400</div><div class="desc"><code style="font-family:var(--mono);">ref_no</code> missing or empty</div>
             <div class="code">404</div><div class="desc">No row matches <code style="font-family:var(--mono);">ref_no</code></div>
           </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="ref_no" placeholder="ref_no" value="5.1.1">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/standards/resolve',{body:w=>({ref_no: w.querySelector('[data-role=ref_no]').value.trim()})})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ================= STANDARDS ================= -->
     <section class="doc-section">
-      <div class="section-head"><h2>Standards</h2><span class="count">4 endpoints</span></div>
-      <p class="lead">Two-step selection over <code style="font-family:var(--mono);">standards/standards_cleaned.json</code> (331 rows): pick a category, then a task/activity within it, then read the full row by <code style="font-family:var(--mono);">ref_no</code>. <code style="font-family:var(--mono);">standards/standards_keywords_upgraded.json</code> powers category detection when the room type isn't obvious from a label alone.</p>
+      <div class="section-head"><h2>Standards</h2><span class="count">5 endpoints</span></div>
+      <p class="lead">Two-step selection over <code style="font-family:var(--mono);">standards/standards_cleaned.json</code>: pick a category, then a task/activity within it, then read the full row by <code style="font-family:var(--mono);">ref_no</code>. <code style="font-family:var(--mono);">standards/standards_keywords_upgraded.json</code> powers category detection when the room type isn't obvious from a label alone.</p>
 
       <div class="endpoint" id="ep-std-categories">
         <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/standards/categories</span><span class="auth-badge">No auth</span></div>
@@ -622,15 +933,12 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
       <span class="k">"category_sub"</span>: <span class="n">null</span>,
       <span class="k">"ref_count"</span>: <span class="n">6</span>,
       <span class="k">"keywords"</span>: [<span class="s">"traffic"</span>, <span class="s">"corridor"</span>, <span class="c">...</span>]
-    },
-    <span class="c">...54 total categories</span>
+    }
   ]
 }</pre>
           <div class="try-panel">
             <div class="subhead">Try it</div>
-            <div class="try-row">
-              <button class="try-btn" onclick="runTry(this,'GET',()=>'/api/standards/categories')">Send</button>
-            </div>
+            <div class="try-row"><button class="try-btn" onclick="runTry(this,'GET',()=>'/api/standards/categories')">Send</button></div>
             <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
           </div>
         </div>
@@ -645,12 +953,11 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
   <span class="k">"status"</span>: <span class="s">"success"</span>,
   <span class="k">"category"</span>: <span class="s">"Traffic zones inside buildings"</span>,
   <span class="k">"tasks"</span>: [
-    { <span class="k">"ref_no"</span>: <span class="s">"6.1.1"</span>, <span class="k">"task_or_activity"</span>: <span class="s">"Corridors and circulation areas"</span>, <span class="k">"Em_r_lx"</span>: <span class="n">100</span>, <span class="k">"Em_u_lx"</span>: <span class="n">150</span>, <span class="k">"Uo"</span>: <span class="n">0.4</span>, <span class="k">"Ra"</span>: <span class="n">40</span> },
-    <span class="c">...</span>
+    { <span class="k">"ref_no"</span>: <span class="s">"6.1.1"</span>, <span class="k">"task_or_activity"</span>: <span class="s">"Corridors..."</span>, <span class="k">"Em_r_lx"</span>: <span class="n">100</span>, <span class="k">"Uo"</span>: <span class="n">0.4</span>, <span class="k">"Ra"</span>: <span class="n">40</span> }
   ]
 }</pre>
           <div class="error-grid">
-            <div class="code">404</div><div class="desc">Unknown category, or category has zero rows — response includes a hint to call <code style="font-family:var(--mono);">/api/standards/categories</code></div>
+            <div class="code">404</div><div class="desc">Unknown category, or category has zero rows</div>
           </div>
           <div class="try-panel">
             <div class="subhead">Try it</div>
@@ -681,11 +988,10 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
     {
       <span class="k">"category"</span>: <span class="s">"Offices"</span>,
       <span class="k">"score"</span>: <span class="n">42.0</span>,
-      <span class="k">"matched_keywords"</span>: [<span class="s">"computer"</span>, <span class="s">"office"</span>, <span class="s">"workstations"</span>],
-      <span class="k">"ref_nos"</span>: [<span class="s">"6.26.2"</span>, <span class="s">"6.26.3"</span>, <span class="c">...</span>],
+      <span class="k">"matched_keywords"</span>: [<span class="s">"computer"</span>, <span class="s">"office"</span>],
+      <span class="k">"ref_nos"</span>: [<span class="s">"6.26.2"</span>, <span class="s">"6.26.3"</span>],
       <span class="k">"sample_tasks"</span>: [{ <span class="k">"ref_no"</span>: <span class="s">"6.26.2"</span>, <span class="k">"task_or_activity"</span>: <span class="s">"..."</span> }]
-    },
-    <span class="c">...</span>
+    }
   ]
 }</pre>
           <div class="error-grid">
@@ -697,7 +1003,13 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
               <input class="try-input" data-role="text" style="flex-basis:100%;" placeholder="e.g. open plan office with computer workstations" value="open plan office with computer workstations">
             </div>
             <div class="try-row">
-              <button class="try-btn" onclick="runTry(this,'POST',()=>'/api/standards/detect',{body:w=>({text:w.querySelector('[data-role=text]').value})})">Send</button>
+              <input class="try-input" data-role="limit" placeholder="limit (optional, default 5)" style="max-width:200px;">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/api/standards/detect',{body:w=>{
+                const b = { text: w.querySelector('[data-role=text]').value };
+                const l = w.querySelector('[data-role=limit]').value.trim();
+                if (l) b.limit = parseInt(l, 10);
+                return b;
+              }})">Send</button>
             </div>
             <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
           </div>
@@ -719,6 +1031,20 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
               <input class="try-input" data-role="ref" placeholder="ref_no" value="6.1.1">
               <button class="try-btn" onclick="runTry(this,'GET',w=>'/api/standards/ref/'+encodeURIComponent(w.querySelector('[data-role=ref]').value))">Send</button>
             </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-std-cleaned">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/standards/cleaned</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>The full contents of <code style="font-family:var(--mono);color:var(--text-primary);">standards/standards_cleaned.json</code> as returned from disk — every row of the EN 12464-1 (and adjacent) tables in one payload. Use when building a client-side search index or an offline standards viewer.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"rows"</span>: [ { <span class="c">...</span> } ], <span class="k">"count"</span>: <span class="n">331</span> }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row"><button class="try-btn" onclick="runTry(this,'GET',()=>'/api/standards/cleaned')">Send</button></div>
             <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
           </div>
         </div>
@@ -751,9 +1077,8 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
       <span class="k">"power_w"</span>: <span class="n">100</span>,
       <span class="k">"relative_ies"</span>: <span class="s">"examples/.../SC_FLOOD_100W.ies"</span>,
       <span class="k">"ies_available"</span>: <span class="n">true</span>,
-      <span class="k">"product"</span>: { <span class="k">"id"</span>: <span class="s">"sc-flood-100"</span>, <span class="k">"name"</span>: <span class="s">"SC TM Flood 100"</span>, <span class="k">"images"</span>: [<span class="c">...</span>], <span class="k">"specs"</span>: { <span class="c">...</span> } }
-    },
-    <span class="c">...</span>
+      <span class="k">"product"</span>: { <span class="k">"id"</span>: <span class="s">"sc-flood-100"</span>, <span class="k">"name"</span>: <span class="s">"SC TM Flood 100"</span>, <span class="k">"specs"</span>: { <span class="c">...</span> } }
+    }
   ]
 }</pre>
           <div class="try-panel">
@@ -777,12 +1102,10 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
         <div class="endpoint-body">
           <p>Distinct <code style="font-family:var(--mono);color:var(--text-primary);">api_luminaire_name</code> values from the active fixture map — useful for building a type filter dropdown.</p>
           <div class="status-row"><span class="status-chip s2">200</span></div>
-          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"types"</span>: [<span class="s">"SC backlight"</span>, <span class="s">"SC downlight"</span>, <span class="s">"SC flood light exterior"</span>, <span class="c">...</span>] }</pre>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"types"</span>: [<span class="s">"SC backlight"</span>, <span class="s">"SC downlight"</span>, <span class="s">"SC flood light exterior"</span>] }</pre>
           <div class="try-panel">
             <div class="subhead">Try it</div>
-            <div class="try-row">
-              <button class="try-btn" onclick="runTry(this,'GET',()=>'/api/fixtures/types')">Send</button>
-            </div>
+            <div class="try-row"><button class="try-btn" onclick="runTry(this,'GET',()=>'/api/fixtures/types')">Send</button></div>
             <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
           </div>
         </div>
@@ -865,6 +1188,25 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
             <div class="code">400</div><div class="desc"><code style="font-family:var(--mono);">results</code> missing or not an array</div>
             <div class="code">500</div><div class="desc">Filesystem write failure</div>
           </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <label>Full study payload — JSON</label>
+              <textarea class="try-input" data-role="payload">{
+  "sides": [6, 4, 6, 4],
+  "height": 3.0,
+  "place": "Office",
+  "results": [],
+  "project_name": "Docs smoke test",
+  "name": "Docs Reader",
+  "email": "hello@example.com"
+}</textarea>
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/api/submit',{body:w=>safeJsonInput(w,'payload')})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
 
@@ -893,23 +1235,98 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
             <div class="code">404</div><div class="desc">No stored study for that token</div>
             <div class="code">500</div><div class="desc">Stored file is corrupt, invalid JSON, or missing <code style="font-family:var(--mono);">payload</code></div>
           </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="token" placeholder="32-char hex token">
+              <button class="try-btn" onclick="runTry(this,'GET',()=>'/api/get',{query:w=>({token:w.querySelector('[data-role=token]').value.trim()})})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ================= REPORTS ================= -->
+    <!-- ================= PDF REPORTS ================= -->
     <section class="doc-section">
-      <div class="section-head"><h2>PDF reports</h2><span class="count">2 endpoints</span></div>
+      <div class="section-head"><h2>PDF reports</h2><span class="count">6 endpoints</span></div>
+      <p class="lead">Two flavors: <b>token-based</b> (loads a stored study from disk) or <b>inline</b> (POST the payload directly — used by external tools and cross-server frontends). All routes stream a PDF binary directly. When calling from the browser, the Try-it panel will offer a download link instead of trying to render the PDF inline.</p>
 
       <div class="endpoint" id="ep-report-full">
         <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/report/:token/full</span><span class="auth-badge">No auth</span></div>
         <div class="endpoint-body">
-          <p>Streams a full report PDF covering every solution in the study.</p>
+          <p>Streams a full report PDF covering every solution in the study, loaded from server-side storage by token.</p>
           <div class="status-row"><span class="status-chip s2">200</span><span class="status-note"><code style="font-family:var(--mono);">application/pdf</code> · filename <code style="font-family:var(--mono);">SC_LuxScale_Report_&lt;token8&gt;.pdf</code></span></div>
           <div class="error-grid">
             <div class="code">400</div><div class="desc">Token contains non-hex characters</div>
             <div class="code">404</div><div class="desc">No study file for that token</div>
             <div class="code">500</div><div class="desc">Exception during PDF generation — body <code style="font-family:var(--mono);">{ "error": "..." }</code></div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it — downloads PDF on success</div>
+            <div class="try-row">
+              <input class="try-input" data-role="token" placeholder="32-char hex token">
+              <button class="try-btn" onclick="runTry(this,'GET',w=>'/api/report/'+encodeURIComponent(w.querySelector('[data-role=token]').value.trim())+'/full')">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-report-full-post">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/report/:token/full</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Same output as the GET variant, but you POST the study payload directly instead of looking it up server-side. Use this when the study data is held on a different server (e.g. PHP storage) or you want to render a preview without persisting first.</p>
+          <div class="subhead">Body — full study payload</div>
+          <p style="font-size:13px;color:var(--text-muted);margin:0 0 10px;">The token in the URL is used only for the output filename. The body must contain <code style="font-family:var(--mono);">sides, height, results</code> at minimum plus any project/customer fields you want in the header.</p>
+          <div class="status-row"><span class="status-chip s2">200</span><span class="status-note">application/pdf</span></div>
+          <div class="try-panel">
+            <div class="subhead">Try it — downloads PDF on success</div>
+            <div class="try-row">
+              <input class="try-input" data-role="token" placeholder="filename token (any 8+ chars)" value="preview">
+            </div>
+            <div class="try-row">
+              <label>Study payload JSON</label>
+              <textarea class="try-input" data-role="payload">{
+  "sides": [6, 4, 6, 4],
+  "height": 3.0,
+  "place": "Office",
+  "results": [],
+  "project_name": "Docs Try-it",
+  "name": "Docs Reader",
+  "calculation_meta": {}
+}</textarea>
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',w=>'/api/report/'+encodeURIComponent(w.querySelector('[data-role=token]').value.trim())+'/full',{body:w=>safeJsonInput(w,'payload')})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-report-full-tokenless">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/report/full</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Tokenless variant of the POST above — same behavior, no URL token needed. Output filename defaults to <code style="font-family:var(--mono);">SC_LuxScale_Report_study.pdf</code>.</p>
+          <div class="status-row"><span class="status-chip s2">200</span><span class="status-note">application/pdf</span></div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <label>Study payload JSON</label>
+              <textarea class="try-input" data-role="payload">{
+  "sides": [6, 4, 6, 4],
+  "height": 3.0,
+  "place": "Office",
+  "results": [],
+  "project_name": "Tokenless preview",
+  "calculation_meta": {}
+}</textarea>
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/api/report/full',{body:w=>safeJsonInput(w,'payload')})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
           </div>
         </div>
       </div>
@@ -917,12 +1334,542 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
       <div class="endpoint" id="ep-report-solution">
         <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/report/:token/solution/:sol_index</span><span class="auth-badge">No auth</span></div>
         <div class="endpoint-body">
-          <p>Streams a single-solution PDF. <code style="font-family:var(--mono);color:var(--text-primary);">sol_index</code> is zero-based.</p>
+          <p>Streams a single-solution PDF from a stored study. <code style="font-family:var(--mono);color:var(--text-primary);">sol_index</code> is zero-based.</p>
           <div class="status-row"><span class="status-chip s2">200</span><span class="status-note">filename <code style="font-family:var(--mono);">SC_LuxScale_Solution_&lt;n&gt;_&lt;token8&gt;.pdf</code></span></div>
           <div class="error-grid">
             <div class="code">400</div><div class="desc">Token contains non-hex characters</div>
             <div class="code">404</div><div class="desc">No study for token, or <code style="font-family:var(--mono);">sol_index</code> out of range</div>
             <div class="code">500</div><div class="desc">Exception during PDF generation</div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="token" placeholder="32-char hex token">
+              <input class="try-input" data-role="i" placeholder="sol_index" value="0" style="max-width:120px;">
+              <button class="try-btn" onclick="runTry(this,'GET',w=>'/api/report/'+encodeURIComponent(w.querySelector('[data-role=token]').value.trim())+'/solution/'+encodeURIComponent(w.querySelector('[data-role=i]').value.trim()))">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-report-solution-post">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/report/:token/solution/:sol_index</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>POST-with-payload variant of the single-solution PDF endpoint. Token in the URL is used only for the output filename.</p>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="token" placeholder="filename token" value="preview">
+              <input class="try-input" data-role="i" placeholder="sol_index" value="0" style="max-width:120px;">
+            </div>
+            <div class="try-row">
+              <label>Study payload JSON</label>
+              <textarea class="try-input" data-role="payload">{
+  "sides": [6, 4, 6, 4],
+  "height": 3.0,
+  "results": [ {} ],
+  "project_name": "Solution preview"
+}</textarea>
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',w=>'/api/report/'+encodeURIComponent(w.querySelector('[data-role=token]').value.trim())+'/solution/'+encodeURIComponent(w.querySelector('[data-role=i]').value.trim()),{body:w=>safeJsonInput(w,'payload')})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-report-solution-tokenless">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/report/solution/:sol_index</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Tokenless POST variant of the single-solution PDF.</p>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="i" placeholder="sol_index" value="0" style="max-width:120px;">
+            </div>
+            <div class="try-row">
+              <label>Study payload JSON</label>
+              <textarea class="try-input" data-role="payload">{
+  "sides": [6, 4, 6, 4],
+  "height": 3.0,
+  "results": [ {} ]
+}</textarea>
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',w=>'/api/report/solution/'+encodeURIComponent(w.querySelector('[data-role=i]').value.trim()),{body:w=>safeJsonInput(w,'payload')})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= AI ANALYSIS ================= -->
+    <section class="doc-section">
+      <div class="section-head"><h2>AI analysis</h2><span class="count">7 endpoints</span></div>
+      <p class="lead">Post-calculation Gemini/Ollama-backed analysis of a study — quality scoring, issue detection, improvement suggestions. Uses a multi-account waterfall (see <code style="font-family:var(--mono);">gemini_config.json</code>) with a snapshot fallback so the endpoint never fully fails while at least one snapshot exists. Analyze is public; snapshots, account, and status are admin-only when running behind the app.</p>
+
+      <div class="endpoint" id="ep-ai-analyze">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/ai/analyze</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Analyzes a lighting design result. Accepts either an inline payload or a stored study token.</p>
+          <div class="subhead">Body parameters</div>
+          <table class="params">
+            <tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>token</code></td><td>string</td><td><span class="req-no">Conditional</span></td><td>32-char hex token for a stored study. If provided, the server loads the payload from disk and ignores inline fields.</td></tr>
+            <tr><td><code>results</code></td><td>array</td><td><span class="req-no">Conditional</span></td><td>Required if <code>token</code> is not provided. Same shape as a stored study's <code>results</code>.</td></tr>
+            <tr><td><code>sides, height, place, standard_ref_no, project_name, …</code></td><td>—</td><td><span class="req-no">Optional</span></td><td>Any study-payload fields; passed straight to the prompt builder.</td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{
+  <span class="k">"status"</span>: <span class="s">"success"</span>,
+  <span class="k">"source"</span>: <span class="s">"gemini:account_1_free"</span>,   <span class="c">// or "ollama", "snapshot", "default"</span>
+  <span class="k">"quality_score"</span>: <span class="n">78</span>,
+  <span class="k">"issues"</span>: [ { <span class="c">...</span> } ],
+  <span class="k">"suggestions"</span>: [ <span class="s">"..."</span> ],
+  <span class="k">"summary"</span>: <span class="s">"..."</span>,
+  <span class="k">"confidence"</span>: <span class="n">0.87</span>
+}</pre>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc">Body not JSON, or payload has no <code style="font-family:var(--mono);">results</code></div>
+            <div class="code">404</div><div class="desc">Token given but no study exists for it</div>
+            <div class="code">500</div><div class="desc">Every AI source (Gemini, Ollama, snapshot) failed</div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="token" placeholder="study token (or leave empty and pass inline payload)">
+            </div>
+            <div class="try-row">
+              <label>OR inline payload JSON</label>
+              <textarea class="try-input" data-role="payload">{
+  "sides": [6, 4, 6, 4],
+  "height": 3.0,
+  "place": "Office",
+  "results": [ {} ],
+  "calculation_meta": {}
+}</textarea>
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/api/ai/analyze',{body:w=>{
+                const t = w.querySelector('[data-role=token]').value.trim();
+                if (t) return { token: t };
+                return safeJsonInput(w,'payload');
+              }})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-ai-approve">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/ai/approve-fix</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Marks an AI analysis as "approved" — saves it as the new fallback snapshot so future <code style="font-family:var(--mono);">/api/ai/analyze</code> calls can fall back to it when all live AI sources are unavailable.</p>
+          <div class="subhead">Body parameters</div>
+          <table class="params">
+            <tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>analysis</code></td><td>object</td><td><span class="req-yes">Required</span></td><td>The analysis result from <code>/api/ai/analyze</code></td></tr>
+            <tr><td><code>fix_index</code></td><td>integer</td><td><span class="req-no">Optional</span></td><td>Which issue in the analysis was approved (audit only)</td></tr>
+            <tr><td><code>token</code></td><td>string</td><td><span class="req-no">Optional</span></td><td>Study token, if any (audit only)</td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{
+  <span class="k">"status"</span>: <span class="s">"success"</span>,
+  <span class="k">"snapshot_updated"</span>: <span class="n">true</span>,
+  <span class="k">"snapshot"</span>: { <span class="k">"filename"</span>: <span class="s">"snap_...json"</span>, <span class="k">"saved_at"</span>: <span class="s">"..."</span>, <span class="k">"label"</span>: <span class="s">"approved"</span> }
+}</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <label>Body JSON</label>
+              <textarea class="try-input" data-role="payload">{
+  "analysis": {
+    "quality_score": 82,
+    "issues": [],
+    "suggestions": [],
+    "summary": "Docs smoke test"
+  }
+}</textarea>
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/api/ai/approve-fix',{body:w=>safeJsonInput(w,'payload')})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-ai-status">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/ai/status</span><span class="auth-badge required">Auth required</span></div>
+        <div class="endpoint-body">
+          <p>Quota status for all configured Gemini accounts plus snapshot fallback state.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{
+  <span class="k">"status"</span>: <span class="s">"success"</span>,
+  <span class="k">"accounts"</span>: [ { <span class="k">"name"</span>: <span class="s">"account_1_free"</span>, <span class="k">"quota_used"</span>: <span class="n">14</span>, <span class="k">"quota_limit"</span>: <span class="n">60</span>, <span class="k">"enabled"</span>: <span class="n">true</span> } ],
+  <span class="k">"has_snapshot"</span>: <span class="n">true</span>,
+  <span class="k">"snapshot_saved_at"</span>: <span class="s">"..."</span>,
+  <span class="k">"total_snapshots"</span>: <span class="n">6</span>,
+  <span class="k">"latest_snapshot"</span>: { <span class="c">...</span> }
+}</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row"><button class="try-btn" onclick="runTry(this,'GET',()=>'/api/ai/status')">Send</button></div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-ai-snapshots">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/ai/snapshots</span><span class="auth-badge required">Auth required</span></div>
+        <div class="endpoint-body">
+          <p>Full snapshot history (newest first).</p>
+          <div class="subhead">Query parameters</div>
+          <table class="params">
+            <tr><th>Param</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>limit</code></td><td><span class="req-no">Optional</span></td><td>Return only the N most recent</td></tr>
+            <tr><td><code>label</code></td><td><span class="req-no">Optional</span></td><td>Filter by label — <code>auto</code>, <code>approved</code>, <code>restored</code></td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"total"</span>: <span class="n">6</span>, <span class="k">"snapshots"</span>: [ <span class="c">...</span> ] }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="limit" placeholder="limit (optional)">
+              <input class="try-input" data-role="label" placeholder="label — auto/approved/restored">
+              <button class="try-btn" onclick="runTry(this,'GET',()=>'/api/ai/snapshots',{query:w=>({limit:w.querySelector('[data-role=limit]').value,label:w.querySelector('[data-role=label]').value})})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-ai-snapshot-get">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/ai/snapshots/:filename</span><span class="auth-badge required">Auth required</span></div>
+        <div class="endpoint-body">
+          <p>Load a specific versioned snapshot by its filename. Format: <code style="font-family:var(--mono);">snap_YYYYMMDDTHHMMSSZ.json</code>.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"snapshot"</span>: { <span class="c">...</span> } }</pre>
+          <div class="error-grid">
+            <div class="code">404</div><div class="desc">Snapshot not found or invalid filename</div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="filename" placeholder="snap_20260408T123456Z.json">
+              <button class="try-btn" onclick="runTry(this,'GET',w=>'/api/ai/snapshots/'+encodeURIComponent(w.querySelector('[data-role=filename]').value.trim()))">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-ai-snapshot-restore">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/ai/snapshots/restore</span><span class="auth-badge required">Auth required</span></div>
+        <div class="endpoint-body">
+          <p>Restore a specific versioned snapshot as the active fallback.</p>
+          <div class="subhead">Body parameters</div>
+          <table class="params">
+            <tr><th>Field</th><th>Type</th><th>Required</th></tr>
+            <tr><td><code>filename</code></td><td>string</td><td><span class="req-yes">Required</span></td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"message"</span>: <span class="s">"Snapshot 'snap_...' restored as active fallback"</span> }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="filename" placeholder="snap_20260408T123456Z.json">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/api/ai/snapshots/restore',{body:w=>({filename:w.querySelector('[data-role=filename]').value.trim()})})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-ai-account">
+        <div class="endpoint-head"><span class="method put">PUT</span><span class="path">/api/ai/account</span><span class="auth-badge required">Auth required</span></div>
+        <div class="endpoint-body">
+          <p>Update a Gemini account key at runtime (no restart needed). Use to swap in a paid key or disable a burnt-out free account.</p>
+          <div class="subhead">Body parameters</div>
+          <table class="params">
+            <tr><th>Field</th><th>Type</th><th>Required</th></tr>
+            <tr><td><code>name</code></td><td>string</td><td><span class="req-yes">Required</span></td></tr>
+            <tr><td><code>api_key</code></td><td>string</td><td><span class="req-no">Optional</span></td></tr>
+            <tr><td><code>enabled</code></td><td>bool</td><td><span class="req-no">Optional</span></td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <div class="error-grid">
+            <div class="code">404</div><div class="desc">Account name not found in <code style="font-family:var(--mono);">gemini_config.json</code></div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="name" placeholder="account name — e.g. account_1_free">
+              <input class="try-input" data-role="api_key" placeholder="api_key (optional)">
+              <label><input type="checkbox" data-role="enabled" checked> enabled</label>
+              <button class="try-btn" onclick="runTry(this,'PUT',()=>'/api/ai/account',{body:w=>{
+                const b = { name: w.querySelector('[data-role=name]').value.trim() };
+                const k = w.querySelector('[data-role=api_key]').value.trim();
+                if (k) b.api_key = k;
+                b.enabled = w.querySelector('[data-role=enabled]').checked;
+                return b;
+              }})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= IES VIEWER ================= -->
+    <section class="doc-section">
+      <div class="section-head"><h2>IES viewer</h2><span class="count">6 endpoints</span></div>
+      <p class="lead">Stateful photometric-file viewer. Upload an <code style="font-family:var(--mono);">.ies</code> file (or look one up by luminaire name), get a session id back, then use that <code style="font-family:var(--mono);">sid</code> to render the polar curve, raw candela data, 360° panorama, or top-down floorplan heatmap. Sessions live in memory only — restart the server and they're gone.</p>
+
+      <div class="endpoint" id="ep-ies-upload">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/ies/upload</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Uploads an IES file and starts a session. Three input modes:</p>
+          <table class="params">
+            <tr><th>Mode</th><th>Form fields</th><th>Behavior</th></tr>
+            <tr><td><b>A — file upload</b></td><td><code>file=&lt;.ies file&gt;</code></td><td>Standard multipart file upload</td></tr>
+            <tr><td><b>B — luminaire lookup</b></td><td><code>luminaire_name</code>, <code>power_w</code>, [<code>ies_filename</code>], [<code>design_lumens</code>]</td><td>Server locates the IES file in the fixture map or IES directories</td></tr>
+            <tr><td><b>C — demo</b></td><td><code>demo=1</code></td><td>Loads the built-in demo IES</td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{
+  <span class="k">"session_id"</span>: <span class="s">"a1b2c3d4"</span>,
+  <span class="k">"filename"</span>:   <span class="s">"SC_flood_100W.ies"</span>,
+  <span class="k">"customer"</span>:   { <span class="k">"total_lumens"</span>: <span class="n">14200</span>, <span class="k">"beam_angle_deg"</span>: <span class="n">120</span>, <span class="c">...</span> },
+  <span class="k">"ies_data"</span>:   { <span class="k">"vertical_angles"</span>: [<span class="c">...</span>], <span class="k">"horizontal_angles"</span>: [<span class="c">...</span>], <span class="k">"candela_matrix"</span>: [<span class="c">...</span>] }
+}</pre>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc">No file uploaded, or file doesn't end in <code style="font-family:var(--mono);">.ies</code></div>
+            <div class="code">404</div><div class="desc">Luminaire-lookup mode couldn't find a matching IES</div>
+            <div class="code">422</div><div class="desc">Uploaded file couldn't be parsed as IES</div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it — Mode A: file upload</div>
+            <div class="try-row">
+              <input class="try-input" type="file" data-role="file" accept=".ies">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/ies/upload',{form:w=>{
+                const f = w.querySelector('[data-role=file]').files[0];
+                if (!f) throw new Error('Choose a .ies file first');
+                const fd = new FormData();
+                fd.append('file', f, f.name);
+                return fd;
+              }})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+          <div class="try-panel" style="margin-top:8px;">
+            <div class="subhead">Try it — Mode C: demo</div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/ies/upload',{form:w=>{
+                const fd = new FormData();
+                fd.append('demo', '1');
+                return fd;
+              }})">Load demo IES</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-ies-specs">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/ies/specs</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Customer-facing summary for a live session (used by the standalone <code style="font-family:var(--mono);">openies.html</code> viewer).</p>
+          <div class="subhead">Query parameters</div>
+          <table class="params">
+            <tr><th>Param</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>sid</code></td><td><span class="req-yes">Required</span></td><td>Session id from <code>/ies/upload</code></td></tr>
+            <tr><td><code>design_lumens</code></td><td><span class="req-no">Optional</span></td><td>If given, stored in the session so panorama/floorplan renders use the correct flux scaling</td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"session_id"</span>: <span class="s">"a1b2c3d4"</span>, <span class="k">"filename"</span>: <span class="s">"..."</span>, <span class="k">"customer"</span>: { <span class="c">...</span> } }</pre>
+          <div class="error-grid">
+            <div class="code">404</div><div class="desc">Session not found — upload again</div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="sid" placeholder="sid">
+              <input class="try-input" data-role="design_lumens" placeholder="design_lumens (optional)">
+              <button class="try-btn" onclick="runTry(this,'GET',()=>'/ies/specs',{query:w=>({sid:w.querySelector('[data-role=sid]').value.trim(), design_lumens:w.querySelector('[data-role=design_lumens]').value.trim()})})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-ies-data">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/ies/ies_data</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Full candela matrix for a session — feeds the Three.js 3-D viewer.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{
+  <span class="k">"vertical_angles"</span>:   [<span class="c">...</span>],
+  <span class="k">"horizontal_angles"</span>: [<span class="c">...</span>],
+  <span class="k">"candela_matrix"</span>:    [[<span class="c">...</span>]],
+  <span class="k">"max_value"</span>:         <span class="n">3200</span>,
+  <span class="k">"beam_angle"</span>:        <span class="n">65.2</span>,
+  <span class="k">"field_angle"</span>:       <span class="n">88.1</span>,
+  <span class="k">"peak_candela"</span>:      <span class="n">3200</span>,
+  <span class="k">"symmetry"</span>:          <span class="s">"axial"</span>
+}</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="sid" placeholder="sid">
+              <button class="try-btn" onclick="runTry(this,'GET',()=>'/ies/ies_data',{query:w=>({sid:w.querySelector('[data-role=sid]').value.trim()})})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-ies-polar">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/ies/plot/polar</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Renders the polar candela plot as a base64 PNG.</p>
+          <div class="subhead">Query parameters</div>
+          <table class="params">
+            <tr><th>Param</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>sid</code></td><td><span class="req-yes">Required</span></td><td></td></tr>
+            <tr><td><code>h_idx</code></td><td><span class="req-no">Optional</span></td><td>Horizontal-angle slice index (default 0)</td></tr>
+            <tr><td><code>scale</code></td><td><span class="req-no">Optional</span></td><td><code>linear</code> or <code>log</code></td></tr>
+            <tr><td><code>show_beam</code></td><td><span class="req-no">Optional</span></td><td><code>true</code>/<code>false</code></td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"image"</span>: <span class="s">"&lt;base64 PNG&gt;"</span> }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it — inline PNG preview</div>
+            <div class="try-row">
+              <input class="try-input" data-role="sid" placeholder="sid">
+              <input class="try-input" data-role="h_idx" placeholder="h_idx" value="0" style="max-width:120px;">
+              <input class="try-input" data-role="scale" placeholder="scale" value="linear" style="max-width:140px;">
+              <button class="try-btn" onclick="runTry(this,'GET',()=>'/ies/plot/polar',{query:w=>({sid:w.querySelector('[data-role=sid]').value.trim(),h_idx:w.querySelector('[data-role=h_idx]').value.trim(),scale:w.querySelector('[data-role=scale]').value.trim()}), previewBase64Key:'image'})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-ies-panorama">
+        <div class="endpoint-head"><span class="method get-post">GET / POST</span><span class="path">/ies/panorama</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Renders a 360° panoramic light simulation of the room. Accepts params via query string (GET) or JSON body (POST).</p>
+          <div class="subhead">Parameters</div>
+          <table class="params">
+            <tr><th>Field</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>sid</code></td><td><span class="req-yes">Required</span></td><td>IES session id</td></tr>
+            <tr><td><code>room_w, room_l, room_h</code></td><td><span class="req-no">Optional</span></td><td>Meters. Default 6 × 6 × 3.</td></tr>
+            <tr><td><code>fixture_h</code></td><td><span class="req-no">Optional</span></td><td>Luminaire mounting height (default 80 % of ceiling)</td></tr>
+            <tr><td><code>intensity</code></td><td><span class="req-no">Optional</span></td><td>0.0–2.0, default 1.0</td></tr>
+            <tr><td><code>ct</code></td><td><span class="req-no">Optional</span></td><td><code>warm</code> / <code>neutral</code> / <code>cool</code></td></tr>
+            <tr><td><code>w, h</code></td><td><span class="req-no">Optional</span></td><td>Output size (capped at 1024 × 512)</td></tr>
+            <tr><td><code>fixture_positions</code></td><td><span class="req-no">Optional</span></td><td>Array of <code>[x, z]</code> pairs, room-centred metres</td></tr>
+            <tr><td><code>layout_nx, layout_ny, spacing_x, spacing_y</code></td><td><span class="req-no">Optional</span></td><td>Grid alternative to explicit positions</td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"image"</span>: <span class="s">"&lt;base64 JPEG&gt;"</span>, <span class="k">"width"</span>: <span class="n">768</span>, <span class="k">"height"</span>: <span class="n">384</span> }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it — inline preview</div>
+            <div class="try-row">
+              <input class="try-input" data-role="sid" placeholder="sid">
+              <input class="try-input" data-role="room_w" placeholder="room_w" value="6">
+              <input class="try-input" data-role="room_l" placeholder="room_l" value="6">
+              <input class="try-input" data-role="room_h" placeholder="room_h" value="3">
+            </div>
+            <div class="try-row">
+              <input class="try-input" data-role="intensity" placeholder="intensity" value="1.0">
+              <input class="try-input" data-role="ct" placeholder="ct" value="warm">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/ies/panorama',{body:w=>({
+                sid: w.querySelector('[data-role=sid]').value.trim(),
+                room_w: parseFloat(w.querySelector('[data-role=room_w]').value),
+                room_l: parseFloat(w.querySelector('[data-role=room_l]').value),
+                room_h: parseFloat(w.querySelector('[data-role=room_h]').value),
+                intensity: parseFloat(w.querySelector('[data-role=intensity]').value),
+                ct: w.querySelector('[data-role=ct]').value.trim() || 'warm'
+              }), previewBase64Key:'image'})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-ies-floorplan">
+        <div class="endpoint-head"><span class="method get-post">GET / POST</span><span class="path">/ies/floorplan</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Renders a top-down false-colour illuminance heatmap of the work-plane. Same parameters as <code style="font-family:var(--mono);">/ies/panorama</code>, plus:</p>
+          <table class="params">
+            <tr><th>Field</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>work_h</code></td><td><span class="req-no">Optional</span></td><td>Work-plane height (default 0.85 m)</td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{
+  <span class="k">"image"</span>: <span class="s">"&lt;base64 JPEG&gt;"</span>,
+  <span class="k">"width"</span>: <span class="n">600</span>, <span class="k">"height"</span>: <span class="n">450</span>,
+  <span class="k">"e_avg"</span>: <span class="n">450.2</span>, <span class="k">"e_min"</span>: <span class="n">180.4</span>, <span class="k">"e_max"</span>: <span class="n">1024.8</span>,
+  <span class="k">"fixtures"</span>: <span class="n">6</span>
+}</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it — inline preview</div>
+            <div class="try-row">
+              <input class="try-input" data-role="sid" placeholder="sid">
+              <input class="try-input" data-role="room_w" placeholder="room_w" value="6">
+              <input class="try-input" data-role="room_l" placeholder="room_l" value="6">
+              <input class="try-input" data-role="layout_nx" placeholder="layout_nx" value="2">
+              <input class="try-input" data-role="layout_ny" placeholder="layout_ny" value="2">
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/ies/floorplan',{body:w=>({
+                sid: w.querySelector('[data-role=sid]').value.trim(),
+                room_w: parseFloat(w.querySelector('[data-role=room_w]').value),
+                room_l: parseFloat(w.querySelector('[data-role=room_l]').value),
+                layout_nx: parseInt(w.querySelector('[data-role=layout_nx]').value, 10),
+                layout_ny: parseInt(w.querySelector('[data-role=layout_ny]').value, 10)
+              }), previewBase64Key:'image'})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SYSTEM ================= -->
+    <section class="doc-section">
+      <div class="section-head"><h2>System</h2><span class="count">2 endpoints</span></div>
+      <p class="lead">Deployment health checks — used by Railway probes and internal monitoring.</p>
+
+      <div class="endpoint" id="ep-deploy-health">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/deployment/health</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Lightweight liveness probe — always returns success as long as the Flask process is running.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"ok"</span>, <span class="k">"service"</span>: <span class="s">"luxscale"</span>, <span class="k">"time"</span>: <span class="s">"..."</span> }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row"><button class="try-btn" onclick="runTry(this,'GET',()=>'/api/deployment/health')">Send</button></div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-deploy-storage">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/deployment/storage-check</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Reports whether writable directories (studies, logs, snapshots) are healthy and how much space each is using.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"ok"</span>, <span class="k">"directories"</span>: { <span class="c">...</span> } }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row"><button class="try-btn" onclick="runTry(this,'GET',()=>'/api/deployment/storage-check')">Send</button></div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
           </div>
         </div>
       </div>
@@ -931,11 +1878,12 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
     <!-- ================= ADMIN ================= -->
     <section class="doc-section">
       <div class="section-head"><h2>Admin</h2><span class="count">6 endpoints</span></div>
-      <p class="lead">Everything below except login requires authentication — see the <a href="#auth" style="color:var(--sc-red);">Authentication</a> section.</p>
+      <p class="lead">Everything below except login requires authentication — see the <a href="#auth" style="color:var(--sc-red);">Authentication</a> section. Login returns a bearer token you can paste into the <b>Admin token</b> field at the top of the page.</p>
 
       <div class="endpoint" id="ep-admin-login">
         <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/admin/login</span><span class="auth-badge">No auth</span></div>
         <div class="endpoint-body">
+          <div class="subhead">Body parameters</div>
           <table class="params">
             <tr><th>Field</th><th>Type</th><th>Required</th></tr>
             <tr><td><code>username</code></td><td>string</td><td><span class="req-yes">Required</span></td></tr>
@@ -946,6 +1894,15 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
           <p style="font-size:13px;color:var(--text-muted);">Also sets a session cookie for same-origin clients.</p>
           <div class="status-row"><span class="status-chip s4">401</span></div>
           <pre>{ <span class="k">"status"</span>: <span class="s">"error"</span>, <span class="k">"message"</span>: <span class="s">"Invalid credentials"</span> }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it — populates the Admin token field on success</div>
+            <div class="try-row">
+              <input class="try-input" data-role="username" placeholder="username">
+              <input class="try-input" type="password" data-role="password" placeholder="password">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/api/admin/login',{body:w=>({username:w.querySelector('[data-role=username]').value,password:w.querySelector('[data-role=password]').value}), onSuccess:(data)=>{ if (data && data.token) { const t = document.getElementById('admin-token-input'); if (t) { t.value = data.token; sessionStorage.setItem('luxscale-admin-token', data.token); } } }})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
 
@@ -955,6 +1912,13 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
           <p>Revokes the bearer token in <code style="font-family:var(--mono);color:var(--text-primary);">X-Admin-Token</code> (if provided) and clears the session. Safe to call regardless of current auth state.</p>
           <div class="status-row"><span class="status-chip s2">200</span></div>
           <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span> }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/api/admin/logout',{onSuccess:()=>{ const t = document.getElementById('admin-token-input'); if (t) { t.value = ''; sessionStorage.removeItem('luxscale-admin-token'); } }})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
 
@@ -964,6 +1928,11 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
           <p>Returns current application settings.</p>
           <div class="status-row"><span class="status-chip s4">401</span></div>
           <pre>{ <span class="k">"status"</span>: <span class="s">"error"</span>, <span class="k">"message"</span>: <span class="s">"Unauthorized"</span> }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row"><button class="try-btn" onclick="runTry(this,'GET',()=>'/api/admin/settings')">Send</button></div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
 
@@ -977,6 +1946,17 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
             <div class="code">401</div><div class="desc">Not authenticated</div>
             <div class="code">400</div><div class="desc">Body not a JSON object</div>
           </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <label>Settings JSON (fetch current via GET first, edit, then PUT)</label>
+              <textarea class="try-input" data-role="payload">{}</textarea>
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'PUT',()=>'/api/admin/settings',{body:w=>safeJsonInput(w,'payload')})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
 
@@ -985,6 +1965,11 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
         <div class="endpoint-body">
           <p>Returns the raw contents of the active fixture map JSON.</p>
           <div class="status-row"><span class="status-chip s4">401</span><span class="status-note">if not authenticated</span></div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row"><button class="try-btn" onclick="runTry(this,'GET',()=>'/api/admin/fixture-map')">Send</button></div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
         </div>
       </div>
 
@@ -997,6 +1982,17 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
           <div class="error-grid">
             <div class="code">401</div><div class="desc">Not authenticated</div>
             <div class="code">400</div><div class="desc">Body not a JSON object</div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <label>Fixture-map JSON body</label>
+              <textarea class="try-input" data-role="payload">{ "entries": [] }</textarea>
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'PUT',()=>'/api/admin/fixture-map',{body:w=>safeJsonInput(w,'payload')})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
           </div>
         </div>
       </div>
@@ -1023,14 +2019,6 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
       </div>
     </section>
 
-    <!-- ================= NOT DOCUMENTED ================= -->
-    <section class="doc-section" id="not-documented">
-      <div class="section-head"><h2>Pending</h2></div>
-      <div class="note">
-        <b>AI routes</b> (mounted via <code style="font-family:var(--mono);">register_ai_routes(app)</code> from <code style="font-family:var(--mono);">luxscale/ai_routes.py</code>) and <b>IES routes</b> (blueprint <code style="font-family:var(--mono);">ies_bp</code> from <code style="font-family:var(--mono);">luxscale/ies_routes.py</code>) are live in the app but not yet documented here. Add their source to extend this page.
-      </div>
-    </section>
-
   </main>
 </div>
 
@@ -1043,11 +2031,11 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
     </svg>
     <span>Short Circuit Company — LuxScale R&amp;D</span>
   </div>
-  <span>Generated from live route definitions in <code style="font-family:var(--mono);">app.py</code></span>
+  <span>Generated from live route definitions in <code style="font-family:var(--mono);">app.py</code>, <code style="font-family:var(--mono);">luxscale/ai_routes.py</code>, <code style="font-family:var(--mono);">luxscale/ies_routes.py</code></span>
 </footer>
 
 <script>
-  // highlight active section link on scroll
+  // ── Scroll spy — highlight active section link ──────────────────────────
   const links = document.querySelectorAll('.nav-link');
   const targets = Array.from(links).map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
   function onScroll(){
@@ -1065,20 +2053,62 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
   document.addEventListener('scroll', onScroll, { passive:true });
   onScroll();
 
-  // default Try-it target to wherever this page is actually being served from
+  // ── API base + admin token — persist in sessionStorage ──────────────────
   const baseInput = document.getElementById('api-base-input');
-  if (baseInput && !baseInput.value) baseInput.value = window.location.origin;
+  const adminTokenInput = document.getElementById('admin-token-input');
+  if (baseInput && !baseInput.value) {
+    baseInput.value = sessionStorage.getItem('luxscale-api-base') || window.location.origin;
+  }
+  if (baseInput) {
+    baseInput.addEventListener('input', () => sessionStorage.setItem('luxscale-api-base', baseInput.value.trim()));
+  }
+  if (adminTokenInput) {
+    const saved = sessionStorage.getItem('luxscale-admin-token');
+    if (saved) adminTokenInput.value = saved;
+    adminTokenInput.addEventListener('input', () => sessionStorage.setItem('luxscale-admin-token', adminTokenInput.value.trim()));
+  }
 
-  // Generic "Try it" request runner shared by every endpoint panel.
-  // pathFn(wrap) -> string path (may read data-role inputs inside `wrap`)
+  // ── JSON textarea helper — used by Try-it panels ─────────────────────────
+  window.safeJsonInput = function safeJsonInput(wrap, role) {
+    const el = wrap.querySelector(`[data-role=${role}]`);
+    if (!el) throw new Error(`missing input [data-role=${role}]`);
+    const txt = (el.value || '').trim();
+    if (!txt) throw new Error(`${role} is empty`);
+    try { return JSON.parse(txt); }
+    catch (e) { throw new Error(`${role} is not valid JSON: ${e.message}`); }
+  };
+
+  // ── Polygon vertex presets for the /cad_calc panel ───────────────────────
+  window.setVertexPreset = function setVertexPreset(btn, preset) {
+    const wrap = btn.closest('.endpoint');
+    const el = wrap.querySelector('[data-role=vertices]');
+    if (!el) return;
+    const presets = {
+      'rectangle': '[[0,0],[6,0],[6,4],[0,4]]',
+      'l-shape':   '[[0,0],[6,0],[6,4],[3,4],[3,8],[0,8]]',
+      'hex':       '[[3,0],[6,1.7],[6,5.2],[3,7],[0,5.2],[0,1.7]]'
+    };
+    if (presets[preset]) el.value = presets[preset];
+  };
+
+  // ── Generic "Try it" request runner shared by every endpoint panel ───────
+  // pathFn(wrap) -> string path
   // opts.query(wrap) -> plain object of query params (falsy values are skipped)
   // opts.body(wrap)  -> plain object sent as JSON body
+  // opts.form(wrap)  -> FormData sent as multipart/form-data
+  // opts.previewBase64Key -> if response JSON has this key, render as inline image
+  // opts.onSuccess(data) -> called after a 2xx JSON response
   window.runTry = async function runTry(btn, method, pathFn, opts) {
     opts = opts || {};
     const wrap = btn.closest('.try-panel');
     const resultEl = wrap.querySelector('.try-result');
     const metaEl = wrap.querySelector('.try-meta');
     const outEl = wrap.querySelector('.try-output');
+
+    // Clear any prior download / preview widgets
+    const priorExtras = wrap.querySelectorAll('.try-download, .try-image-preview');
+    priorExtras.forEach(el => el.remove());
+
     const originalLabel = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Sending…';
@@ -1093,28 +2123,86 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
           if (v !== '' && v !== null && v !== undefined) url.searchParams.set(k, v);
         });
       }
+
       const fetchOpts = { method, headers: {} };
-      if (opts.body) {
+
+      // Admin token (X-Admin-Token) — attached on every request when set
+      if (adminTokenInput && adminTokenInput.value.trim()) {
+        fetchOpts.headers['X-Admin-Token'] = adminTokenInput.value.trim();
+      }
+
+      if (opts.form) {
+        // multipart/form-data — do NOT set Content-Type manually,
+        // fetch adds the correct boundary.
+        fetchOpts.body = opts.form(wrap);
+      } else if (opts.body) {
         const b = opts.body(wrap);
         if (b !== undefined) {
           fetchOpts.headers['Content-Type'] = 'application/json';
           fetchOpts.body = JSON.stringify(b);
         }
       }
+
       const t0 = performance.now();
       const res = await fetch(url.toString(), fetchOpts);
       const ms = Math.round(performance.now() - t0);
-      const text = await res.text();
-      let pretty = text;
-      try { pretty = JSON.stringify(JSON.parse(text), null, 2); } catch (e) { /* not JSON, show raw */ }
+      const contentType = (res.headers.get('Content-Type') || '').toLowerCase();
+
       metaEl.textContent = `${res.status} ${res.statusText} · ${ms}ms · ${url.pathname}${url.search}`;
       metaEl.className = 'try-meta ' + (res.ok ? 'ok' : 'err');
-      outEl.textContent = pretty || '(empty response)';
       resultEl.style.display = 'block';
+
+      // ── PDF / binary download ──────────────────────────────────────────
+      if (res.ok && contentType.includes('application/pdf')) {
+        const blob = await res.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        outEl.textContent = `application/pdf · ${(blob.size / 1024).toFixed(1)} KB`;
+        const cdisp = res.headers.get('Content-Disposition') || '';
+        const nameMatch = cdisp.match(/filename="?([^"]+)"?/);
+        const filename = nameMatch ? nameMatch[1] : 'report.pdf';
+        const a = document.createElement('a');
+        a.className = 'try-download';
+        a.href = objectUrl;
+        a.download = filename;
+        a.innerHTML = `Download ${filename} <span class="sz">${(blob.size / 1024).toFixed(1)} KB</span>`;
+        outEl.parentElement.appendChild(a);
+        return;
+      }
+
+      // ── Direct image response (non-JSON, e.g. /assets/*.png) ────────────
+      if (res.ok && contentType.startsWith('image/')) {
+        const blob = await res.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        outEl.textContent = `${contentType} · ${(blob.size / 1024).toFixed(1)} KB`;
+        const img = document.createElement('img');
+        img.className = 'try-image-preview';
+        img.src = objectUrl;
+        outEl.parentElement.appendChild(img);
+        return;
+      }
+
+      // ── Default: text / JSON ────────────────────────────────────────────
+      const text = await res.text();
+      let parsed = null;
+      let pretty = text;
+      try { parsed = JSON.parse(text); pretty = JSON.stringify(parsed, null, 2); } catch (e) { /* keep raw */ }
+      outEl.textContent = pretty || '(empty response)';
+
+      // Inline base64 image preview (IES polar/panorama/floorplan)
+      if (res.ok && parsed && opts.previewBase64Key && typeof parsed[opts.previewBase64Key] === 'string') {
+        const img = document.createElement('img');
+        img.className = 'try-image-preview';
+        img.src = 'data:image/png;base64,' + parsed[opts.previewBase64Key];
+        outEl.parentElement.appendChild(img);
+      }
+
+      if (res.ok && parsed && typeof opts.onSuccess === 'function') {
+        try { opts.onSuccess(parsed); } catch (e) { /* swallow */ }
+      }
     } catch (err) {
       metaEl.textContent = 'Request failed — check the API base, CORS, and that the server is running';
       metaEl.className = 'try-meta err';
-      outEl.textContent = String(err);
+      outEl.textContent = String(err && err.message ? err.message : err);
       resultEl.style.display = 'block';
     } finally {
       btn.disabled = false;

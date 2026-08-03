@@ -684,6 +684,171 @@ def api_calculate():
         return jsonify(err_body), 400
 
 
+# ── /cad_calc ─────────────────────────────────────────────────────────────
+# Plan 06 phase A: polygon-based room calculation for the CAD-analysis tool.
+# Isolated from /calculate — the legacy 4-side path stays untouched. See
+# development_plan/06-non-symmetric-rooms-migration-plan.md.
+# ─────────────────────────────────────────────────────────────────────────
+
+@app.route("/cad_calc", methods=["POST"])
+def api_cad_calc():
+    """
+    Polygon-driven lighting calculation for arbitrary N-sided rooms.
+
+    Request body::
+
+        {
+          "polygon": {"vertices": [[x, y], ...]},   // or "polygon": [[x,y],...] / top-level "vertices"
+          "height": 3.0,
+          "place": "office",                         // optional legacy place
+          "standard_ref_no": "5.1.1",                // optional standard
+          "project_info": {...},                     // optional pass-through
+          "fast": false
+        }
+
+    Response::
+
+        {
+          "status": "success",
+          "results": [...],                          // same shape as /calculate
+          "length": <equivalent rectangle length>,
+          "width":  <equivalent rectangle width>,
+          "calculation_meta": {
+            "geometry_version": 2,
+            "polygon": {vertices, area_m2, perimeter_m, centroid, bbox, ...},
+            "equivalent_rectangle": {width_m, length_m, sides_used},
+            "engine_notes": [...]
+          },
+          "project_info": {...},
+          "ui_settings": {...}
+        }
+    """
+    from luxscale.lighting_calc.cad_calculate import (
+        cad_calculate_lighting,
+        polygon_from_payload,
+    )
+    from luxscale.lighting_calc.polygon import PolygonError
+
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        log_step("POST /cad_calc", "reject: not JSON object")
+        return jsonify({"status": "error", "message": "Expected JSON body"}), 400
+
+    log_step("POST /cad_calc", "received", keys=list(data.keys()))
+
+    trace = None
+    try:
+        try:
+            polygon = polygon_from_payload(data)
+        except PolygonError as e:
+            log_step("POST /cad_calc", "error: polygon", detail=str(e))
+            return jsonify({"status": "error", "message": f"Invalid polygon: {e}"}), 400
+
+        if data.get("height") is None:
+            log_step("POST /cad_calc", "error: missing height")
+            return jsonify({"status": "error", "message": "Missing height"}), 400
+        height = float(data["height"])
+        ok_h, err_h = validate_ceiling_height_m(height)
+        if not ok_h:
+            log_step("POST /cad_calc", "error: ceiling height", detail=err_h)
+            return jsonify({"status": "error", "message": err_h}), 400
+
+        raw_pi = data.get("project_info") if isinstance(data.get("project_info"), dict) else {}
+        project_info = dict(raw_pi)
+        ref_top = _norm_ref(raw_pi.get("standard_ref_no") or data.get("standard_ref_no"))
+        if ref_top:
+            project_info["standard_ref_no"] = ref_top
+
+        standard_row, place = _resolve_calculate_inputs(data)
+        log_step(
+            "POST /cad_calc: resolved inputs",
+            "ok",
+            place=place,
+            standard_ref_no=ref_top or None,
+            has_standard_row=standard_row is not None,
+            vertex_count=len(polygon.vertices),
+            polygon_area_m2=round(polygon.area, 4),
+        )
+
+        if not standard_row and not place:
+            log_step("POST /cad_calc", "error: no place and no valid standard_ref_no")
+            return jsonify(
+                {
+                    "status": "error",
+                    "message": "Provide either project_info.standard_ref_no or place",
+                }
+            ), 400
+
+        calc_fast = _want_fast_calculate(data)
+        trace = CalculationTrace("POST /cad_calc")
+        trace.step(
+            "cad_api_00_ready",
+            polygon_area_m2=polygon.area,
+            polygon_bbox=list(polygon.bbox),
+            vertex_count=len(polygon.vertices),
+            height=height,
+            standard_ref_no=ref_top or None,
+            has_standard_row=standard_row is not None,
+            place=place,
+            fast=bool(calc_fast),
+        )
+
+        results, length_eq, width_eq, calc_meta = cad_calculate_lighting(
+            polygon,
+            height,
+            place=None if standard_row else place,
+            standard_row=standard_row,
+            trace=trace,
+            fast=calc_fast,
+        )
+
+        trace.step("cad_api_01_engine_returned", result_rows=len(results))
+
+        log_step(
+            "POST /cad_calc: success",
+            f"{len(results)} result row(s)",
+            length_eq=length_eq,
+            width_eq=width_eq,
+            polygon_area_m2=polygon.area,
+        )
+
+        trace_path = trace.save()
+        log_step("POST /cad_calc: calculation trace file", trace_path)
+
+        out = {
+            "status": "success",
+            "project_info": project_info,
+            "results": results,
+            "length": length_eq,
+            "width": width_eq,
+            "calculation_trace_file": trace_path,
+            "calculation_meta": calc_meta,
+            "ui_settings": get_ui_config(),
+        }
+        if standard_row:
+            out["standard_row"] = standard_row
+            merged_pi = dict(project_info)
+            merged_pi["standard_lighting"] = standard_row
+            out["project_info"] = merged_pi
+        return jsonify(out)
+
+    except Exception as e:
+        if trace is not None:
+            trace.step("cad_api_ERROR", error=str(e))
+            try:
+                trace_path = trace.save()
+                log_step("POST /cad_calc: calculation trace file (error)", trace_path)
+            except Exception:
+                trace_path = None
+        else:
+            trace_path = None
+        log_exception("POST /cad_calc", e)
+        err_body = {"status": "error", "message": str(e)}
+        if trace_path:
+            err_body["calculation_trace_file"] = trace_path
+        return jsonify(err_body), 400
+
+
 @app.route("/pdf", methods=["POST"])
 def api_pdf():
     data = request.get_json(silent=True)
