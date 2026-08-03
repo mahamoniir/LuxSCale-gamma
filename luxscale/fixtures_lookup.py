@@ -7,8 +7,8 @@ don't share a naming scheme:
   - the **fixture map** (``assets/<active_fixture_map_basename()>``, e.g.
     ``fixture_map_SC_IES_Fixed_v3.json``) is what the calculation engine actually
     reads: generic entries like ``{"api_luminaire_name": "SC flood light exterior",
-    "power_w": 100, "relative_ies": "..."}``. This module never re-implements that
-    resolution — it reuses ``luxscale.fixture_catalog`` so both stay in sync.
+    "power_w": 100, "relative_ies_path": "..."}``. This module never re-implements
+    that resolution — it reuses ``luxscale.fixture_catalog`` so both stay in sync.
 
   - ``assets/fixtures_online.json`` is the real product catalog (names, product
     pages, images, spec sheets) grouped by marketing category, e.g.
@@ -40,6 +40,11 @@ def _assets_dir() -> str:
     return os.path.join(project_root(), "assets")
 
 
+def _ies_render_dir() -> str:
+    """``ies-render/`` sits at the project root; relative_ies_path is relative to it."""
+    return os.path.normpath(os.path.join(project_root(), "ies-render"))
+
+
 @lru_cache(maxsize=1)
 def _load_products_doc() -> Dict[str, Any]:
     path = os.path.join(_assets_dir(), "fixtures_online.json")
@@ -47,8 +52,33 @@ def _load_products_doc() -> Dict[str, Any]:
         return json.load(f)
 
 
+@lru_cache(maxsize=256)
+def _read_ies_text(relative_ies_path: Optional[str]) -> Optional[str]:
+    """
+    Read the raw .IES photometric file as text, given the path stored in the
+    fixture map (relative to ies-render/). Returns None if missing/unreadable.
+    Cached since these are static files that don't change at runtime — call
+    clear_fixtures_lookup_cache() after editing the fixture map / IES files.
+    """
+    if not relative_ies_path:
+        return None
+    ies_root = _ies_render_dir()
+    full_path = os.path.normpath(os.path.join(ies_root, relative_ies_path))
+    # Guard against path traversal escaping ies-render/
+    if os.path.commonpath([full_path, ies_root]) != ies_root:
+        return None
+    if not os.path.isfile(full_path):
+        return None
+    try:
+        with open(full_path, "r", encoding="utf-8", errors="replace") as f:
+            return f.read()
+    except OSError:
+        return None
+
+
 def clear_fixtures_lookup_cache() -> None:
     _load_products_doc.cache_clear()
+    _read_ies_text.cache_clear()
     clear_fixture_map_cache()
 
 
@@ -204,12 +234,14 @@ def list_fixtures(
             ).lower()
             if q_norm not in haystack:
                 continue
+        relative_ies_path = e.get("relative_ies_path") or e.get("relative_ies")
         out.append(
             {
                 "api_luminaire_name": name,
                 "power_w": power_w,
-                "relative_ies": e.get("relative_ies"),
-                "ies_available": bool(e.get("relative_ies")),
+                "relative_ies": relative_ies_path,
+                "ies_available": bool(relative_ies_path),
+                "ies_file": _read_ies_text(relative_ies_path),
                 "product": _product_summary(product),
             }
         )
@@ -225,11 +257,13 @@ def get_fixture(api_luminaire_name: str, power_w: float) -> Optional[Dict[str, A
     if not entry:
         return None
     product = _best_product_match(api_luminaire_name, power_w)
+    relative_ies_path = entry.get("relative_ies_path") or entry.get("relative_ies")
     return {
         "api_luminaire_name": entry.get("api_luminaire_name"),
         "power_w": entry.get("power_w"),
-        "relative_ies": entry.get("relative_ies"),
-        "ies_available": bool(entry.get("relative_ies")),
+        "relative_ies": relative_ies_path,
+        "ies_available": bool(relative_ies_path),
+        "ies_file": _read_ies_text(relative_ies_path),
         "product": _product_summary(product),
     }
 

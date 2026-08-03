@@ -14,7 +14,6 @@ from flask_cors import CORS
 
 from luxscale.app_logging import LOG_FILE, log_exception, log_step
 from luxscale.calculation_trace import CalculationTrace
-from luxscale.study_store import save_study, load_study, storage_backend
 
 # import your existing functions
 from luxscale.app_settings import (
@@ -774,17 +773,58 @@ def api_public_config():
     return jsonify(out)
 
 
-# NOTE: _STUDIES_DIR / STUDIES_DIR are no longer used for reading/writing studies —
-# study_store.py owns persistence now (Postgres in production, local file only as a
-# dev fallback when DATABASE_URL isn't set). Left here only in case any other code
-# in your project still references the path directly.
 _STUDIES_DIR = os.path.join(_ROOT_DIR, "api", "data", "studies")
 
 
-@app.route("/api/deployment/storage-check", methods=["GET"])
-def api_storage_check():
-    """Diagnostics: confirms which study storage backend is active right now."""
-    return jsonify({"backend": storage_backend()})
+def _study_payload_to_api_response(payload: dict) -> dict:
+    """Same JSON shape as ``api/get.php`` for result.html."""
+    sides = payload["sides"]
+    w = max(float(sides[0]), float(sides[2]))
+    l = max(float(sides[1]), float(sides[3]))
+    p = payload
+    req = {
+        "project_name": p.get("project_name", ""),
+        "sides": p["sides"],
+        "height": p["height"],
+    }
+    if "place" in p:
+        req["place"] = p["place"]
+    if p.get("standard_ref_no") is not None:
+        req["standard_ref_no"] = p["standard_ref_no"]
+    if p.get("standard_category"):
+        req["standard_category"] = p["standard_category"]
+    if p.get("standard_task_or_activity"):
+        req["standard_task_or_activity"] = p["standard_task_or_activity"]
+    if p.get("standard_lighting") is not None:
+        req["standard_lighting"] = p["standard_lighting"]
+
+    meta = p.get("calculation_meta")
+    if not isinstance(meta, dict):
+        meta = {}
+
+    out = {
+        "status": "success",
+        "results": p["results"],
+        "calculation_meta": meta,
+        "project_info": {
+            "Project Name": p.get("project_name", ""),
+            "Client Name": p.get("name", ""),
+            "Client Number": p.get("phone", ""),
+            "Company Name": p.get("company", ""),
+        },
+        "request": req,
+        "customer": {
+            "name": p.get("name", ""),
+            "phone": p.get("phone", ""),
+            "company": p.get("company", ""),
+            "email": p.get("email", ""),
+        },
+        "width": w,
+        "length": l,
+    }
+    if p.get("standard_lighting") is not None:
+        out["standard_lighting"] = p["standard_lighting"]
+    return out
 
 
 @app.route("/api/submit", methods=["POST"])
@@ -823,13 +863,22 @@ def api_study_submit():
             {"error": "Missing required fields: results (array, may be empty)"}
         ), 400
 
+    token = secrets.token_hex(16)
+    os.makedirs(_STUDIES_DIR, exist_ok=True)
+    path = os.path.join(_STUDIES_DIR, f"{token}.json")
+    record = {
+        "token": token,
+        "saved_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "payload": data,
+    }
     try:
-        token = save_study(data)
-    except Exception as e:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(record, f, ensure_ascii=False)
+    except OSError as e:
         log_exception("api_study_submit", e)
         return jsonify({"error": "Could not save study"}), 500
 
-    log_step("api_study_submit", "saved", token_prefix=token[:8], backend=storage_backend())
+    log_step("api_study_submit", "saved", token_prefix=token[:8])
     return jsonify({"status": "success", "token": token})
 
 
@@ -877,10 +926,18 @@ def api_study_get():
     token = (request.args.get("token") or "").strip()
     if not re.fullmatch(r"[a-f0-9]{32}", token):
         return jsonify({"status": "error", "message": "Invalid token"}), 400
-    payload = load_study(token)
-    if payload is None:
+    path = os.path.join(_STUDIES_DIR, f"{token}.json")
+    if not os.path.isfile(path):
         return jsonify({"status": "error", "message": "Study not found"}), 404
-    return jsonify(_study_payload_to_api_response(payload))
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            record = json.load(f)
+    except (OSError, json.JSONDecodeError) as e:
+        log_exception("api_study_get", e)
+        return jsonify({"status": "error", "message": "Corrupt study record"}), 500
+    if not isinstance(record, dict) or not isinstance(record.get("payload"), dict):
+        return jsonify({"status": "error", "message": "Corrupt study record"}), 500
+    return jsonify(_study_payload_to_api_response(record["payload"]))
 
 
 @app.route("/api/admin/login", methods=["POST"])
@@ -989,67 +1046,21 @@ is at the top of app.py.
 import json, os
 from flask import Response, abort, jsonify
 
-
-def _study_payload_to_api_response(payload: dict) -> dict:
-    """Same JSON shape as ``api/get.php`` for result.html."""
-    sides = payload["sides"]
-    w = max(float(sides[0]), float(sides[2]))
-    l = max(float(sides[1]), float(sides[3]))
-    p = payload
-    req = {
-        "project_name": p.get("project_name", ""),
-        "sides": p["sides"],
-        "height": p["height"],
-    }
-    if "place" in p:
-        req["place"] = p["place"]
-    if p.get("standard_ref_no") is not None:
-        req["standard_ref_no"] = p["standard_ref_no"]
-    if p.get("standard_category"):
-        req["standard_category"] = p["standard_category"]
-    if p.get("standard_task_or_activity"):
-        req["standard_task_or_activity"] = p["standard_task_or_activity"]
-    if p.get("standard_lighting") is not None:
-        req["standard_lighting"] = p["standard_lighting"]
-
-    meta = p.get("calculation_meta")
-    if not isinstance(meta, dict):
-        meta = {}
-
-    out = {
-        "status": "success",
-        "results": p["results"],
-        "calculation_meta": meta,
-        "project_info": {
-            "Project Name": p.get("project_name", ""),
-            "Client Name": p.get("name", ""),
-            "Client Number": p.get("phone", ""),
-            "Company Name": p.get("company", ""),
-        },
-        "request": req,
-        "customer": {
-            "name": p.get("name", ""),
-            "phone": p.get("phone", ""),
-            "company": p.get("company", ""),
-            "email": p.get("email", ""),
-        },
-        "width": w,
-        "length": l,
-    }
-    if p.get("standard_lighting") is not None:
-        out["standard_lighting"] = p["standard_lighting"]
-    return out
+# ── where your study JSON files live ──────────────────────────────
+STUDIES_DIR = os.path.join(os.path.dirname(__file__), "api", "data", "studies")
 
 
 def _load_payload(token: str) -> dict:
-    """Load and return the payload dict for a given token (via study_store, DB-backed in prod)."""
-    # Basic safety: only allow hex tokens (no path traversal / no injection into DB lookups)
+    """Load and return the 'payload' dict for a given token."""
+    # Basic safety: only allow hex tokens (no path traversal)
     if not token or not all(c in "0123456789abcdefABCDEF" for c in token):
         abort(400, description="Invalid token format")
-    payload = load_study(token)
-    if payload is None:
+    path = os.path.join(STUDIES_DIR, f"{token}.json")
+    if not os.path.isfile(path):
         abort(404, description=f"Study not found: {token}")
-    return payload
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    return data.get("payload", data)
 
 
 @app.route("/api/report/<token>/full", methods=["GET"])

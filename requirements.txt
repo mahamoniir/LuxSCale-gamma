@@ -21,3 +21,4 @@ fpdf
 openai
 google-generativeai
 gunicorn
+psycopg2-binary
