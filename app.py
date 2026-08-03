@@ -68,35 +68,32 @@ _cors_raw = os.environ.get("LUXSCALE_CORS_ORIGINS", "").strip()
 if _cors_raw:
     _cors_origins = [o.strip() for o in _cors_raw.split(",") if o.strip()]
 else:
+    # NOTE: entries here must be bare Origin values (scheme://host[:port]) with
+    # NO trailing slash and NO path — browsers only ever send the Origin header
+    # in that form, and flask-cors does exact string matching. Trailing slashes
+    # or paths (e.g. "https://foo.github.io/LuxSCale-dev/create-study") never
+    # match any real request and silently produce CORS failures.
     _cors_origins = [
+        # Local dev
         "http://localhost",
         "http://127.0.0.1",
         "http://localhost:80",
         "http://127.0.0.1:80",
-        "http://127.0.0.1:5000",
-        "http://localhost:5000",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
+        "http://localhost:5000",
+        "http://127.0.0.1:5000",
+        # Short Circuit production hosts
         "https://shortcircuit.company",
         "https://www.shortcircuit.company",
         "https://web-production-8d09d.up.railway.app",
-        "https://short-circuit-r-d.github.io/",
-        "https://short-circuit-r-d.github.io/LuxSCale-dev/",
-        "https://short-circuit-r-d.github.io/LuxSCale-dev/create-study",
-        "https://short-circuit-r-d.github.io/LuxSCale-dev/result",
-        "https://short-circuit-r-d.github.io/LuxSCale-dev/report",
-        "https://MahmoudMNael.github.io/",
-        "https://MahmoudMNael.github.io/LuxSCale-dev/",
-        "https://MahmoudMNael.github.io/LuxSCale-dev/create-study",
-        "https://MahmoudMNael.github.io/LuxSCale-dev/result",
-        "https://MahmoudMNael.github.io/LuxSCale-dev/report",
-        "https://MahmoudMNael.github.io/LuxSCale-dev/report/full",
-        "https://MahmoudMNael.github.io/LuxSCale-dev/report/solution/0",
-        "https://MahmoudMNael.github.io/LuxSCale-dev/report/solution/1",
-        "https://MahmoudMNael.github.io/LuxSCale-dev/report/solution/2",
-        "https://MahmoudMNael.github.io/LuxSCale-dev/report/solution/3",
-        "https://MahmoudMNael.github.io/LuxSCale-dev/report/solution/4",
-        "https://MahmoudMNael.github.io/LuxSCale-dev/report/solution/5",
+        # GitHub Pages sites (host only — the repo path never appears in Origin).
+        # GitHub serves user pages from <username>.github.io in all-lowercase in
+        # the Origin header regardless of the URL's casing.
+        "https://short-circuit-r-d.github.io",
+        "https://mahmoudmnael.github.io",
+        "https://abubakr3800.github.io",
+        "https://mahamoniir.github.io",
     ]
 
 
