@@ -282,6 +282,38 @@ pre .c{ color:var(--text-muted); }
 .error-grid .desc{ padding:9px 0; border-bottom:1px solid var(--border-color); color:var(--text-secondary); }
 .error-grid > div:nth-last-child(-n+2){ border-bottom:none; }
 
+.try-panel{ margin-top:18px; border-top:1px solid var(--border-color); padding-top:18px; }
+.try-panel .subhead{ margin-top:0; display:flex; align-items:center; gap:8px; }
+.try-panel .subhead::before{ content:"▸"; color:var(--sc-red); font-size:9px; }
+.try-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+.try-input{
+  flex:1 1 160px; min-width:140px;
+  background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:6px;
+  color:var(--text-primary); font-family:var(--mono); font-size:12.5px; padding:9px 10px;
+}
+.try-input::placeholder{ color:var(--text-muted); }
+.try-input:focus{ outline:none; border-color:var(--sc-red); }
+textarea.try-input{ width:100%; min-height:70px; resize:vertical; font-size:12px; flex-basis:100%; }
+.try-btn{
+  background:var(--sc-red); color:#fff; border:none; border-radius:6px;
+  font-family:var(--body-font); font-weight:600; font-size:12.5px;
+  padding:9px 18px; cursor:pointer; transition:background .12s ease; flex-shrink:0;
+}
+.try-btn:hover{ background:var(--sc-dark-red); }
+.try-btn:disabled{ opacity:0.5; cursor:default; }
+.try-result{ margin-top:12px; }
+.try-meta{ font-family:var(--mono); font-size:11px; margin-bottom:6px; letter-spacing:0.02em; }
+.try-meta.ok{ color:#6fd897; }
+.try-meta.err{ color:#f0666e; }
+.try-output{ max-height:340px; }
+.api-base-row{ display:flex; align-items:center; gap:10px; margin-top:10px; }
+.api-base-row label{ font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); flex-shrink:0; }
+.api-base-row input{
+  flex:1; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:6px;
+  color:var(--text-primary); font-family:var(--mono); font-size:12px; padding:8px 10px;
+}
+.api-base-row input:focus{ outline:none; border-color:var(--sc-red); }
+
 footer{
   border-top:1px solid var(--border-color);
   padding:36px 64px;
@@ -338,6 +370,22 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
     </div>
 
     <div class="nav-group">
+      <div class="nav-group-label">Standards</div>
+      <a class="nav-link" href="#ep-std-categories"><span class="nav-method get">GET</span> /api/standards/categories</a>
+      <a class="nav-link" href="#ep-std-tasks"><span class="nav-method get">GET</span> /api/standards/categories/:cat/tasks</a>
+      <a class="nav-link" href="#ep-std-detect"><span class="nav-method post">POST</span> /api/standards/detect</a>
+      <a class="nav-link" href="#ep-std-ref"><span class="nav-method get">GET</span> /api/standards/ref/:ref_no</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Fixtures</div>
+      <a class="nav-link" href="#ep-fx-list"><span class="nav-method get">GET</span> /api/fixtures</a>
+      <a class="nav-link" href="#ep-fx-types"><span class="nav-method get">GET</span> /api/fixtures/types</a>
+      <a class="nav-link" href="#ep-fx-resolve"><span class="nav-method get">GET</span> /api/fixtures/resolve</a>
+      <a class="nav-link" href="#ep-fx-products"><span class="nav-method get">GET</span> /api/fixtures/products</a>
+    </div>
+
+    <div class="nav-group">
       <div class="nav-group-label">Studies</div>
       <a class="nav-link" href="#ep-submit"><span class="nav-method post">POST</span> /api/submit</a>
       <a class="nav-link" href="#ep-get"><span class="nav-method get">GET</span> /api/get</a>
@@ -383,6 +431,11 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
         <div><span class="k">Format</span><span class="v">application/json</span></div>
         <div><span class="k">Auth</span><span class="v">Session cookie or Bearer token (admin routes only)</span></div>
       </div>
+      <div class="api-base-row">
+        <label for="api-base-input">Try-it target</label>
+        <input id="api-base-input" type="text" spellcheck="false" value="">
+      </div>
+      <div class="note" style="margin-top:14px;">Every <b>Try it</b> panel below sends a real request to the URL above (defaults to this page's own origin). Point it at your local Flask instance or the deployed API to test live.</div>
     </div>
 
     <!-- AUTH -->
@@ -545,6 +598,242 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
           <div class="error-grid">
             <div class="code">400</div><div class="desc"><code style="font-family:var(--mono);">ref_no</code> missing or empty</div>
             <div class="code">404</div><div class="desc">No row matches <code style="font-family:var(--mono);">ref_no</code></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STANDARDS ================= -->
+    <section class="doc-section">
+      <div class="section-head"><h2>Standards</h2><span class="count">4 endpoints</span></div>
+      <p class="lead">Two-step selection over <code style="font-family:var(--mono);">standards/standards_cleaned.json</code> (331 rows): pick a category, then a task/activity within it, then read the full row by <code style="font-family:var(--mono);">ref_no</code>. <code style="font-family:var(--mono);">standards/standards_keywords_upgraded.json</code> powers category detection when the room type isn't obvious from a label alone.</p>
+
+      <div class="endpoint" id="ep-std-categories">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/standards/categories</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Every category actually present in the data — <code style="font-family:var(--mono);color:var(--text-primary);">category_base</code> alone, or <code style="font-family:var(--mono);color:var(--text-primary);">"category_base – category_sub"</code> when a sub-category exists. This is select #1. Each entry includes its ref_no count and any keyword hints available for it.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{
+  <span class="k">"status"</span>: <span class="s">"success"</span>,
+  <span class="k">"categories"</span>: [
+    {
+      <span class="k">"category"</span>: <span class="s">"Traffic zones inside buildings"</span>,
+      <span class="k">"category_base"</span>: <span class="s">"Traffic zones inside buildings"</span>,
+      <span class="k">"category_sub"</span>: <span class="n">null</span>,
+      <span class="k">"ref_count"</span>: <span class="n">6</span>,
+      <span class="k">"keywords"</span>: [<span class="s">"traffic"</span>, <span class="s">"corridor"</span>, <span class="c">...</span>]
+    },
+    <span class="c">...54 total categories</span>
+  ]
+}</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'GET',()=>'/api/standards/categories')">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-std-tasks">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/standards/categories/:category/tasks</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Every <code style="font-family:var(--mono);color:var(--text-primary);">ref_no</code> / task-or-activity row inside one category — select #2, populated once select #1 changes. <code style="font-family:var(--mono);color:var(--text-primary);">:category</code> must be URL-encoded exactly as returned by <code style="font-family:var(--mono);">/api/standards/categories</code>.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{
+  <span class="k">"status"</span>: <span class="s">"success"</span>,
+  <span class="k">"category"</span>: <span class="s">"Traffic zones inside buildings"</span>,
+  <span class="k">"tasks"</span>: [
+    { <span class="k">"ref_no"</span>: <span class="s">"6.1.1"</span>, <span class="k">"task_or_activity"</span>: <span class="s">"Corridors and circulation areas"</span>, <span class="k">"Em_r_lx"</span>: <span class="n">100</span>, <span class="k">"Em_u_lx"</span>: <span class="n">150</span>, <span class="k">"Uo"</span>: <span class="n">0.4</span>, <span class="k">"Ra"</span>: <span class="n">40</span> },
+    <span class="c">...</span>
+  ]
+}</pre>
+          <div class="error-grid">
+            <div class="code">404</div><div class="desc">Unknown category, or category has zero rows — response includes a hint to call <code style="font-family:var(--mono);">/api/standards/categories</code></div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="category" placeholder="category" value="Traffic zones inside buildings">
+              <button class="try-btn" onclick="runTry(this,'GET',w=>'/api/standards/categories/'+encodeURIComponent(w.querySelector('[data-role=category]').value)+'/tasks')">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-std-detect">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/standards/detect</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Ranks likely categories from free text (a room label, a project note, anything) using <code style="font-family:var(--mono);color:var(--text-primary);">common_mappings</code>, <code style="font-family:var(--mono);color:var(--text-primary);">keyword_to_refs</code>, then <code style="font-family:var(--mono);color:var(--text-primary);">category_keywords</code>, in that priority order. Use this to pre-select both dropdowns when the category isn't stated explicitly.</p>
+          <div class="subhead">Body parameters</div>
+          <table class="params">
+            <tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>text</code></td><td>string</td><td><span class="req-yes">Required</span></td><td>Free-text description</td></tr>
+            <tr><td><code>limit</code></td><td>integer</td><td><span class="req-no">Optional</span></td><td>Max candidates returned, 1–20 (default 5)</td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{
+  <span class="k">"status"</span>: <span class="s">"success"</span>,
+  <span class="k">"query"</span>: <span class="s">"open plan office with computer workstations"</span>,
+  <span class="k">"matches"</span>: [
+    {
+      <span class="k">"category"</span>: <span class="s">"Offices"</span>,
+      <span class="k">"score"</span>: <span class="n">42.0</span>,
+      <span class="k">"matched_keywords"</span>: [<span class="s">"computer"</span>, <span class="s">"office"</span>, <span class="s">"workstations"</span>],
+      <span class="k">"ref_nos"</span>: [<span class="s">"6.26.2"</span>, <span class="s">"6.26.3"</span>, <span class="c">...</span>],
+      <span class="k">"sample_tasks"</span>: [{ <span class="k">"ref_no"</span>: <span class="s">"6.26.2"</span>, <span class="k">"task_or_activity"</span>: <span class="s">"..."</span> }]
+    },
+    <span class="c">...</span>
+  ]
+}</pre>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc"><code style="font-family:var(--mono);">text</code> missing or empty</div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="text" style="flex-basis:100%;" placeholder="e.g. open plan office with computer workstations" value="open plan office with computer workstations">
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/api/standards/detect',{body:w=>({text:w.querySelector('[data-role=text]').value})})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-std-ref">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/standards/ref/:ref_no</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Full standards row for one <code style="font-family:var(--mono);color:var(--text-primary);">ref_no</code> — a GET convenience wrapper equivalent to <code style="font-family:var(--mono);color:var(--text-primary);">POST /standards/resolve</code>.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"row"</span>: { <span class="c">...full standards_cleaned.json row...</span> } }</pre>
+          <div class="error-grid">
+            <div class="code">404</div><div class="desc">No row matches <code style="font-family:var(--mono);">ref_no</code></div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="ref" placeholder="ref_no" value="6.1.1">
+              <button class="try-btn" onclick="runTry(this,'GET',w=>'/api/standards/ref/'+encodeURIComponent(w.querySelector('[data-role=ref]').value))">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FIXTURES ================= -->
+    <section class="doc-section">
+      <div class="section-head"><h2>Fixtures</h2><span class="count">4 endpoints</span></div>
+      <p class="lead">Merges the calc-engine fixture map (<code style="font-family:var(--mono);">assets/&lt;active fixture map&gt;.json</code> — <code style="font-family:var(--mono);">api_luminaire_name</code> + <code style="font-family:var(--mono);">power_w</code> → <code style="font-family:var(--mono);">.ies</code> path) with the real product catalog (<code style="font-family:var(--mono);">assets/fixtures_online.json</code> — names, images, spec sheets) so one call returns both the photometric reference and the sellable product.</p>
+
+      <div class="endpoint" id="ep-fx-list">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/fixtures</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>The full smart catalog — every fixture-map entry enriched with its best-matching product, or <code style="font-family:var(--mono);color:var(--text-primary);">null</code> if nothing matched.</p>
+          <div class="subhead">Query parameters</div>
+          <table class="params">
+            <tr><th>Param</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>type</code></td><td><span class="req-no">Optional</span></td><td>Substring match on <code>api_luminaire_name</code>, e.g. <code>flood</code></td></tr>
+            <tr><td><code>q</code></td><td><span class="req-no">Optional</span></td><td>Substring match across fixture name + matched product name/title</td></tr>
+            <tr><td><code>min_power</code> / <code>max_power</code></td><td><span class="req-no">Optional</span></td><td>Filter by <code>power_w</code> range</td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{
+  <span class="k">"status"</span>: <span class="s">"success"</span>,
+  <span class="k">"count"</span>: <span class="n">17</span>,
+  <span class="k">"fixtures"</span>: [
+    {
+      <span class="k">"api_luminaire_name"</span>: <span class="s">"SC flood light exterior"</span>,
+      <span class="k">"power_w"</span>: <span class="n">100</span>,
+      <span class="k">"relative_ies"</span>: <span class="s">"examples/.../SC_FLOOD_100W.ies"</span>,
+      <span class="k">"ies_available"</span>: <span class="n">true</span>,
+      <span class="k">"product"</span>: { <span class="k">"id"</span>: <span class="s">"sc-flood-100"</span>, <span class="k">"name"</span>: <span class="s">"SC TM Flood 100"</span>, <span class="k">"images"</span>: [<span class="c">...</span>], <span class="k">"specs"</span>: { <span class="c">...</span> } }
+    },
+    <span class="c">...</span>
+  ]
+}</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="type" placeholder="type contains (optional)">
+              <input class="try-input" data-role="q" placeholder="q — free search (optional)">
+              <input class="try-input" data-role="min_power" placeholder="min_power (optional)">
+              <input class="try-input" data-role="max_power" placeholder="max_power (optional)">
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'GET',()=>'/api/fixtures',{query:w=>({type:w.querySelector('[data-role=type]').value,q:w.querySelector('[data-role=q]').value,min_power:w.querySelector('[data-role=min_power]').value,max_power:w.querySelector('[data-role=max_power]').value})})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-fx-types">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/fixtures/types</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Distinct <code style="font-family:var(--mono);color:var(--text-primary);">api_luminaire_name</code> values from the active fixture map — useful for building a type filter dropdown.</p>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"types"</span>: [<span class="s">"SC backlight"</span>, <span class="s">"SC downlight"</span>, <span class="s">"SC flood light exterior"</span>, <span class="c">...</span>] }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'GET',()=>'/api/fixtures/types')">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-fx-resolve">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/fixtures/resolve</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Exact fixture lookup by name + wattage — the same match the calculation engine itself performs (<code style="font-family:var(--mono);color:var(--text-primary);">fixture_catalog.fixture_entry_for_api</code>), enriched with product info.</p>
+          <div class="subhead">Query parameters</div>
+          <table class="params">
+            <tr><th>Param</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>name</code></td><td><span class="req-yes">Required</span></td><td>Exact <code>api_luminaire_name</code></td></tr>
+            <tr><td><code>power_w</code></td><td><span class="req-yes">Required</span></td><td>Exact wattage as listed in the fixture map</td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"fixture"</span>: { <span class="c">...same shape as /api/fixtures entries...</span> } }</pre>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc"><code style="font-family:var(--mono);">name</code> or <code style="font-family:var(--mono);">power_w</code> missing</div>
+            <div class="code">404</div><div class="desc">No fixture-map entry for that exact name + power_w</div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="name" placeholder="name" value="SC flood light exterior">
+              <input class="try-input" data-role="power_w" placeholder="power_w" value="100">
+              <button class="try-btn" onclick="runTry(this,'GET',()=>'/api/fixtures/resolve',{query:w=>({name:w.querySelector('[data-role=name]').value,power_w:w.querySelector('[data-role=power_w]').value})})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint" id="ep-fx-products">
+        <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/fixtures/products</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Raw storefront catalog passthrough — the marketing categories and products from <code style="font-family:var(--mono);color:var(--text-primary);">fixtures_online.json</code>, without the fixture-map merge. Use this to build a plain product browser.</p>
+          <div class="subhead">Query parameters</div>
+          <table class="params">
+            <tr><th>Param</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>category_id</code></td><td><span class="req-no">Optional</span></td><td>One of <code>high-power</code>, <code>indoor</code>, <code>solar-aio</code></td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"success"</span>, <span class="k">"categories"</span>: [<span class="c">...</span>], <span class="k">"products"</span>: [<span class="c">...</span>] }</pre>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="category_id" placeholder="category_id (optional)">
+              <button class="try-btn" onclick="runTry(this,'GET',()=>'/api/fixtures/products',{query:w=>({category_id:w.querySelector('[data-role=category_id]').value})})">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
           </div>
         </div>
       </div>
@@ -775,6 +1064,63 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
   }
   document.addEventListener('scroll', onScroll, { passive:true });
   onScroll();
+
+  // default Try-it target to wherever this page is actually being served from
+  const baseInput = document.getElementById('api-base-input');
+  if (baseInput && !baseInput.value) baseInput.value = window.location.origin;
+
+  // Generic "Try it" request runner shared by every endpoint panel.
+  // pathFn(wrap) -> string path (may read data-role inputs inside `wrap`)
+  // opts.query(wrap) -> plain object of query params (falsy values are skipped)
+  // opts.body(wrap)  -> plain object sent as JSON body
+  window.runTry = async function runTry(btn, method, pathFn, opts) {
+    opts = opts || {};
+    const wrap = btn.closest('.try-panel');
+    const resultEl = wrap.querySelector('.try-result');
+    const metaEl = wrap.querySelector('.try-meta');
+    const outEl = wrap.querySelector('.try-output');
+    const originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    try {
+      const base = (baseInput && baseInput.value ? baseInput.value : window.location.origin).replace(/\/$/, '');
+      const path = typeof pathFn === 'function' ? pathFn(wrap) : pathFn;
+      const url = new URL(base + path);
+      if (opts.query) {
+        const q = opts.query(wrap) || {};
+        Object.keys(q).forEach((k) => {
+          const v = q[k];
+          if (v !== '' && v !== null && v !== undefined) url.searchParams.set(k, v);
+        });
+      }
+      const fetchOpts = { method, headers: {} };
+      if (opts.body) {
+        const b = opts.body(wrap);
+        if (b !== undefined) {
+          fetchOpts.headers['Content-Type'] = 'application/json';
+          fetchOpts.body = JSON.stringify(b);
+        }
+      }
+      const t0 = performance.now();
+      const res = await fetch(url.toString(), fetchOpts);
+      const ms = Math.round(performance.now() - t0);
+      const text = await res.text();
+      let pretty = text;
+      try { pretty = JSON.stringify(JSON.parse(text), null, 2); } catch (e) { /* not JSON, show raw */ }
+      metaEl.textContent = `${res.status} ${res.statusText} · ${ms}ms · ${url.pathname}${url.search}`;
+      metaEl.className = 'try-meta ' + (res.ok ? 'ok' : 'err');
+      outEl.textContent = pretty || '(empty response)';
+      resultEl.style.display = 'block';
+    } catch (err) {
+      metaEl.textContent = 'Request failed — check the API base, CORS, and that the server is running';
+      metaEl.className = 'try-meta err';
+      outEl.textContent = String(err);
+      resultEl.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+  };
 </script>
 </body>
 </html>

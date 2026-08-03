@@ -53,6 +53,15 @@ from luxscale.ies_routes import ies_bp
 app.register_blueprint(ies_bp)
 # ─────────────────────────────────────────────────────────────────────────────
 
+# ── Standards + Fixtures "smart" reference APIs ─────────────────────────────
+# standards_bp:  /api/standards/categories, /categories/:cat/tasks, /detect, /ref/:ref_no
+# fixtures_bp:   /api/fixtures, /fixtures/types, /fixtures/resolve, /fixtures/products
+from luxscale.standards_routes import standards_bp
+app.register_blueprint(standards_bp)
+from luxscale.fixtures_routes import fixtures_bp
+app.register_blueprint(fixtures_bp)
+# ─────────────────────────────────────────────────────────────────────────────
+
 _cors_raw = os.environ.get("LUXSCALE_CORS_ORIGINS", "").strip()
 if _cors_raw:
     _cors_origins = [o.strip() for o in _cors_raw.split(",") if o.strip()]
