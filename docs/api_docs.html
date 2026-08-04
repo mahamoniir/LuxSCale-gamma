@@ -452,6 +452,7 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
       <a class="nav-link" href="#ep-std-tasks"><span class="nav-method get">GET</span> /api/standards/categories/:cat/tasks</a>
       <a class="nav-link" href="#ep-std-detect"><span class="nav-method post">POST</span> /api/standards/detect</a>
       <a class="nav-link" href="#ep-std-ref"><span class="nav-method get">GET</span> /api/standards/ref/:ref_no</a>
+      <a class="nav-link" href="#ep-std-resolve-task"><span class="nav-method post">POST</span> /api/standards/resolve-by-task <span class="nav-badge-new">NEW</span></a>
       <a class="nav-link" href="#ep-std-cleaned"><span class="nav-method get">GET</span> /api/standards/cleaned</a>
     </div>
 
@@ -916,8 +917,24 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
 
     <!-- ================= STANDARDS ================= -->
     <section class="doc-section">
-      <div class="section-head"><h2>Standards</h2><span class="count">5 endpoints</span></div>
+      <div class="section-head"><h2>Standards</h2><span class="count">6 endpoints</span></div>
       <p class="lead">Two-step selection over <code style="font-family:var(--mono);">standards/standards_cleaned.json</code>: pick a category, then a task/activity within it, then read the full row by <code style="font-family:var(--mono);">ref_no</code>. <code style="font-family:var(--mono);">standards/standards_keywords_upgraded.json</code> powers category detection when the room type isn't obvious from a label alone.</p>
+
+      <div class="note" style="margin-bottom:28px;">
+        <b>Place selection recipe — matches the frontend calculator's category / task dropdowns:</b>
+        <ol style="margin:10px 0 4px 20px; padding:0; color:var(--text-secondary); font-size:13px;">
+          <li><code style="font-family:var(--mono);">GET /api/standards/categories</code> — populate dropdown #1 (category names, ref counts, keyword hints).</li>
+          <li><code style="font-family:var(--mono);">GET /api/standards/categories/{selected}/tasks</code> — populate dropdown #2 once the user picks a category. Each task carries its own <code style="font-family:var(--mono);">ref_no</code>, <code style="font-family:var(--mono);">Em_r_lx</code>, and <code style="font-family:var(--mono);">Uo</code>.</li>
+          <li>Get the full row (needed only if the tasks list doesn't already have every field you want):
+            <ul style="margin:6px 0 6px 20px; padding:0; font-size:13px;">
+              <li><code style="font-family:var(--mono);">POST /api/standards/resolve-by-task</code> — pass the picked <code style="font-family:var(--mono);">category</code> + <code style="font-family:var(--mono);">task_or_activity</code> strings (exactly what the UI showed).</li>
+              <li>Or <code style="font-family:var(--mono);">GET /api/standards/ref/{ref_no}</code> — if you already have the ref_no from step 2.</li>
+            </ul>
+          </li>
+          <li>Submit the resolved <code style="font-family:var(--mono);">ref_no</code> as <code style="font-family:var(--mono);">standard_ref_no</code> in the body of <code style="font-family:var(--mono);">POST /calculate</code> or <code style="font-family:var(--mono);">POST /cad_calc</code> — the engine will use <code style="font-family:var(--mono);">Em_r_lx</code> as the target lux and <code style="font-family:var(--mono);">Uo</code> as the required uniformity.</li>
+        </ol>
+        <div style="margin-top:12px;">Tip: skip step 1 by calling <code style="font-family:var(--mono);">POST /api/standards/detect</code> with a free-text room description (e.g. <i>"open plan office with computer workstations"</i>) — it returns ranked category candidates so you can pre-fill both dropdowns.</div>
+      </div>
 
       <div class="endpoint" id="ep-std-categories">
         <div class="endpoint-head"><span class="method get">GET</span><span class="path">/api/standards/categories</span><span class="auth-badge">No auth</span></div>
@@ -1030,6 +1047,71 @@ footer svg{ width:16px; height:16px; opacity:0.6; }
             <div class="try-row">
               <input class="try-input" data-role="ref" placeholder="ref_no" value="6.1.1">
               <button class="try-btn" onclick="runTry(this,'GET',w=>'/api/standards/ref/'+encodeURIComponent(w.querySelector('[data-role=ref]').value))">Send</button>
+            </div>
+            <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint new" id="ep-std-resolve-task">
+        <div class="endpoint-head"><span class="method post">POST</span><span class="path">/api/standards/resolve-by-task</span><span class="auth-badge">No auth</span></div>
+        <div class="endpoint-body">
+          <p>Closes the two-step select in one call: give the endpoint the picked <code style="font-family:var(--mono);color:var(--text-primary);">category</code> and <code style="font-family:var(--mono);color:var(--text-primary);">task_or_activity</code> strings (exactly as they appear in the UI dropdowns) and get back the full standards row — including the <code style="font-family:var(--mono);color:var(--text-primary);">ref_no</code> you need to submit to <code style="font-family:var(--mono);">/calculate</code> or <code style="font-family:var(--mono);">/cad_calc</code>. This is the same lookup <code style="font-family:var(--mono);">assets/standards-picker.js#findRowForTaskValue</code> does client-side.</p>
+          <div class="subhead">Body parameters</div>
+          <table class="params">
+            <tr><th>Field</th><th>Type</th><th>Required</th><th>Notes</th></tr>
+            <tr><td><code>category</code></td><td>string</td><td><span class="req-yes">Required</span></td><td>Combined category key, exactly as returned by <code>/api/standards/categories</code> (base alone, or <code>"base – sub"</code> with an en-dash)</td></tr>
+            <tr><td><code>task_or_activity</code></td><td>string</td><td><span class="req-yes">Required</span></td><td>The task label. Case-insensitive. Accepts the frontend's <code>"Task text (ref_no)"</code> disambiguation format — the <code>(ref_no)</code> suffix is auto-stripped and used as a hint.</td></tr>
+            <tr><td><code>ref_no_hint</code></td><td>string</td><td><span class="req-no">Optional</span></td><td>Explicit ref_no to disambiguate when two rows share the same task text within one category</td></tr>
+          </table>
+          <div class="status-row"><span class="status-chip s2">200</span><span class="status-note">success — full row returned</span></div>
+          <pre>{
+  <span class="k">"status"</span>: <span class="s">"success"</span>,
+  <span class="k">"category"</span>: <span class="s">"Traffic zones inside buildings"</span>,
+  <span class="k">"task_or_activity"</span>: <span class="s">"Corridors and circulation areas"</span>,
+  <span class="k">"row"</span>: {
+    <span class="k">"ref_no"</span>: <span class="s">"6.1.1"</span>,
+    <span class="k">"category"</span>: <span class="s">"Traffic zones inside buildings"</span>,
+    <span class="k">"category_base"</span>: <span class="s">"Traffic zones inside buildings"</span>,
+    <span class="k">"category_sub"</span>: <span class="n">null</span>,
+    <span class="k">"task_or_activity"</span>: <span class="s">"Corridors and circulation areas"</span>,
+    <span class="k">"Em_r_lx"</span>: <span class="n">100</span>,
+    <span class="k">"Em_u_lx"</span>: <span class="n">150</span>,
+    <span class="k">"Uo"</span>: <span class="n">0.4</span>,
+    <span class="k">"Ra"</span>: <span class="n">40</span>
+  }
+}</pre>
+          <div class="status-row"><span class="status-chip s4">404</span><span class="status-note">no row matches this category + task</span></div>
+          <pre>{ <span class="k">"status"</span>: <span class="s">"not_found"</span>, <span class="k">"row"</span>: <span class="n">null</span>, <span class="k">"reason"</span>: <span class="s">"..."</span> }</pre>
+          <div class="status-row"><span class="status-chip s4">409</span><span class="status-note">ambiguous — several rows share the same task text</span></div>
+          <pre>{
+  <span class="k">"status"</span>: <span class="s">"ambiguous"</span>,
+  <span class="k">"row"</span>: <span class="n">null</span>,
+  <span class="k">"matches"</span>: [<span class="s">"6.1.1"</span>, <span class="s">"6.1.7"</span>],
+  <span class="k">"reason"</span>: <span class="s">"multiple rows share this task_or_activity; pass ref_no_hint or use the 'Task text (ref_no)' form to disambiguate"</span>
+}</pre>
+          <div class="error-grid">
+            <div class="code">400</div><div class="desc"><code style="font-family:var(--mono);">category</code> or <code style="font-family:var(--mono);">task_or_activity</code> missing</div>
+          </div>
+          <div class="try-panel">
+            <div class="subhead">Try it</div>
+            <div class="try-row">
+              <input class="try-input" data-role="category" placeholder="category (from /api/standards/categories)" value="Traffic zones inside buildings">
+            </div>
+            <div class="try-row">
+              <input class="try-input" data-role="task_or_activity" placeholder="task_or_activity (from /api/standards/categories/:cat/tasks)" value="Corridors and circulation areas">
+              <input class="try-input" data-role="ref_no_hint" placeholder="ref_no_hint (optional)" style="max-width:180px;">
+            </div>
+            <div class="try-row">
+              <button class="try-btn" onclick="runTry(this,'POST',()=>'/api/standards/resolve-by-task',{body:w=>{
+                const b = {
+                  category: w.querySelector('[data-role=category]').value.trim(),
+                  task_or_activity: w.querySelector('[data-role=task_or_activity]').value.trim()
+                };
+                const h = w.querySelector('[data-role=ref_no_hint]').value.trim();
+                if (h) b.ref_no_hint = h;
+                return b;
+              }})">Send</button>
             </div>
             <div class="try-result" style="display:none;"><div class="try-meta"></div><pre class="try-output"></pre></div>
           </div>

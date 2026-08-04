@@ -250,3 +250,132 @@ def resolve_ref(ref_no: str) -> Optional[Dict[str, Any]]:
         if _norm_ref(row.get("ref_no")) == ref_key:
             return row
     return None
+
+
+# ── category + task_or_activity resolution ───────────────────────────────────
+
+_TASK_REF_SUFFIX_RE = re.compile(r"\s*\(([^()]+)\)\s*$")
+
+
+def _strip_ref_suffix(task_value: str) -> tuple[str, Optional[str]]:
+    """
+    Undo the frontend's ``"Task text (ref_no)"`` disambiguation format.
+
+    The picker in ``assets/standards-picker.js`` appends ``" (ref_no)"`` to a
+    task label whenever two rows in the same category share the same
+    ``task_or_activity`` string. This helper reverses that so callers can
+    submit either form and still resolve to the exact row.
+
+    Returns ``(bare_task, ref_hint | None)``.
+    """
+    if not task_value:
+        return "", None
+    m = _TASK_REF_SUFFIX_RE.search(task_value)
+    if not m:
+        return task_value.strip(), None
+    inner = m.group(1).strip()
+    # Only treat parenthesized content as a ref_no hint when it looks like one
+    # (digits + dots). Anything else stays part of the task label.
+    if re.fullmatch(r"[0-9]+(?:\.[0-9]+)*", inner):
+        bare = task_value[: m.start()].strip()
+        return bare, inner
+    return task_value.strip(), None
+
+
+def resolve_by_task(
+    category: str,
+    task_or_activity: str,
+    ref_no_hint: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Turn a ``(category, task_or_activity)`` selection into the full standards row —
+    the same operation ``assets/standards-picker.js#findRowForTaskValue`` performs
+    client-side.
+
+    Behavior:
+        - Matches the *combined category key* (``category_base`` + optional
+          ``" – category_sub"``) exactly as returned by :func:`list_categories`.
+        - Matches ``task_or_activity`` case-insensitively after trimming.
+        - Auto-strips the frontend's ``" (ref_no)"`` disambiguation suffix.
+        - When ``ref_no_hint`` is given (either explicit or extracted from the
+          suffix), prefers a row with that ref_no on ties.
+
+    Returns::
+
+        {
+            "status": "success" | "not_found" | "ambiguous",
+            "row": <full row dict> | None,
+            "matches": [ ...ref_nos found before disambiguation... ],  # only on ambiguous
+            "category": <normalized category string>,
+            "task_or_activity": <bare task string used for the match>,
+        }
+    """
+    cat = (category or "").strip()
+    if not cat:
+        return {
+            "status": "not_found",
+            "row": None,
+            "category": "",
+            "task_or_activity": task_or_activity or "",
+            "reason": "category is required",
+        }
+
+    bare_task, extracted_hint = _strip_ref_suffix(task_or_activity or "")
+    if not bare_task:
+        return {
+            "status": "not_found",
+            "row": None,
+            "category": cat,
+            "task_or_activity": "",
+            "reason": "task_or_activity is required",
+        }
+    hint = _norm_ref(ref_no_hint) or extracted_hint or None
+
+    task_key = bare_task.lower()
+    candidates: List[Dict[str, Any]] = []
+    for row in _load_cleaned():
+        if _combined_category(row) != cat:
+            continue
+        row_task = (row.get("task_or_activity") or "").strip().lower()
+        if row_task == task_key:
+            candidates.append(row)
+
+    if not candidates:
+        return {
+            "status": "not_found",
+            "row": None,
+            "category": cat,
+            "task_or_activity": bare_task,
+            "reason": "no row matches this category + task_or_activity",
+        }
+
+    if len(candidates) == 1:
+        return {
+            "status": "success",
+            "row": candidates[0],
+            "category": cat,
+            "task_or_activity": bare_task,
+        }
+
+    if hint:
+        for row in candidates:
+            if _norm_ref(row.get("ref_no")) == hint:
+                return {
+                    "status": "success",
+                    "row": row,
+                    "category": cat,
+                    "task_or_activity": bare_task,
+                    "disambiguated_by": "ref_no_hint",
+                }
+
+    return {
+        "status": "ambiguous",
+        "row": None,
+        "matches": [_norm_ref(r.get("ref_no")) for r in candidates],
+        "category": cat,
+        "task_or_activity": bare_task,
+        "reason": (
+            "multiple rows share this task_or_activity; pass ref_no_hint or "
+            "use the 'Task text (ref_no)' form to disambiguate"
+        ),
+    }
