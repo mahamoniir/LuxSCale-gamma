@@ -29,11 +29,20 @@ $p = $record['payload'];
 $sides = $p['sides'];
 $w = max((float) $sides[0], (float) $sides[2]);
 $l = max((float) $sides[1], (float) $sides[3]);
+// Prefer explicit CAD dims when present (length_eq / width_eq from /cad_calc)
+if (isset($p['width']) && is_numeric($p['width'])) {
+    $w = (float) $p['width'];
+}
+if (isset($p['length']) && is_numeric($p['length'])) {
+    $l = (float) $p['length'];
+}
 
 $req = [
     'project_name' => $p['project_name'] ?? '',
     'sides' => $p['sides'],
     'height' => $p['height'],
+    'width' => $w,
+    'length' => $l,
 ];
 if (isset($p['place'])) {
     $req['place'] = $p['place'];
@@ -49,6 +58,12 @@ if (isset($p['standard_task_or_activity'])) {
 }
 if (isset($p['standard_lighting'])) {
     $req['standard_lighting'] = $p['standard_lighting'];
+}
+if (isset($p['mounting_height'])) {
+    $req['mounting_height'] = $p['mounting_height'];
+}
+if (isset($p['notes'])) {
+    $req['notes'] = $p['notes'];
 }
 
 $meta = $p['calculation_meta'] ?? new stdClass();

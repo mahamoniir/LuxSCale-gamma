@@ -9,5 +9,7 @@ This folder collects **equations**, **inequalities used for compliance**, **rela
 | 3 | [03-compliance-inequalities-and-row-properties.md](./03-compliance-inequalities-and-row-properties.md) | Targets, Lux gap, U₀ gap, `is_compliant`, margins |
 | 4 | [04-pipeline-from-request-to-results-and-export.md](./04-pipeline-from-request-to-results-and-export.md) | API / solver steps, JSON, PDF, CSV, traces, reports |
 | 5 | [05-ies-lm63-fields-beam-angle-and-flux.md](./05-ies-lm63-fields-beam-angle-and-flux.md) | Parser header, candela table, beam angle algorithm, tool outputs |
+| 6 | [06-non-4-side-rooms-calculation.md](./06-non-4-side-rooms-calculation.md) | Polygon ingest, shoelace area, equivalent-area rectangle, lumen method + U₀ for N-sided rooms (`/cad_calc`) |
+| 6a | [06a-non-4-side-rooms-review-addendum.md](./06a-non-4-side-rooms-review-addendum.md) | Review response — fast-mode trigger, L/W axis convention, rotated-room bbox fix (edge-orientation histogram), self-intersection O(N²) ceiling, Phase-A U₀ optimism quantified |
 
-**Related:** [../lighting/](../lighting/README.md), [../back-end/calculation-engine.md](../back-end/calculation-engine.md).
+**Related:** [../lighting/](../lighting/README.md), [../back-end/calculation-engine.md](../back-end/calculation-engine.md), [`../../development_plan/06-non-symmetric-rooms-migration-plan.md`](../../development_plan/06-non-symmetric-rooms-migration-plan.md).

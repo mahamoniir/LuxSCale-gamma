@@ -37,6 +37,102 @@ def uniformity_grid_n_for_room(length_m: float, width_m: float) -> int:
     return DEFAULT_GRID_N
 
 
+def uniformity_grid_n_for_polygon(polygon_area_m2: float, fill_ratio: float) -> int:
+    """
+    Grid density for polygon-clipped work-plane sampling.
+
+    Bumps G above the rectangular bracket so ``α · G² ≈ G_rect²`` — the effective
+    sample count after ``polygon.contains`` filtering roughly matches what a
+    rectangular room of the same polygon area would get.
+
+    Formula::
+
+        G = min(ceil(G_rect / sqrt(α)), G_rect + 4)
+
+    The ``G_rect + 4`` cap fires for α ≲ 0.51 (where ``10/√α`` first exceeds 14
+    at the default G_rect=10 bracket). That single cap both bounds runtime (~2×
+    vs rectangular) and prevents α→0 from sending G→∞ — there is no separate
+    α floor. At α = 0.30 the result is still under rectangular density
+    (≈0.59×) but compute stays interactive.
+    """
+    area = max(float(polygon_area_m2), 1e-12)
+    # Square of equal area → same area bracket as the rectangular path.
+    side = math.sqrt(area)
+    g_rect = uniformity_grid_n_for_room(side, side)
+    alpha = max(1e-12, min(1.0, float(fill_ratio)))
+    g_raw = math.ceil(g_rect / math.sqrt(alpha))
+    # Cap fires here for α ≲ 0.51 when g_rect = 10 (ceil(10/√α) > 14).
+    return min(int(g_raw), g_rect + 4)
+
+
+def _polygon_in_engine_frame(
+    poly: Any,
+    length: float,
+    width: float,
+    orientation_rad: float,
+) -> Any:
+    """
+    Map a world-coordinate polygon into the engine's equivalent-rectangle frame
+    ``[0, length] × [0, width]`` so sample points and fixtures share one space.
+
+    Steps: rotate by ``-orientation``, take the oriented AABB, then affine-map
+    that box onto the engine rectangle (same aspect ratio by construction of
+    ``build_equivalent_rectangle``).
+    """
+    from luxscale.lighting_calc.polygon import Polygon
+
+    c = math.cos(-orientation_rad)
+    s = math.sin(-orientation_rad)
+    rotated = [(c * x - s * y, s * x + c * y) for x, y in poly.vertices]
+    xs = [p[0] for p in rotated]
+    ys = [p[1] for p in rotated]
+    xmin, xmax = min(xs), max(xs)
+    ymin, ymax = min(ys), max(ys)
+    bw = xmax - xmin
+    bl = ymax - ymin
+    if bw <= 1e-12 or bl <= 1e-12:
+        raise ValueError("oriented bbox is degenerate; cannot map polygon to engine frame")
+    L = float(length)
+    W = float(width)
+    mapped = [
+        ((x - xmin) / bw * L, (y - ymin) / bl * W) for x, y in rotated
+    ]
+    return Polygon.from_vertices(mapped)
+
+
+def work_plane_grid_polygon(
+    poly: Any,
+    length: float,
+    width: float,
+    grid_n: int,
+    orientation_rad: float = 0.0,
+) -> List[Tuple[float, float]]:
+    """
+    Sample points on a G×G grid over the equivalent rectangle, filtered to the
+    polygon interior.
+
+    Uses the same half-bay inset rule as the rectangular path
+    (``(i + 0.5) * L / G``) — samples never sit flush against a wall by
+    construction. There is no fixed physical ``wall_margin``; clearance comes
+    from the half-bay inset plus ``contains(..., on_edge=False)``.
+
+    The world-coordinate polygon is first mapped into the engine rectangle
+    frame (see :func:`_polygon_in_engine_frame`) so fixtures (still laid out on
+    the equivalent rectangle in Phase B) and samples share coordinates.
+    """
+    gn = max(1, int(grid_n))
+    candidates = work_plane_grid_symmetric(length, width, gn)
+    try:
+        proxy = _polygon_in_engine_frame(poly, length, width, orientation_rad)
+    except Exception:
+        return candidates
+    inside = [
+        (x, y) for x, y in candidates if proxy.contains(x, y, on_edge=False)
+    ]
+    # Safety: never return an empty sample set (would break U0 denominators).
+    return inside if inside else candidates
+
+
 def _wrap360(h: float) -> float:
     x = h % 360.0
     return x + 360.0 if x < 0 else x
@@ -232,6 +328,123 @@ def fixture_positions_symmetric_grid(
     return out
 
 
+def _farthest_point_subset(
+    candidates: List[Tuple[float, float]], k: int
+) -> List[Tuple[float, float]]:
+    """
+    Pick ``k`` points from ``candidates`` by greedy farthest-point sampling.
+    Starts at the candidate closest to the centroid so the first pick is central,
+    then repeatedly adds the point maximizing distance to the nearest already-chosen.
+    """
+    if k <= 0 or not candidates:
+        return []
+    if k >= len(candidates):
+        return list(candidates)
+    cx = sum(p[0] for p in candidates) / len(candidates)
+    cy = sum(p[1] for p in candidates) / len(candidates)
+    # Seed: closest to centroid
+    seed_i = min(
+        range(len(candidates)),
+        key=lambda i: (candidates[i][0] - cx) ** 2 + (candidates[i][1] - cy) ** 2,
+    )
+    chosen = [candidates[seed_i]]
+    remaining = [p for i, p in enumerate(candidates) if i != seed_i]
+    # min-dist² from each remaining point to the chosen set
+    min_d2 = [
+        (p[0] - chosen[0][0]) ** 2 + (p[1] - chosen[0][1]) ** 2 for p in remaining
+    ]
+    while len(chosen) < k and remaining:
+        best_j = max(range(len(remaining)), key=lambda j: min_d2[j])
+        pick = remaining.pop(best_j)
+        min_d2.pop(best_j)
+        chosen.append(pick)
+        for j, p in enumerate(remaining):
+            d2 = (p[0] - pick[0]) ** 2 + (p[1] - pick[1]) ** 2
+            if d2 < min_d2[j]:
+                min_d2[j] = d2
+    return chosen
+
+
+def fixture_positions_polygon(
+    poly: Any,
+    length: float,
+    width: float,
+    nx: int,
+    ny: int,
+    orientation_rad: float = 0.0,
+    target_count: Optional[int] = None,
+    max_density_scale: int = 8,
+) -> List[Tuple[float, float]]:
+    """
+    Polygon-clipped fixture placement (Phase B).
+
+    1. Build the ``nx × ny`` symmetric grid on the equivalent rectangle.
+    2. Map ``poly`` into the engine frame and keep centres with
+       ``contains(..., on_edge=False)``.
+    3. If fewer than ``target_count`` survive, densify the grid
+       (``scale × nx``, ``scale × ny``) until enough interior points appear
+       or ``max_density_scale`` is hit.
+    4. If more than ``target_count`` survive, thin to exactly that many via
+       farthest-point sampling so coverage stays even.
+
+    Returns exactly ``target_count`` positions when geometrically possible;
+    otherwise as many interior points as densification can produce (never empty
+    if the rectangle grid itself is non-empty — falls back to the unfiltered
+    base grid as a last resort).
+    """
+    nx = max(1, int(nx))
+    ny = max(1, int(ny))
+    target = int(target_count) if target_count is not None else nx * ny
+    target = max(1, target)
+
+    try:
+        proxy = _polygon_in_engine_frame(poly, length, width, orientation_rad)
+    except Exception:
+        return fixture_positions_symmetric_grid(length, width, nx, ny)[:target]
+
+    inside: List[Tuple[float, float]] = []
+    base = fixture_positions_symmetric_grid(length, width, nx, ny)
+    for scale in range(1, max(1, int(max_density_scale)) + 1):
+        if scale == 1:
+            candidates = base
+        else:
+            candidates = fixture_positions_symmetric_grid(
+                length, width, nx * scale, ny * scale
+            )
+        inside = [
+            (x, y) for x, y in candidates if proxy.contains(x, y, on_edge=False)
+        ]
+        if len(inside) >= target:
+            break
+
+    if not inside:
+        # Pathological: no candidate landed inside — keep rectangular layout.
+        return base[:target] if len(base) >= target else list(base)
+
+    if len(inside) == target:
+        return inside
+    if len(inside) < target:
+        return inside  # best effort under densification cap
+    return _farthest_point_subset(inside, target)
+
+
+def polygon_layout_interior_count(
+    poly: Any,
+    length: float,
+    width: float,
+    nx: int,
+    ny: int,
+    orientation_rad: float = 0.0,
+) -> int:
+    """How many of the ``nx × ny`` rectangular centres fall inside ``poly``."""
+    try:
+        proxy = _polygon_in_engine_frame(poly, length, width, orientation_rad)
+    except Exception:
+        return max(1, int(nx)) * max(1, int(ny))
+    pts = fixture_positions_symmetric_grid(length, width, nx, ny)
+    return sum(1 for x, y in pts if proxy.contains(x, y, on_edge=False))
+
+
 def work_plane_grid(
     length: float, width: float, margin: float, grid_n: int
 ) -> List[Tuple[float, float]]:
@@ -257,7 +470,19 @@ def compute_uniformity_metrics(
     calibrate_maintained_avg_lx: Optional[float] = None,
     inter_reflection_fraction: float = 0.0,
     inter_reflection_label: str = "",
+    polygon: Any = None,
+    polygon_orientation_rad: float = 0.0,
 ) -> Dict[str, Any]:
+    """
+    Point-by-point U₀/U₁ on a work-plane grid.
+
+    When ``polygon`` is provided (Phase B ``/cad_calc`` path):
+    * work-plane samples are polygon-clipped via :func:`work_plane_grid_polygon`;
+    * fixture centres are polygon-clipped via :func:`fixture_positions_polygon`
+      (filter the ``nx × ny`` grid, densify if needed, thin to ``num_fixtures``).
+
+    When ``polygon`` is ``None`` (legacy ``/calculate``), behaviour is unchanged.
+    """
     ies_data = _load_ies_data_cached(os.path.normpath(ies_path))
     n_lamps = max(1, int(ies_data.num_lamps))
     phi_ies_file = float(ies_data.lumens_per_lamp) * float(ies_data.multiplier) * n_lamps
@@ -286,10 +511,8 @@ def compute_uniformity_metrics(
 
     nx = max(1, int(best_x))
     ny = max(1, int(best_y))
-    n_grid = nx * ny
-    phi_total = float(num_fixtures) * float(lumens_per_fixture)
-    phi_each = phi_total / float(n_grid)
-    flux_scale = phi_each
+    n_layout = nx * ny
+    target_fixtures = max(1, int(num_fixtures))
 
     ceiling_z = float(ceiling_height_m)
     plane_z = float(work_plane_height_m)
@@ -305,11 +528,41 @@ def compute_uniformity_metrics(
     wp_step_y = W / gn
     wm_report = min(L, W) / (2.0 * gn)
 
-    fxs = fixture_positions_symmetric_grid(length, width, nx, ny)
-    if len(fxs) != n_grid:
-        raise ValueError("fixture grid mismatch")
+    n_rect_interior = n_layout
+    if polygon is not None:
+        fxs = fixture_positions_polygon(
+            polygon,
+            length,
+            width,
+            nx,
+            ny,
+            float(polygon_orientation_rad),
+            target_count=target_fixtures,
+        )
+        n_rect_interior = polygon_layout_interior_count(
+            polygon, length, width, nx, ny, float(polygon_orientation_rad)
+        )
+        grid_pts = work_plane_grid_polygon(
+            polygon, length, width, gn, float(polygon_orientation_rad)
+        )
+        layout_symmetric = False
+    else:
+        fxs = fixture_positions_symmetric_grid(length, width, nx, ny)
+        if len(fxs) != n_layout:
+            raise ValueError("fixture grid mismatch")
+        grid_pts = work_plane_grid_symmetric(length, width, gn)
+        layout_symmetric = True
 
-    grid_pts = work_plane_grid_symmetric(length, width, gn)
+    n_placed = len(fxs)
+    if n_placed < 1:
+        raise ValueError("no fixture positions available for uniformity grid")
+    # Spread total design flux across the positions actually used (equals
+    # lumens_per_fixture when n_placed == num_fixtures, the normal case).
+    phi_total = float(target_fixtures) * float(lumens_per_fixture)
+    phi_each = phi_total / float(n_placed)
+    flux_scale = phi_each
+
+    n_effective_samples = len(grid_pts)
     Es: List[float] = []
     for px, py in grid_pts:
         e_sum = 0.0
@@ -372,14 +625,18 @@ def compute_uniformity_metrics(
         "ceiling_z_m": ceiling_z,
         "room_length_m": L,
         "room_width_m": W,
-        "layout_symmetric": True,
+        "layout_symmetric": layout_symmetric,
+        "n_effective_samples": n_effective_samples,
         "spacing_cc_x_m": spacing_cc_x,
         "spacing_cc_y_m": spacing_cc_y,
         "edge_half_spacing_x_m": edge_half_x,
         "edge_half_spacing_y_m": edge_half_y,
         "work_plane_sample_spacing_m": (wp_step_x + wp_step_y) * 0.5,
         "spacing_margin_m": edge_half_x,
-        "n_fixtures_layout": n_grid,
+        "n_fixtures_layout": n_placed,
+        "n_fixtures_requested": target_fixtures,
+        "n_fixtures_rect_grid": n_layout,
+        "n_fixtures_rect_interior": n_rect_interior,
         "phi_each_lm": phi_each,
         "phi_total_lm": phi_total,
         "ies_rated_lm": phi_ies,

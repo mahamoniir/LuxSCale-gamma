@@ -13,6 +13,8 @@ from luxscale.ies_fixture_params import ies_params_for_file, resolve_ies_path
 from luxscale.uniformity_calculator import (
     compute_uniformity_metrics,
     format_uniformity_report_txt,
+    polygon_layout_interior_count,
+    uniformity_grid_n_for_polygon,
     uniformity_grid_n_for_room,
     write_uniformity_session_txt,
 )
@@ -30,6 +32,30 @@ from .geometry import (
     determine_zone,
     spacing_factor_pairs,
 )
+
+
+def _rank_factor_pairs_for_polygon(
+    pairs: list,
+    polygon,
+    length: float,
+    width: float,
+    orientation_rad: float,
+) -> list:
+    """
+    Prefer layouts whose rectangular centres land inside the polygon most often
+    (coverage score), then keep the original most-square ordering as a tie-break.
+    """
+    if polygon is None or not pairs:
+        return pairs
+    scored = []
+    for i, (bx, by) in enumerate(pairs):
+        interior = polygon_layout_interior_count(
+            polygon, length, width, int(bx), int(by), float(orientation_rad)
+        )
+        total = max(1, int(bx) * int(by))
+        scored.append((-interior / total, i, (bx, by)))
+    scored.sort()
+    return [t[2] for t in scored]
 
 
 def _non_negative_beam_angle_deg(v) -> Optional[float]:
@@ -190,6 +216,8 @@ def _sync_uniformity_report_chunks(
     height: float,
     u_grid_n: int,
     required_uniformity: float,
+    polygon=None,
+    polygon_orientation_rad: float = 0.0,
 ) -> None:
     """
     Build one txt section per result row so the report matches the result page order
@@ -260,6 +288,8 @@ def _sync_uniformity_report_chunks(
                 calibrate_maintained_avg_lx=cal_lx,
                 inter_reflection_fraction=irf_u,
                 inter_reflection_label=ir_lbl_u,
+                polygon=polygon,
+                polygon_orientation_rad=polygon_orientation_rad,
             )
             uniformity_report_chunks.append(
                 format_uniformity_report_txt(
@@ -393,6 +423,8 @@ def _uniformity_fallback_sweep_rows(
     fixture_span_extra: int = 120,
     max_uniformity_calls: int = 160,
     fast: bool = False,
+    polygon=None,
+    polygon_orientation_rad: float = 0.0,
 ) -> list:
     """
     When no layout meets both lux and U₀, sweep **upward** in fixture count (per luminaire
@@ -497,6 +529,10 @@ def _uniformity_fallback_sweep_rows(
             pairs_fb = spacing_factor_pairs(length, width, num_fixtures, min_spacing_m)
             if not pairs_fb:
                 continue
+            if polygon is not None:
+                pairs_fb = _rank_factor_pairs_for_polygon(
+                    pairs_fb, polygon, length, width, polygon_orientation_rad
+                )
 
             avg_lux = (num_fixtures * lumens * mf_fb) / area
             total_power = num_fixtures * power
@@ -560,6 +596,8 @@ def _uniformity_fallback_sweep_rows(
                         calibrate_maintained_avg_lx=avg_lux,
                         inter_reflection_fraction=irf_fb,
                         inter_reflection_label=ir_lbl_fb,
+                        polygon=polygon,
+                        polygon_orientation_rad=polygon_orientation_rad,
                     )
                     calls += 1
                     seed_calls += 1
@@ -850,6 +888,10 @@ def calculate_lighting(
     standard_row=None,
     trace: Optional[CalculationTrace] = None,
     fast: bool = False,
+    *,
+    polygon=None,
+    polygon_orientation_rad: float = 0.0,
+    polygon_fill_ratio: Optional[float] = None,
 ):
     """
     If standard_row is provided (from standards_cleaned.json), use Em_r_lx as target lux and Uo as uniformity.
@@ -859,6 +901,12 @@ def calculate_lighting(
     ``fast=True``: cap at 3 compliant options, step fixture count by 2 in the main sweep,
     and use coarser steps + lower budget in the uniformity fallback sweep (less accurate,
     quicker).
+
+    Optional ``polygon`` / ``polygon_orientation_rad`` / ``polygon_fill_ratio`` (Phase B
+    ``/cad_calc`` path): when set, U₀ sampling uses a polygon-clipped work-plane grid
+    and G is boosted via :func:`uniformity_grid_n_for_polygon` so effective sample
+    density tracks the rectangular path. Legacy ``/calculate`` callers omit these
+    and behaviour is unchanged.
     """
     log_step(
         "calculate_lighting: start",
@@ -868,6 +916,7 @@ def calculate_lighting(
         height=height,
         standard_ref_no=str(standard_row.get("ref_no")) if standard_row else None,
         fast=bool(fast),
+        polygon_clipped=bool(polygon is not None),
     )
     if trace is not None:
         trace.step(
@@ -877,6 +926,7 @@ def calculate_lighting(
             height=height,
             standard_ref=str(standard_row.get("ref_no")) if standard_row else None,
             fast=bool(fast),
+            polygon_clipped=bool(polygon is not None),
         )
 
     a, b, c, d = sides
@@ -921,12 +971,19 @@ def calculate_lighting(
     options, prioritized_weatherproof_triproof = _reorder_interior_options_for_compact_room(
         options, zone, length, width, area
     )
-    u_grid_n = uniformity_grid_n_for_room(length, width)
+    if polygon is not None and polygon_fill_ratio is not None:
+        u_grid_n = uniformity_grid_n_for_polygon(area, float(polygon_fill_ratio))
+    else:
+        u_grid_n = uniformity_grid_n_for_room(length, width)
     if trace is not None:
         trace.step(
             "cl_03_options_and_uniformity_grid",
             luminaire_options=len(options),
             workplane_grid_n=u_grid_n,
+            polygon_clipped=bool(polygon is not None),
+            polygon_fill_ratio=(
+                float(polygon_fill_ratio) if polygon_fill_ratio is not None else None
+            ),
         )
 
     try:
@@ -1092,6 +1149,14 @@ def calculate_lighting(
                     )
                     if not factor_pairs:
                         continue
+                    if polygon is not None:
+                        factor_pairs = _rank_factor_pairs_for_polygon(
+                            factor_pairs,
+                            polygon,
+                            length,
+                            width,
+                            polygon_orientation_rad,
+                        )
 
                     avg_lux = (num_fixtures * lumens * mf) / area
                     total_power = num_fixtures * power
@@ -1168,6 +1233,8 @@ def calculate_lighting(
                                     calibrate_maintained_avg_lx=maintained_avg_lx,
                                     inter_reflection_fraction=irf,
                                     inter_reflection_label=ir_lbl,
+                                    polygon=polygon,
+                                    polygon_orientation_rad=polygon_orientation_rad,
                                 )
                                 uniformity_time_acc += time.perf_counter() - _t_uni
                                 uniformity_calls += 1
@@ -1337,6 +1404,8 @@ def calculate_lighting(
             required_uniformity,
             u_grid_n,
             fast=bool(fast),
+            polygon=polygon,
+            polygon_orientation_rad=polygon_orientation_rad,
         )
         for row in fb_rows:
             _sync_beam_angle_output_keys(row, _ies_meta_for_result_row(row))
@@ -1379,6 +1448,8 @@ def calculate_lighting(
         height,
         u_grid_n,
         required_uniformity,
+        polygon=polygon,
+        polygon_orientation_rad=polygon_orientation_rad,
     )
 
     if uniformity_report_chunks and write_uniformity_session_txt:
@@ -1427,6 +1498,20 @@ def calculate_lighting(
         "interior_height_threshold_m": th,
         "prioritized_weatherproof_triproof": bool(prioritized_weatherproof_triproof),
         "fixture_family_shortfall": fixture_family_shortfall,
+        "workplane_grid_n": u_grid_n,
+        "polygon_clipped_uniformity": bool(polygon is not None),
     }
+    if polygon is not None:
+        try:
+            from luxscale.uniformity_calculator import work_plane_grid_polygon
+
+            _pts = work_plane_grid_polygon(
+                polygon, length, width, u_grid_n, float(polygon_orientation_rad)
+            )
+            n_eff = len(_pts)
+            meta["effective_sample_count"] = n_eff
+            meta["sample_density_per_m2"] = round(n_eff / max(area, 1e-12), 4)
+        except Exception:
+            pass
     return results, length, width, meta
 

@@ -368,14 +368,34 @@ def _point_on_segment(
     return -eps <= t <= 1.0 + eps
 
 
-def _polygon_is_simple(verts: Sequence[Vertex]) -> bool:
+#: Skip the O(N^2) self-intersection sweep for polygons with more than this
+#: many edges. At N > 512 the pure-Python check climbs above ~130 ms, and
+#: CAD tools generating such polygons typically pre-validate simplicity.
+#: Callers wanting a hard guarantee for very large polygons should validate
+#: upstream (e.g. via Shapely) before handing off to LuxScale.
+MAX_EDGES_FOR_FULL_SIMPLICITY_CHECK: int = 512
+
+
+def _polygon_is_simple(
+    verts: Sequence[Vertex],
+    *,
+    max_edges_for_full_check: int = MAX_EDGES_FOR_FULL_SIMPLICITY_CHECK,
+) -> bool:
     """
     No proper intersections between non-adjacent edges. Adjacent edges share a
     vertex, which :func:`_segments_intersect` correctly ignores.
+
+    Complexity is O(N²) (worst case ≈ N(N-3)/2 orientation-predicate tests).
+    For polygons above ``max_edges_for_full_check`` vertices the check is
+    skipped and the polygon is trusted — the O(N²) cost becomes noticeable
+    around N ~ 500 in pure Python. If a stricter guarantee is needed for
+    large polygons, run a sweep-line pre-check upstream.
     """
     n = len(verts)
     if n < 4:
         return True
+    if n > max_edges_for_full_check:
+        return True  # trust caller — see docstring
     for i in range(n):
         a = verts[i]
         b = verts[(i + 1) % n]

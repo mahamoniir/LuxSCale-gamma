@@ -821,6 +821,12 @@ def api_cad_calc():
             "results": results,
             "length": length_eq,
             "width": width_eq,
+            "height": height,
+            # Equivalent-rectangle sides so PDF / legacy consumers can round-trip
+            # without reading calculation_meta (polygon outline still preferred).
+            "sides": list(calc_meta.get("equivalent_rectangle", {}).get("sides_used") or [
+                width_eq, length_eq, width_eq, length_eq
+            ]),
             "calculation_trace_file": trace_path,
             "calculation_meta": calc_meta,
             "ui_settings": get_ui_config(),
@@ -1172,14 +1178,30 @@ from flask import Response, abort, jsonify
 
 def _study_payload_to_api_response(payload: dict) -> dict:
     """Same JSON shape as ``api/get.php`` for result.html."""
-    sides = payload["sides"]
-    w = max(float(sides[0]), float(sides[2]))
-    l = max(float(sides[1]), float(sides[3]))
     p = payload
+    sides = p.get("sides") or []
+    if isinstance(sides, (list, tuple)) and len(sides) >= 4:
+        w = max(float(sides[0]), float(sides[2]))
+        l = max(float(sides[1]), float(sides[3]))
+    else:
+        w = float(p["width"]) if p.get("width") is not None else 0.0
+        l = float(p["length"]) if p.get("length") is not None else 0.0
+    if p.get("width") is not None:
+        try:
+            w = float(p["width"])
+        except (TypeError, ValueError):
+            pass
+    if p.get("length") is not None:
+        try:
+            l = float(p["length"])
+        except (TypeError, ValueError):
+            pass
     req = {
         "project_name": p.get("project_name", ""),
-        "sides": p["sides"],
+        "sides": sides if isinstance(sides, list) else p.get("sides"),
         "height": p["height"],
+        "width": w,
+        "length": l,
     }
     if "place" in p:
         req["place"] = p["place"]
@@ -1191,6 +1213,10 @@ def _study_payload_to_api_response(payload: dict) -> dict:
         req["standard_task_or_activity"] = p["standard_task_or_activity"]
     if p.get("standard_lighting") is not None:
         req["standard_lighting"] = p["standard_lighting"]
+    if p.get("mounting_height") is not None:
+        req["mounting_height"] = p["mounting_height"]
+    if p.get("notes"):
+        req["notes"] = p["notes"]
 
     meta = p.get("calculation_meta")
     if not isinstance(meta, dict):
@@ -1250,6 +1276,10 @@ def _resolve_report_payload(token):
             nested = body.get("payload") if isinstance(body.get("payload"), dict) else None
             candidate = nested if nested is not None else body
             if isinstance(candidate.get("results"), list) or candidate.get("sides") is not None:
+                return candidate
+            # Polygon CAD studies may omit top-level sides but carry geometry_version 2.
+            meta = candidate.get("calculation_meta")
+            if isinstance(meta, dict) and isinstance(meta.get("polygon"), dict):
                 return candidate
     if not token:
         abort(400, description="Provide a token in the URL or a payload in the POST body")

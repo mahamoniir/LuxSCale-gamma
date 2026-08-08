@@ -496,11 +496,118 @@ def build_cover(canvas, payload: dict, report_title: str,
 # ─────────────────────────────────────────────────────────────────
 #  TECHNICAL ROOM DRAWING  (matplotlib → PNG bytes)
 # ─────────────────────────────────────────────────────────────────
+
+def _payload_polygon_info(payload: dict):
+    """
+    Return ``(poly_dict, meta)`` when the payload carries geometry_version 2
+    polygon data; otherwise ``None``.
+    """
+    meta = payload.get("calculation_meta")
+    if not isinstance(meta, dict):
+        return None
+    poly = meta.get("polygon")
+    if not isinstance(poly, dict):
+        return None
+    verts = poly.get("vertices")
+    if not isinstance(verts, list) or len(verts) < 3:
+        return None
+    return poly, meta
+
+
+def _engine_room_dims(payload: dict) -> tuple[float, float]:
+    """
+    Return ``(length_x, width_y)`` matching the calculation engine's axis
+    convention (length along plan x, width along plan y).
+
+    Prefers ``equivalent_rectangle.sides_used`` / payload length+width, then
+    falls back to ``max(sides[0],sides[2]), max(sides[1],sides[3])``.
+    """
+    meta = payload.get("calculation_meta")
+    if isinstance(meta, dict):
+        eq = meta.get("equivalent_rectangle")
+        if isinstance(eq, dict):
+            sides_used = eq.get("sides_used")
+            if isinstance(sides_used, (list, tuple)) and len(sides_used) == 4:
+                a, b, c, d = (float(v) for v in sides_used)
+                return max(a, c), max(b, d)
+            # cad_calculate stores width_eq / length_eq; engine x = width_eq
+            if eq.get("width_m") is not None and eq.get("length_m") is not None:
+                return float(eq["width_m"]), float(eq["length_m"])
+    if payload.get("length") is not None and payload.get("width") is not None:
+        # /cad_calc returns length=length_eq, width=width_eq — swap to engine axes
+        return float(payload["width"]), float(payload["length"])
+    sides = payload.get("sides", [6, 8, 6, 8])
+    a, b, c, d = (float(sides[i]) if i < len(sides) else float(sides[0]) for i in range(4))
+    return max(a, c), max(b, d)
+
+
+def _fixtures_world_coords(payload: dict, chosen: dict, length_x: float, width_y: float):
+    """
+    Fixture centres for the floor-plan drawing.
+
+    Polygon payloads: clipped positions mapped from the engine frame back to
+    world coordinates. Rectangular payloads: classic half-bay grid.
+    """
+    nx = int(chosen.get("layout_nx", 2) or 2)
+    ny = int(chosen.get("layout_ny", 2) or 2)
+    target = int(chosen.get("Fixtures") or chosen.get("fixtures") or (nx * ny))
+
+    info = _payload_polygon_info(payload)
+    if info is None:
+        sx = float(chosen.get("Spacing X (m)") or chosen.get("spacing_x") or length_x / max(nx, 1))
+        sy = float(chosen.get("Spacing Y (m)") or chosen.get("spacing_y") or width_y / max(ny, 1))
+        ox = (length_x - sx * (nx - 1)) / 2
+        oy = (width_y - sy * (ny - 1)) / 2
+        return [(ox + i * sx, oy + j * sy) for i in range(nx) for j in range(ny)], sx, sy
+
+    poly_dict, meta = info
+    from luxscale.lighting_calc.polygon import Polygon
+    from luxscale.uniformity_calculator import fixture_positions_polygon
+
+    verts = poly_dict["vertices"]
+    poly = Polygon.from_vertices(verts)
+    orient = math.radians(float(poly_dict.get("orientation_deg") or 0.0))
+    # Prefer meta orientation if present on equivalent_rectangle
+    eq = meta.get("equivalent_rectangle") or {}
+    if eq.get("orientation_deg") is not None:
+        orient = math.radians(float(eq["orientation_deg"]))
+
+    engine_pts = fixture_positions_polygon(
+        poly, length_x, width_y, nx, ny, orient, target_count=max(1, target)
+    )
+
+    # Inverse of _polygon_in_engine_frame: engine → oriented bbox → world
+    c = math.cos(-orient)
+    s = math.sin(-orient)
+    rotated = [(c * x - s * y, s * x + c * y) for x, y in poly.vertices]
+    xs = [p[0] for p in rotated]
+    ys = [p[1] for p in rotated]
+    xmin, xmax = min(xs), max(xs)
+    ymin, ymax = min(ys), max(ys)
+    bw = max(xmax - xmin, 1e-12)
+    bl = max(ymax - ymin, 1e-12)
+    # R(+orient) inverse of R(-orient) with c=cos(-θ), s=sin(-θ)
+    # x = c*x' + s*y';  y = -s*x' + c*y'
+    world = []
+    for ex, ey in engine_pts:
+        xr = xmin + (ex / max(length_x, 1e-12)) * bw
+        yr = ymin + (ey / max(width_y, 1e-12)) * bl
+        wx = c * xr + s * yr
+        wy = -s * xr + c * yr
+        world.append((wx, wy))
+
+    sx = length_x / max(nx, 1)
+    sy = width_y / max(ny, 1)
+    return world, sx, sy
+
+
 def make_room_drawing(payload: dict,
                       width_pt: float = 460, height_pt: float = 310) -> io.BytesIO:
-    sides   = payload.get("sides", [6, 8, 6, 8])
-    room_w  = float(sides[1] if len(sides) > 1 else sides[0])
-    room_l  = float(sides[3] if len(sides) > 3 else sides[0])
+    length_x, width_y = _engine_room_dims(payload)
+    # Keep legacy aliases used throughout this function
+    room_w = length_x   # plan X (engine length)
+    room_l = width_y    # plan Y (engine width)
+
     ceil_h  = float(payload.get("height", 3.0))
     mount_h = float(
         payload.get("mounting_height") or
@@ -511,6 +618,8 @@ def make_room_drawing(payload: dict,
     results = payload.get("results", [])
     chosen  = next((r for r in results if r.get("is_compliant")), None) \
               or (results[0] if results else None)
+
+    poly_info = _payload_polygon_info(payload)
 
     DIM   = "#1a1a1a"
     RED   = "#eb1b26"
@@ -523,61 +632,113 @@ def make_room_drawing(payload: dict,
 
     ax.set_facecolor("white")
     ax.set_aspect("equal")
-    pad = max(room_w, room_l) * 0.30
-    ax.set_xlim(-pad * 0.6, room_w + pad * 1.1)
-    ax.set_ylim(-pad * 0.5, room_l + pad * 0.8)
 
-    from matplotlib.patches import Rectangle as MRect
-    lw_wall = max(room_w, room_l) * 0.028
+    from matplotlib.patches import Rectangle as MRect, Polygon as MPolygon
 
-    ax.add_patch(MRect((-lw_wall, -lw_wall), room_w + 2 * lw_wall, room_l + 2 * lw_wall,
-                        lw=1.5, ec=DIM, fc=HATCH, hatch="////", zorder=2))
-    ax.add_patch(MRect((0, 0), room_w, room_l, lw=2.0, ec=DIM, fc="white", zorder=3))
+    if poly_info is not None:
+        poly_dict, _meta = poly_info
+        verts = [(float(v[0]), float(v[1])) for v in poly_dict["vertices"]]
+        xs = [v[0] for v in verts]
+        ys = [v[1] for v in verts]
+        xmin, xmax = min(xs), max(xs)
+        ymin, ymax = min(ys), max(ys)
+        span = max(xmax - xmin, ymax - ymin, 1.0)
+        pad = span * 0.30
+        ax.set_xlim(xmin - pad * 0.6, xmax + pad * 1.1)
+        ax.set_ylim(ymin - pad * 0.5, ymax + pad * 0.8)
 
-    if chosen:
-        nx  = int(chosen.get("layout_nx", 2) or 2)
-        ny  = int(chosen.get("layout_ny", 2) or 2)
-        sx  = float(chosen.get("Spacing X (m)") or chosen.get("spacing_x") or room_w / max(nx, 1))
-        sy  = float(chosen.get("Spacing Y (m)") or chosen.get("spacing_y") or room_l / max(ny, 1))
-        ox  = (room_w - sx * (nx - 1)) / 2
-        oy  = (room_l - sy * (ny - 1)) / 2
-        beam_deg = abs(float(chosen.get("beam_angle_deg") or
-                             chosen.get("Beam Angle (deg)", 60) or 60))
-        beam_r = mount_h * math.tan(math.radians(beam_deg / 2))
-        for i in range(nx):
-            for j in range(ny):
-                fx, fy = ox + i * sx, oy + j * sy
+        ax.add_patch(MPolygon(
+            verts, closed=True, lw=2.0, ec=DIM, fc="white", zorder=3
+        ))
+        # Light hatch outside bbox for context
+        ax.add_patch(MRect(
+            (xmin - pad * 0.15, ymin - pad * 0.15),
+            (xmax - xmin) + pad * 0.30,
+            (ymax - ymin) + pad * 0.30,
+            lw=0.8, ec=DIM, fc=HATCH, hatch="////", zorder=1, alpha=0.35,
+        ))
+        # Re-draw polygon on top of hatch
+        ax.add_patch(MPolygon(
+            verts, closed=True, lw=2.0, ec=DIM, fc="white", zorder=3
+        ))
+
+        if chosen:
+            fxs, sx, sy = _fixtures_world_coords(payload, chosen, length_x, width_y)
+            beam_deg = abs(float(chosen.get("beam_angle_deg") or
+                                 chosen.get("Beam Angle (deg)", 60) or 60))
+            beam_r = mount_h * math.tan(math.radians(beam_deg / 2))
+            for fx, fy in fxs:
                 ax.plot(fx, fy, "s", color=RED, markersize=5, zorder=5)
                 cr = min(beam_r, sx * 0.46, sy * 0.46)
                 ax.add_patch(plt.Circle((fx, fy), cr, fc=RED + "20", ec=RED,
                                         lw=0.55, ls="--", zorder=4))
 
-    d_yh = room_l + pad * 0.28
-    ax.annotate("", xy=(room_w, d_yh), xytext=(0, d_yh),
-                arrowprops=dict(arrowstyle="<->", color=DIM, lw=0.9))
-    ax.plot([0, 0],           [room_l, d_yh], color=DIM, lw=0.5, ls=":")
-    ax.plot([room_w, room_w], [room_l, d_yh], color=DIM, lw=0.5, ls=":")
-    ax.text(room_w / 2, d_yh + pad * 0.12, f"W = {room_w:.2f} m",
-            ha="center", va="bottom", fontsize=6.5, color=DIM, fontfamily="monospace")
+        area = float(poly_dict.get("area_m2") or 0.0)
+        n_v = int(poly_dict.get("vertex_count") or len(verts))
+        ax.text(
+            (xmin + xmax) / 2, ymax + pad * 0.35,
+            f"POLYGON  N={n_v}   A = {area:.2f} m²   "
+            f"bbox {xmax - xmin:.2f}×{ymax - ymin:.2f} m",
+            ha="center", va="bottom", fontsize=6.5, color=DIM, fontfamily="monospace",
+        )
+        plan_title = "FLOOR PLAN  (Polygon — Top View)"
+        room_label = f"Polygon A={area:.1f} m²"
+    else:
+        pad = max(room_w, room_l) * 0.30
+        ax.set_xlim(-pad * 0.6, room_w + pad * 1.1)
+        ax.set_ylim(-pad * 0.5, room_l + pad * 0.8)
 
-    d_xv = room_w + pad * 0.32
-    ax.annotate("", xy=(d_xv, room_l), xytext=(d_xv, 0),
-                arrowprops=dict(arrowstyle="<->", color=DIM, lw=0.9))
-    ax.plot([room_w, d_xv], [0, 0],           color=DIM, lw=0.5, ls=":")
-    ax.plot([room_w, d_xv], [room_l, room_l], color=DIM, lw=0.5, ls=":")
-    ax.text(d_xv + pad * 0.08, room_l / 2, f"L = {room_l:.2f} m",
-            ha="left", va="center", fontsize=6.5, color=DIM,
-            fontfamily="monospace", rotation=90)
+        lw_wall = max(room_w, room_l) * 0.028
+        ax.add_patch(MRect((-lw_wall, -lw_wall), room_w + 2 * lw_wall, room_l + 2 * lw_wall,
+                            lw=1.5, ec=DIM, fc=HATCH, hatch="////", zorder=2))
+        ax.add_patch(MRect((0, 0), room_w, room_l, lw=2.0, ec=DIM, fc="white", zorder=3))
 
-    ax.annotate("", xy=(-pad * 0.25, room_l * 1.12), xytext=(-pad * 0.25, room_l * 0.88),
-                arrowprops=dict(arrowstyle="-|>", color=RED, lw=1.2, mutation_scale=9))
-    ax.text(-pad * 0.25, room_l * 1.17, "N", ha="center", fontsize=7,
-            color=RED, fontweight="bold")
+        if chosen:
+            fxs, sx, sy = _fixtures_world_coords(payload, chosen, length_x, width_y)
+            beam_deg = abs(float(chosen.get("beam_angle_deg") or
+                                 chosen.get("Beam Angle (deg)", 60) or 60))
+            beam_r = mount_h * math.tan(math.radians(beam_deg / 2))
+            for fx, fy in fxs:
+                ax.plot(fx, fy, "s", color=RED, markersize=5, zorder=5)
+                cr = min(beam_r, sx * 0.46, sy * 0.46)
+                ax.add_patch(plt.Circle((fx, fy), cr, fc=RED + "20", ec=RED,
+                                        lw=0.55, ls="--", zorder=4))
 
-    ax.set_title("FLOOR PLAN  (Top View)", fontsize=8, color=DIM,
-                 fontweight="bold", pad=5)
+        d_yh = room_l + pad * 0.28
+        ax.annotate("", xy=(room_w, d_yh), xytext=(0, d_yh),
+                    arrowprops=dict(arrowstyle="<->", color=DIM, lw=0.9))
+        ax.plot([0, 0],           [room_l, d_yh], color=DIM, lw=0.5, ls=":")
+        ax.plot([room_w, room_w], [room_l, d_yh], color=DIM, lw=0.5, ls=":")
+        ax.text(room_w / 2, d_yh + pad * 0.12, f"X = {room_w:.2f} m",
+                ha="center", va="bottom", fontsize=6.5, color=DIM, fontfamily="monospace")
+
+        d_xv = room_w + pad * 0.32
+        ax.annotate("", xy=(d_xv, room_l), xytext=(d_xv, 0),
+                    arrowprops=dict(arrowstyle="<->", color=DIM, lw=0.9))
+        ax.plot([room_w, d_xv], [0, 0],           color=DIM, lw=0.5, ls=":")
+        ax.plot([room_w, d_xv], [room_l, room_l], color=DIM, lw=0.5, ls=":")
+        ax.text(d_xv + pad * 0.08, room_l / 2, f"Y = {room_l:.2f} m",
+                ha="left", va="center", fontsize=6.5, color=DIM,
+                fontfamily="monospace", rotation=90)
+        plan_title = "FLOOR PLAN  (Top View)"
+        room_label = f"{room_w:.2f}×{room_l:.2f}×{ceil_h:.2f} m"
+
+    if poly_info is None:
+        ax.annotate("", xy=(-pad * 0.25, room_l * 1.12), xytext=(-pad * 0.25, room_l * 0.88),
+                    arrowprops=dict(arrowstyle="-|>", color=RED, lw=1.2, mutation_scale=9))
+        ax.text(-pad * 0.25, room_l * 1.17, "N", ha="center", fontsize=7,
+                color=RED, fontweight="bold")
+    else:
+        ax.annotate("", xy=(xmin - pad * 0.25, ymax + pad * 0.15),
+                    xytext=(xmin - pad * 0.25, ymax - pad * 0.05),
+                    arrowprops=dict(arrowstyle="-|>", color=RED, lw=1.2, mutation_scale=9))
+        ax.text(xmin - pad * 0.25, ymax + pad * 0.22, "N", ha="center", fontsize=7,
+                color=RED, fontweight="bold")
+
+    ax.set_title(plan_title, fontsize=8, color=DIM, fontweight="bold", pad=5)
     ax.axis("off")
 
+    # ── Elevation (section): still uses equivalent-rectangle width ────────────
     ax2.set_facecolor("white")
     ax2.set_aspect("equal")
     pad2 = ceil_h * 0.55
@@ -609,6 +770,7 @@ def make_room_drawing(payload: dict,
         if nx > 1:
             cone_r = min(cone_r, sx * 0.46)
         fw = sx * 0.18 if nx > 1 else room_w * 0.10
+        # Elevation shows X-row of the rectangular layout (section through eq-rect)
         for i in range(nx):
             fx = ox + i * sx
             ax2.add_patch(MRect((fx - fw / 2, ceil_h - lh2 * 3), fw, lh2 * 3,
@@ -639,7 +801,10 @@ def make_room_drawing(payload: dict,
                 arrowprops=dict(arrowstyle="<->", color=DIM, lw=0.9))
     ax2.plot([0, 0],           [ceil_h, d_t], color=DIM, lw=0.5, ls=":")
     ax2.plot([room_w, room_w], [ceil_h, d_t], color=DIM, lw=0.5, ls=":")
-    ax2.text(room_w / 2, d_t + pad2 * 0.12, f"W = {room_w:.2f} m",
+    elev_w_label = (
+        f"eq-X = {room_w:.2f} m" if poly_info is not None else f"X = {room_w:.2f} m"
+    )
+    ax2.text(room_w / 2, d_t + pad2 * 0.12, elev_w_label,
              ha="center", va="bottom", fontsize=6.5, color=DIM, fontfamily="monospace")
 
     from matplotlib.lines import Line2D
@@ -651,13 +816,17 @@ def make_room_drawing(payload: dict,
     ax2.legend(handles=handles, loc="lower right", fontsize=6,
                framealpha=0.9, edgecolor=DIM, facecolor="white")
 
-    ax2.set_title("FRONT ELEVATION  (Section View)", fontsize=8, color=DIM,
-                  fontweight="bold", pad=5)
+    elev_title = (
+        "FRONT ELEVATION  (eq-rectangle section)"
+        if poly_info is not None
+        else "FRONT ELEVATION  (Section View)"
+    )
+    ax2.set_title(elev_title, fontsize=8, color=DIM, fontweight="bold", pad=5)
     ax2.axis("off")
 
     fig.text(0.5, 0.02,
              f"Project: {payload.get('project_name', '—')}   |   "
-             f"Room: {room_w:.2f}×{room_l:.2f}×{ceil_h:.2f} m   |   "
+             f"Room: {room_label}   |   "
              f"Scale: NTS   |   Drawn by: {TOOL_NAME} / {COMPANY_NAME}",
              ha="center", fontsize=6, color="#555555", style="italic")
 
@@ -819,16 +988,23 @@ def _metric_box(label, value, unit, ST):
 def sec_project_info(payload, ST):
     story = section_header("01 —", "Project & Space Information", ST)
 
-    sides   = payload.get("sides", [10, 10, 10, 10])
-    W_m     = float(sides[1] if len(sides) > 1 else sides[0])
-    L_m     = float(sides[3] if len(sides) > 3 else sides[0])
+    length_x, width_y = _engine_room_dims(payload)
+    W_m = length_x
+    L_m = width_y
     H_m     = float(payload.get("height", 4))
-    area    = W_m * L_m
+    poly_info = _payload_polygon_info(payload)
+    if poly_info is not None:
+        area = float(poly_info[0].get("area_m2") or (W_m * L_m))
+    else:
+        area = W_m * L_m
     mount_h = float(payload.get("mounting_height") or
                     (payload.get("project_info") or {}).get("mounting_height") or
                     H_m * 0.90)
     mount_h = min(mount_h, H_m)
-    ri      = (W_m * L_m) / (2 * H_m * (W_m + L_m))
+    peri = 2 * (W_m + L_m)
+    if poly_info is not None and poly_info[0].get("perimeter_m"):
+        peri = float(poly_info[0]["perimeter_m"])
+    ri = area / (H_m * peri) if H_m * peri > 1e-12 else 0.0
 
     prepared = payload.get("name", "—")
     if " at " in prepared: prepared = prepared.split(" at ")[0]
@@ -865,11 +1041,27 @@ def sec_project_info(payload, ST):
     story.append(two_col)
     story.append(Spacer(1, 10))
 
-    story.append(Paragraph("Space Geometry", ST["h2"]))
-    geom_headers = ["Width (X)", "Length (Y)", "Ceiling H", "Mounting H", "Floor Area", "Room Index k"]
-    geom_vals    = [f"<b>{W_m:.2f} m</b>", f"<b>{L_m:.2f} m</b>",
-                    f"<b>{H_m:.2f} m</b>", f"<b>{mount_h:.2f} m</b>",
-                    f"<b>{area:.1f} m²</b>", f"<b>{ri:.2f}</b>"]
+    if poly_info is not None:
+        poly_dict = poly_info[0]
+        n_v = int(poly_dict.get("vertex_count") or len(poly_dict.get("vertices") or []))
+        fill = poly_dict.get("fill_ratio")
+        fill_s = f"{float(fill):.2f}" if fill is not None else "—"
+        story.append(Paragraph("Space Geometry (Polygon)", ST["h2"]))
+        geom_headers = ["Vertices", "Floor Area", "Perimeter", "Fill α", "Ceiling H", "Mounting H"]
+        geom_vals = [
+            f"<b>{n_v}</b>",
+            f"<b>{area:.1f} m²</b>",
+            f"<b>{peri:.2f} m</b>",
+            f"<b>{fill_s}</b>",
+            f"<b>{H_m:.2f} m</b>",
+            f"<b>{mount_h:.2f} m</b>",
+        ]
+    else:
+        story.append(Paragraph("Space Geometry", ST["h2"]))
+        geom_headers = ["X (length)", "Y (width)", "Ceiling H", "Mounting H", "Floor Area", "Room Index k"]
+        geom_vals    = [f"<b>{W_m:.2f} m</b>", f"<b>{L_m:.2f} m</b>",
+                        f"<b>{H_m:.2f} m</b>", f"<b>{mount_h:.2f} m</b>",
+                        f"<b>{area:.1f} m²</b>", f"<b>{ri:.2f}</b>"]
     geom = [[Paragraph(h, ST["white_label"]) for h in geom_headers],
             [Paragraph(v, ST["body"])        for v in geom_vals]]
     geom_t = Table(geom, colWidths=[CONTENT_W / 6] * 6)
@@ -890,12 +1082,18 @@ def sec_project_info(payload, ST):
     buf = make_room_drawing(payload, width_pt=CONTENT_W * 1.06, height_pt=CONTENT_W * 0.65)
     story.append(Image(buf, width=CONTENT_W, height=CONTENT_W * 0.60))
     story.append(Spacer(1, 5))
-    story.append(Paragraph(
+    caption = (
+        "▪ Red squares = polygon-clipped fixture positions.  "
+        "▪ Dashed circles/lines = beam footprint / cone.  "
+        "▪ Blue arrows = mounting height (Mh).  "
+        "▪ Floor plan shows true polygon outline; elevation uses equivalent-rectangle section."
+        if poly_info is not None else
         "▪ Red squares = fixture positions (compliant solution).  "
         "▪ Dashed circles/lines = beam footprint / cone.  "
         "▪ Blue arrows = mounting height (Mh).  "
-        "▪ Gray hatching = structural walls and slabs.",
-        ST["small"]))
+        "▪ Gray hatching = structural walls and slabs."
+    )
+    story.append(Paragraph(caption, ST["small"]))
     return story
 
 

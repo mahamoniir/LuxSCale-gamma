@@ -154,6 +154,38 @@
       -webkit-user-drag: none;
     }
 
+    .plan-canvas-wrap {
+      width: 100%;
+      height: 200px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .plan-canvas-wrap canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: pointer;
+    }
+
+    #polygonPlanCard .plan-canvas-wrap {
+      height: 280px;
+    }
+
+    .poly-meta-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(235, 27, 38, 0.18);
+      border: 1px solid rgba(235, 27, 38, 0.45);
+      color: #ffc9cc;
+      margin-left: 0.35rem;
+    }
+
     .card .card-body { padding-bottom: 1rem; }
 
     .card .card-title {
@@ -302,6 +334,19 @@
 
     <div id="projectSummary" class="mb-3"></div>
 
+    <div id="polygonPlanCard" class="summary-card card mb-3" style="display:none;">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="card-title mb-0">Floor plan <span class="poly-meta-badge">CAD polygon</span></h5>
+          <small id="polygonPlanHint" class="text-muted"></small>
+        </div>
+        <div class="plan-canvas-wrap">
+          <canvas id="polygonPlanCanvas" aria-label="Polygon floor plan"></canvas>
+        </div>
+        <p class="small text-muted mb-0">Fixtures are polygon-clipped and drawn in the CAD coordinate frame (orientation θ applied). Click an option card plan to preview that layout.</p>
+      </div>
+    </div>
+
     <div id="resultsAnalysis" class="alert alert-info py-2 px-3 small mb-3" style="display:none;" role="status"></div>
     <div id="noCompliantBanner" class="alert alert-warning py-2 px-3 mb-3" style="display:none;" role="alert"></div>
     <div id="fixtureFamilyShortfall" class="alert alert-warning py-2 px-3 mb-3 small" style="display:none;" role="status"></div>
@@ -314,6 +359,7 @@
   </div>
 
   <script src="assets/standard-display.js"></script>
+  <script src="assets/js/polygon-plan.js"></script>
 
 <script>
 /* ================================================================
@@ -356,6 +402,7 @@ let calculationMeta = {};
 let fixtureMapDoc = undefined;
 let request  = {};
 let customer = {};
+let selectedPlanIndex = 0;
 
 const RESULT_LINKS_KEY  = "luxscale_result_links";
 const RESULT_LINK_TTL_MS = 60 * 60 * 1000;
@@ -428,20 +475,47 @@ async function downloadPdfFromFlask(url, filename, body) {
  * from the data already loaded into `request`, `customer`, `results`, and
  * `calculationMeta` by loadResults().
  */
+function isPolygonStudy(meta) {
+  const m = meta || calculationMeta;
+  return typeof LuxPolygonPlan !== "undefined" && !!LuxPolygonPlan.getPolygonMeta(m);
+}
+
+function roomDimsForUi(req, meta) {
+  if (typeof LuxPolygonPlan !== "undefined") {
+    return LuxPolygonPlan.engineDimsFromPayload(req || request, meta || calculationMeta);
+  }
+  const sides = (req || request)?.sides;
+  if (Array.isArray(sides) && sides.length >= 2) {
+    return { lengthX: Number(sides[0]) || 6, widthY: Number(sides[1]) || 4 };
+  }
+  return { lengthX: 6, widthY: 4 };
+}
+
 function buildReportPayload() {
   const req = request || {};
   const cust = customer || {};
+  const meta = calculationMeta || {};
+  const eq = meta.equivalent_rectangle;
+  let sides = req.sides;
+  if ((!Array.isArray(sides) || sides.length !== 4) && eq && Array.isArray(eq.sides_used)) {
+    sides = eq.sides_used;
+  }
   const payload = {
     project_name: req.project_name || "",
-    sides:        req.sides,
+    sides:        sides,
     height:       req.height,
     name:         cust.name    || "",
     phone:        cust.phone   || "",
     company:      cust.company || "",
     email:        cust.email   || "",
     results:      Array.isArray(results) ? results : [],
-    calculation_meta: calculationMeta || {},
+    calculation_meta: meta,
   };
+  // /cad_calc convention: length=length_eq, width=width_eq (PDF swaps to engine axes)
+  if (req.length != null) payload.length = req.length;
+  else if (eq && eq.length_m != null) payload.length = eq.length_m;
+  if (req.width != null) payload.width = req.width;
+  else if (eq && eq.width_m != null) payload.width = eq.width_m;
   if (req.place)                     payload.place                     = req.place;
   if (req.standard_ref_no != null)   payload.standard_ref_no           = req.standard_ref_no;
   if (req.standard_category)         payload.standard_category         = req.standard_category;
@@ -655,8 +729,15 @@ function normalizeCalcResultRow(r) {
 
 function enrichOptionCardRow(r, req) {
   const out = { ...r };
-  const sides = req?.sides;
-  if (Array.isArray(sides) && sides.length >= 2) { out._room_width_m = sides[0]; out._room_length_m = sides[1]; }
+  const dims = roomDimsForUi(req, calculationMeta);
+  out._room_width_m = dims.lengthX;
+  out._room_length_m = dims.widthY;
+  if (isPolygonStudy()) {
+    const poly = LuxPolygonPlan.getPolygonMeta(calculationMeta);
+    if (poly?.area_m2 != null) out._polygon_area_m2 = poly.area_m2;
+    if (poly?.fill_ratio != null) out._polygon_fill_ratio = poly.fill_ratio;
+    if (poly?.orientation_deg != null) out._polygon_orientation_deg = poly.orientation_deg;
+  }
   if (req?.height !== undefined && req.height !== null && req.height !== "") out._room_height_m = req.height;
   const sl  = req?.standard_lighting;
   const ref = sl?.ref_no ?? req?.standard_ref_no;
@@ -841,7 +922,19 @@ function displayProjectSummary(requestObj, customerObj) {
   const container = document.getElementById("projectSummary");
   if (!requestObj && !customerObj) { container.innerHTML = ""; return; }
   const projectName = requestObj?.project_name || requestObj?.project || (requestObj?.place ? requestObj.place : "") || (requestObj?.standard_lighting?.ref_no ? `Ref ${requestObj.standard_lighting.ref_no}` : "");
-  const roomSize   = requestObj?.sides ? `${requestObj.sides[0] ?? ""} x ${requestObj.sides[1] ?? ""} m` : "";
+  const roomSize = typeof LuxPolygonPlan !== "undefined"
+    ? LuxPolygonPlan.roomSizeLabel(requestObj, calculationMeta)
+    : (requestObj?.sides ? `${requestObj.sides[0] ?? ""} x ${requestObj.sides[1] ?? ""} m` : "");
+  const poly = typeof LuxPolygonPlan !== "undefined" ? LuxPolygonPlan.getPolygonMeta(calculationMeta) : null;
+  let polyDetails = "";
+  if (poly) {
+    const fill = poly.fill_ratio != null ? Number(poly.fill_ratio).toFixed(2) : "—";
+    const eq = calculationMeta?.equivalent_rectangle;
+    const eqLabel = eq
+      ? `${Number(eq.width_m).toFixed(2)} × ${Number(eq.length_m).toFixed(2)} m eq-rect`
+      : "";
+    polyDetails = `<p class="mb-0 mt-1 small text-muted">Fill α=${escapeHtml(fill)}${eqLabel ? " · " + escapeHtml(eqLabel) : ""}</p>`;
+  }
   const submitted  = requestObj?.submitted_at || "";
   const placeLine  = requestObj?.place ? `<p class="mb-0"><strong>Place (preset):</strong> ${escapeHtml(requestObj.place)}</p>` : "";
   const stdBlock   = standardLightingSummaryHtml(requestObj?.standard_lighting);
@@ -850,7 +943,7 @@ function displayProjectSummary(requestObj, customerObj) {
       <div class="card-body">
         <div class="row">
           <div class="col-md-6">
-            <h5 class="card-title mb-1">${escapeHtml(projectName || "Project")}</h5>
+            <h5 class="card-title mb-1">${escapeHtml(projectName || "Project")}${poly ? ' <span class="poly-meta-badge">CAD</span>' : ""}</h5>
             <p class="mb-1"><strong>Client:</strong> ${escapeHtml(customerObj?.name || requestObj?.name || "")}</p>
             <p class="mb-0"><strong>Company:</strong> ${escapeHtml(customerObj?.company || requestObj?.company || "")}</p>
             ${placeLine}
@@ -858,12 +951,34 @@ function displayProjectSummary(requestObj, customerObj) {
           <div class="col-md-6 text-md-end">
             <p class="mb-1"><strong>Phone:</strong> ${escapeHtml(customerObj?.phone || "")}</p>
             <p class="mb-0"><strong>Room:</strong> ${escapeHtml(roomSize)}</p>
+            ${polyDetails}
             <p class="mb-0"><small class="text-muted">${escapeHtml(submitted)}</small></p>
           </div>
         </div>
         ${stdBlock}
       </div>
     </div>`;
+}
+
+function updatePolygonPlanCard(resultIndex) {
+  const card = document.getElementById("polygonPlanCard");
+  const canvas = document.getElementById("polygonPlanCanvas");
+  const hint = document.getElementById("polygonPlanHint");
+  if (!card || !canvas || typeof LuxPolygonPlan === "undefined") return;
+  if (!isPolygonStudy()) {
+    card.style.display = "none";
+    return;
+  }
+  card.style.display = "block";
+  const idx = Number.isFinite(resultIndex) ? resultIndex : selectedPlanIndex;
+  selectedPlanIndex = idx;
+  const r = allResults[idx] || results[idx] || allResults[0];
+  if (hint) {
+    hint.textContent = r
+      ? `Option ${idx + 1} · ${r["Fixtures"] ?? r.fixtures ?? "?"} fixtures`
+      : "No layout selected";
+  }
+  if (r) LuxPolygonPlan.drawFloorPlan(canvas, r, request, calculationMeta);
 }
 
 function calcOptionListItemsHtml(r) {
@@ -909,13 +1024,14 @@ function appendResultCards(startIdx, count) {
         <div class="viewer" id="${viewerId}">
           <img id="${imgId}" src="${frames[0]}" alt="${escapeHtml(luminaire)}">
         </div>
+        ${isPolygonStudy() ? `<div class="plan-canvas-wrap px-3 pt-2"><canvas id="plan-${idx}" aria-label="Option ${idx + 1} floor plan"></canvas></div>` : ""}
         <div class="card-body d-flex flex-column">
           <h5 class="card-title">Option ${idx + 1}</h5>
           <ul class="list-group list-group-flush mb-3">
             ${calcOptionListItemsHtml(enrichOptionCardRow(r, request))}
           </ul>
           <div class="controls mt-auto">
-            <button class="btn btn-outline-primary" onclick="goToLayout(${idx})">View Layout</button>
+            <button class="btn btn-outline-primary" onclick="goToLayout(${idx})">${isPolygonStudy() ? "View Plan" : "View Layout"}</button>
             <button class="btn btn-success" onclick="downloadCSV(generateCSV([allResults[${idx}]], request))">CSV</button>
             <button class="btn btn-danger" id="pdfSolBtn-${idx}" onclick="downloadSolutionPdf(${idx}, this)">PDF</button>
             <button class="btn btn-warning" onclick="displayPriceRequest(${idx}, this)">Request Price</button>
@@ -926,7 +1042,16 @@ function appendResultCards(startIdx, count) {
         </div>
       </div>`;
     container.appendChild(col);
-    setTimeout(() => { setupViewer(document.getElementById(viewerId), document.getElementById(imgId), frames); }, 0);
+    setTimeout(() => {
+      setupViewer(document.getElementById(viewerId), document.getElementById(imgId), frames);
+      if (isPolygonStudy() && typeof LuxPolygonPlan !== "undefined") {
+        const planCanvas = document.getElementById(`plan-${idx}`);
+        if (planCanvas) {
+          LuxPolygonPlan.drawFloorPlan(planCanvas, r, request, calculationMeta);
+          planCanvas.addEventListener("click", () => updatePolygonPlanCard(idx));
+        }
+      }
+    }, 0);
   }
   resultsDisplayed = endIdx;
   const wrap = document.getElementById("viewMoreWrap");
@@ -951,6 +1076,12 @@ function updateResultsAnalysis() {
   if (typeof meta.total_solutions_returned === "number" && meta.total_solutions_returned !== n) html += ` (API reported <strong>${meta.total_solutions_returned}</strong> total)`;
   if (meta.used_uniformity_sweep_fallback && n > 0) html += " \u2014 <span class='text-muted'>includes best-effort layouts with extra fixtures to improve U0 (still below standard)</span>";
   if (meta.calc_mode === "fast") html += " \u2014 <span class='text-muted'>fast mode (fixture count step 2, max 3 compliant options, coarser fallback)</span>";
+  if (isPolygonStudy(meta)) {
+    const poly = LuxPolygonPlan.getPolygonMeta(meta);
+    const nVerts = poly?.vertex_count || poly?.vertices?.length || "?";
+    const orientDeg = poly?.orientation_deg != null ? Number(poly.orientation_deg).toFixed(0) : "0";
+    html += ` \u2014 <span class='text-muted'>CAD polygon (${nVerts} verts, θ=${orientDeg}°); U₀ samples and fixtures are polygon-clipped</span>`;
+  }
   if (typeof th === "number") html += `. Interior/exterior split uses <strong>${th}</strong> m ceiling height`;
   if (capped && cap) html += ` \u2014 stopped at server cap of <strong>${cap}</strong> (<a href="admin/dashboard.html" target="_blank" rel="noopener">admin</a>)`;
   html += ".";
@@ -997,6 +1128,7 @@ function displayResults(resultArray) {
   updateNoCompliantBanner();
   updateResultsAnalysis();
   updateFixtureFamilyShortfall();
+  updatePolygonPlanCard(0);
   const first = Math.min(uiPaging.initial, allResults.length);
   if (first > 0) appendResultCards(0, first);
   else { const wrap = document.getElementById("viewMoreWrap"); if (wrap) wrap.style.display = "none"; }
@@ -1007,7 +1139,21 @@ function displayResults(resultArray) {
 ================================================================ */
 function goToLayout(index) {
   const r = results[index];
-  const data = { fixtures: r["Fixtures"] ?? r.fixtures, spacingX: r["Spacing X (m)"] ?? r.spacing_x, spacingY: r["Spacing Y (m)"] ?? r.spacing_y, roomLength: request.sides?.[0], roomWidth: request.sides?.[1] };
+  if (!r) return;
+  if (isPolygonStudy()) {
+    updatePolygonPlanCard(index);
+    const card = document.getElementById("polygonPlanCard");
+    if (card) card.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+  const dims = roomDimsForUi(request, calculationMeta);
+  const data = {
+    fixtures: r["Fixtures"] ?? r.fixtures,
+    spacingX: r["Spacing X (m)"] ?? r.spacing_x,
+    spacingY: r["Spacing Y (m)"] ?? r.spacing_y,
+    roomLength: dims.lengthX,
+    roomWidth: dims.widthY,
+  };
   localStorage.setItem("lightingModelData", JSON.stringify(data));
   window.location.href = "maha/3d_model.html";
 }
@@ -1018,7 +1164,14 @@ function normalizeResult(result) {
 
 function buildModelData(result) {
   const normalized = normalizeResult(result);
-  return { fixtures:normalized.fixtures, spacingX:normalized.spacingX, spacingY:normalized.spacingY, roomLength:Math.max(1,Number(request?.sides?.[0]??270)||270), roomWidth:Math.max(1,Number(request?.sides?.[1]??15)||15) };
+  const dims = roomDimsForUi(request, calculationMeta);
+  return {
+    fixtures: normalized.fixtures,
+    spacingX: normalized.spacingX,
+    spacingY: normalized.spacingY,
+    roomLength: Math.max(1, Number(dims.lengthX) || 6),
+    roomWidth: Math.max(1, Number(dims.widthY) || 4),
+  };
 }
 
 function computeLayoutGrid(modelData) {
@@ -1041,7 +1194,27 @@ function downloadTextFile(filename, content, mimeType) {
 function dxfLine(x1,y1,x2,y2){ return `0\nLINE\n8\n0\n10\n${x1}\n20\n${y1}\n30\n0\n11\n${x2}\n21\n${y2}\n31\n0\n`; }
 function dxfCircle(x,y,radius){ return `0\nCIRCLE\n8\n0\n10\n${x}\n20\n${y}\n30\n0\n40\n${radius}\n`; }
 
-function buildDXFContent(modelData, layout) {
+function buildDXFContent(modelData, layout, result) {
+  if (isPolygonStudy() && typeof LuxPolygonPlan !== "undefined" && result) {
+    const layoutPts = LuxPolygonPlan.fixturesForResult(result, request, calculationMeta);
+    if (layoutPts.isPolygon && layoutPts.verts?.length) {
+      const verts = layoutPts.verts;
+      const cx = verts.reduce((s, v) => s + v[0], 0) / verts.length;
+      const cy = verts.reduce((s, v) => s + v[1], 0) / verts.length;
+      let entities = "";
+      for (let i = 0; i < verts.length; i++) {
+        const a = verts[i], b = verts[(i + 1) % verts.length];
+        entities += dxfLine(
+          (a[0] - cx).toFixed(4), (a[1] - cy).toFixed(4),
+          (b[0] - cx).toFixed(4), (b[1] - cy).toFixed(4)
+        );
+      }
+      (layoutPts.world || []).forEach(([fx, fy]) => {
+        entities += dxfCircle((fx - cx).toFixed(3), (fy - cy).toFixed(3), 0.08);
+      });
+      return `0\nSECTION\n2\nHEADER\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n${entities}0\nENDSEC\n0\nEOF\n`;
+    }
+  }
   const { roomLength, roomWidth } = modelData;
   const xMin=-roomWidth/2, xMax=roomWidth/2, zMin=-roomLength/2, zMax=roomLength/2;
   let entities = "";
@@ -1080,7 +1253,7 @@ function buildSTLContent(modelData, layout) {
 function handleDownloadDXF(index) {
   const selected = results[index]; if (!selected) { alert("No result option selected."); return; }
   const modelData = buildModelData(selected); localStorage.setItem("lightingModelData", JSON.stringify(modelData));
-  downloadTextFile(`lighting_layout_option_${index+1}.dxf`, buildDXFContent(modelData, computeLayoutGrid(modelData)), "application/dxf");
+  downloadTextFile(`lighting_layout_option_${index+1}.dxf`, buildDXFContent(modelData, computeLayoutGrid(modelData), selected), "application/dxf");
 }
 
 function handleDownloadSTL(index) {
@@ -1102,7 +1275,9 @@ async function displayPriceRequest(index, buttonEl) {
   if (!token) { alert("No token found. Please open results using a valid token link."); return; }
   const selectedResult = results[index] || {};
   const resultLink = window.location.href;
-  const roomSize   = Array.isArray(request?.sides) ? `${request.sides[0]||""} x ${request.sides[1]||""}` : "";
+  const roomSize = typeof LuxPolygonPlan !== "undefined"
+    ? LuxPolygonPlan.roomSizeLabel(request, calculationMeta)
+    : (Array.isArray(request?.sides) ? `${request.sides[0]||""} x ${request.sides[1]||""}` : "");
   const std        = request?.standard_lighting;
   const stdLine    = std?.ref_no ? `Standard ref: ${std.ref_no} | Em,r: ${std.Em_r_lx??""} lx | Uo: ${std.Uo??""}` : `Place: ${request?.place||""}`;
   const messageText = ["Hello Short Circuit Company,","I need a price quotation for this lighting result.","",
@@ -1256,6 +1431,20 @@ async function loadResults() {
     } else { await mergeUiSettingsFromPublicApi(); }
     results = data.results || data;
     request = data.request || { project_name: data.project_info?.["Project Name"], sides: [data.width, data.length], place: "" };
+    if (!request.sides && Array.isArray(data.sides)) request.sides = data.sides;
+    if (request.height == null && data.height != null) request.height = data.height;
+    if (request.length == null && data.length != null) request.length = data.length;
+    if (request.width == null && data.width != null) request.width = data.width;
+    // Prefer CAD top-level dims when present (length_eq / width_eq)
+    if (data.length != null) request.length = data.length;
+    if (data.width != null) request.width = data.width;
+    if (Array.isArray(data.sides) && data.sides.length === 4) request.sides = data.sides;
+    const eq = calculationMeta?.equivalent_rectangle;
+    if ((!Array.isArray(request.sides) || request.sides.length !== 4) && eq?.sides_used) {
+      request.sides = eq.sides_used;
+    }
+    if (request.length == null && eq?.length_m != null) request.length = eq.length_m;
+    if (request.width == null && eq?.width_m != null) request.width = eq.width_m;
     const mergedSl = mergeStandardLightingSources(data);
     if (Object.keys(mergedSl).length > 0) request.standard_lighting = mergedSl;
     else if (!request.standard_lighting && data.standard_lighting) request.standard_lighting = data.standard_lighting;
@@ -1268,6 +1457,11 @@ async function loadResults() {
     results  = results.map(r => normalizeCalcResultRow(r));
     displayProjectSummary(request, customer);
     displayResults(results);
+    window.addEventListener("resize", () => {
+      if (!isPolygonStudy()) return;
+      const card = document.getElementById("polygonPlanCard");
+      if (card && card.style.display !== "none") updatePolygonPlanCard(selectedPlanIndex);
+    });
   } catch (err) { console.error("Fetch error:", err); alert("Failed to load results from API."); }
 }
 
@@ -1292,8 +1486,9 @@ async function openPolarCurve(index) {
   const productLabel  = `${luminaireName}${powerW ? " \u2014 " + powerW + "W" : ""}`;
   await ensureFixtureMapLoaded();
   const iesRelPath = iesPathFromFixtureMap(luminaireName, powerW) || r["IES file"] || r.ies_file || "";
-  const _room_w   = parseFloat(request?.sides?.[0] ?? request?.width  ?? 6) || 6;
-  const _room_l   = parseFloat(request?.sides?.[1] ?? request?.length ?? 6) || 6;
+  const _dims = roomDimsForUi(request, calculationMeta);
+  const _room_w   = _dims.lengthX;
+  const _room_l   = _dims.widthY;
   const _room_h   = parseFloat(request?.height ?? 3) || 3;
   const _sx       = parseFloat(r["Spacing X (m)"] ?? r.spacing_x ?? 0) || 0;
   const _sy       = parseFloat(r["Spacing Y (m)"] ?? r.spacing_y ?? 0) || 0;
