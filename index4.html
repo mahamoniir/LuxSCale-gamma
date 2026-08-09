@@ -702,26 +702,25 @@
             return null;
         }
 
+        /** Flask origin used by /calculate and /api/standards/* */
+        function getFlaskApiBase() {
+            const origin = getLocalFlaskOrigin();
+            if (origin) return origin;
+            // return "https://bkr3800.pythonanywhere.com";
+            return "https://bkr3800.pythonanywhere.com";
+        }
+
         /** Local Flask vs PythonAnywhere â€” match index.html */
         function getCalculateApiUrl() {
-            const origin = getLocalFlaskOrigin();
-            if (origin) return origin + "/calculate";
-            // return "https://bkr3800.pythonanywhere.com/calculate";
-            return "https://bkr3800.pythonanywhere.com/calculate";
+            return getFlaskApiBase() + "/calculate";
         }
 
         function getPlacesApiUrl() {
-            const origin = getLocalFlaskOrigin();
-            if (origin) return origin + "/places";
-            // return "https://bkr3800.pythonanywhere.com/places";
-            return "https://bkr3800.pythonanywhere.com/places";
+            return getFlaskApiBase() + "/places";
         }
 
         function getUiSettingsApiUrl() {
-            const origin = getLocalFlaskOrigin();
-            if (origin) return origin + "/api/ui-settings";
-            // return "https://bkr3800.pythonanywhere.com/api/ui-settings";
-            return "https://bkr3800.pythonanywhere.com/api/ui-settings";
+            return getFlaskApiBase() + "/api/ui-settings";
         }
 
         let ceilingHeightBounds = { interior_min_m: 3, interior_max_m: 5, exterior_max_m: 20 };
@@ -874,19 +873,11 @@
                 return;
             }
 
-            let cleanedRows = null;
-            let cleanedUrl = standardsAssetUrl("standards/standards_cleaned.json");
-            try {
-                const pack = await fetchStandardsJsonOk("standards/standards_cleaned.json");
-                cleanedRows = pack.data;
-                cleanedUrl = pack.url;
-            } catch (e) {
-                console.error("standards_cleaned.json:", e);
-            }
-
+            // Preferred: category → tasks → resolve-by-task on Flask /api/standards/*
+            // Local JSON is only a fallback inside standards-picker.js if the API is unreachable.
             var pickerOpts = {
-                cleanedRows: Array.isArray(cleanedRows) ? cleanedRows : null,
-                cleanedUrl: cleanedUrl,
+                apiBase: getFlaskApiBase(),
+                cleanedUrl: standardsAssetUrl("standards/standards_cleaned.json"),
                 keywordsUrl: standardsAssetUrl("standards/standards_keywords_upgraded.json"),
                 categoryInput: document.getElementById("stdCategory"),
                 categoryDatalist: document.getElementById("dl-std-categories"),
