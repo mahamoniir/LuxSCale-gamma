@@ -1083,7 +1083,9 @@
                 const calcOut = await getResults(sides, height);
                 const allResults = calcOut.results;
                 const calculationMeta = calcOut.calculation_meta || {};
-                // Full API row (beam_angle_deg, U0_calculated, IES fields, â€¦) plus legacy
+                // Prefer the row the server loaded from standards_cleaned.json for this ref_no.
+                const resolvedStandard = calcOut.standard_row || lastResolvedStandardRow;
+                // Full API row (beam_angle_deg, U0_calculated, IES fields, …) plus legacy
                 // snake_case aliases for older submit consumers. Do not strip fields here.
                 const formattedResults = allResults.map((result) => ({
                     ...result,
@@ -1106,10 +1108,10 @@
                     email: document.getElementById("clientEmail").value.trim() || "",
                     notes: document.getElementById("projectNotes").value.trim() || "",
                     mounting_height: parseFloat(document.getElementById("mountingHeight").value) || null,
-                    standard_ref_no: String(lastResolvedStandardRow.ref_no),
+                    standard_ref_no: String(resolvedStandard.ref_no),
                     standard_category: document.getElementById("stdCategory").value.trim(),
                     standard_task_or_activity: document.getElementById("stdTask").value.trim(),
-                    standard_lighting: exportStandardLighting(lastResolvedStandardRow),
+                    standard_lighting: exportStandardLighting(resolvedStandard),
                     sides,
                     height,
                     results: formattedResults,
@@ -1160,29 +1162,20 @@
             if (heightMsg) {
                 throw new Error(heightMsg);
             }
-            const row = lastResolvedStandardRow;
-            const stdCatEl = document.getElementById("stdCategory");
-            const stdTaskEl = document.getElementById("stdTask");
-            const refNo = row.ref_no != null && row.ref_no !== "" ? String(row.ref_no) : "";
-            const projectInfo = {
-                project_name: document.getElementById("projectName").value.trim() || "SC-LUXSCALE Study",
-                name: document.getElementById("clientName").value.trim() || "LuxScale User",
-                company: document.getElementById("clientCompany").value.trim() || "Short Circuit Company",
-                phone: document.getElementById("clientPhone").value.trim() || "",
-                email: document.getElementById("clientEmail").value.trim() || "",
-                notes: document.getElementById("projectNotes") ? document.getElementById("projectNotes").value.trim() : "",
-                mounting_height: document.getElementById("mountingHeight") ? (parseFloat(document.getElementById("mountingHeight").value) || null) : null,
-                standard_ref_no: refNo,
-                standard_category: stdCatEl ? stdCatEl.value.trim() : "",
-                standard_task_or_activity: stdTaskEl ? stdTaskEl.value.trim() : "",
-                standard_lighting: exportStandardLighting(row)
-            };
+            const refNo =
+                lastResolvedStandardRow && lastResolvedStandardRow.ref_no != null
+                    ? String(lastResolvedStandardRow.ref_no).trim()
+                    : "";
+            if (!refNo) {
+                throw new Error("standard_ref_no is required — select a category and task first.");
+            }
 
+            // Backend loads Em_r / Uo / … from standards_cleaned.json by this ref only.
             const payload = {
                 sides,
                 height,
-                project_info: projectInfo,
-                standard_ref_no: refNo
+                standard_ref_no: refNo,
+                project_info: { standard_ref_no: refNo }
             };
             try {
                 const q = new URLSearchParams(window.location.search);
@@ -1214,7 +1207,11 @@
                 calculation_meta:
                     json.calculation_meta && typeof json.calculation_meta === "object"
                         ? json.calculation_meta
-                        : {}
+                        : {},
+                standard_row:
+                    json.standard_row && typeof json.standard_row === "object"
+                        ? json.standard_row
+                        : null
             };
         }
     </script>

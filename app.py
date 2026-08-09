@@ -385,7 +385,13 @@ def _norm_ref(ref):
 
 
 def _resolve_calculate_inputs(data):
-    """Returns (standard_row | None, place | None) for calculate_lighting."""
+    """
+    Returns (standard_row | None, place | None) for calculate_lighting.
+
+    ``standard_row`` always comes from ``standards_cleaned.json`` via
+    ``standard_ref_no`` (top-level or under ``project_info``). Client-supplied
+    ``standard_lighting`` / parameter blobs are ignored for the calculation.
+    """
     project_info = data.get("project_info") if isinstance(data.get("project_info"), dict) else {}
     if not project_info:
         project_info = {}
@@ -528,6 +534,25 @@ def _extract_irf_from_request(data: dict) -> tuple:
 
 @app.route("/calculate", methods=["POST", "OPTIONS"])
 def api_calculate():
+    """
+    Rectangular-room lighting calculation.
+
+    Preferred body (standards path)::
+
+        {
+          "sides": [W, L, W, L],
+          "height": 3.0,
+          "standard_ref_no": "6.1.1"
+        }
+
+    The server loads the matching row from ``standards/standards_cleaned.json``
+    and uses its ``Em_r_lx`` / ``Uo`` / … for the engine. Clients should **not**
+    send a full ``standard_lighting`` object for calculation — only ``ref_no``.
+    The resolved row is echoed back as ``standard_row`` (and under
+    ``project_info.standard_lighting``) for submit/result snapshots.
+
+    Legacy alternative: ``"place": "office"`` (no standards row).
+    """
     if request.method == "OPTIONS":
         return Response(status=204)
     data = request.get_json(silent=True)
@@ -554,6 +579,8 @@ def api_calculate():
 
         raw_pi = data.get("project_info") if isinstance(data.get("project_info"), dict) else {}
         project_info = dict(raw_pi)
+        # Drop any client-supplied standard snapshot — server is source of truth.
+        project_info.pop("standard_lighting", None)
         ref_top = _norm_ref(raw_pi.get("standard_ref_no") or data.get("standard_ref_no"))
         if ref_top:
             project_info["standard_ref_no"] = ref_top
@@ -755,6 +782,7 @@ def api_cad_calc():
 
         raw_pi = data.get("project_info") if isinstance(data.get("project_info"), dict) else {}
         project_info = dict(raw_pi)
+        project_info.pop("standard_lighting", None)
         ref_top = _norm_ref(raw_pi.get("standard_ref_no") or data.get("standard_ref_no"))
         if ref_top:
             project_info["standard_ref_no"] = ref_top
