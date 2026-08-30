@@ -25,7 +25,6 @@ _FOLDER_PREFIX_TO_API: Dict[str, str] = {
     "SC PANEL": "SC backlight",  # power from SC PANEL 18 / 36W / 48W
 }
 
-
 def _sc_ies_root() -> str:
     return os.path.join(project_root(), "ies-render", "SC-ies")
 

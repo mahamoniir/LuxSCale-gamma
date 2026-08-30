@@ -12,7 +12,6 @@ from luxscale import fixtures_lookup as fl
 
 fixtures_bp = Blueprint("fixtures_api", __name__, url_prefix="/api/fixtures")
 
-
 @fixtures_bp.route("", methods=["GET"])
 def api_fixtures_list():
     """
