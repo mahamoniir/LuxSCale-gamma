@@ -1036,6 +1036,10 @@ def calculate_lighting(
     families_evaluated: set = set()
 
     for lum_name, powers in options:
+        # --- SKIP STREET FIXTURES (interior mode) ---
+        if "street" in lum_name.lower():
+            continue
+        # --- END SKIP STREET FIXTURES ---
         if stop_search:
             break
         families_evaluated.add(lum_name)
